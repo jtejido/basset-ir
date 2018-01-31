@@ -23,7 +23,7 @@ Basics
 Installation
 -------------
 
-In your composer.json, you'll have to right it like this:
+In your composer.json, you'll have to write it like this:
 
 ```
 {
