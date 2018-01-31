@@ -5,7 +5,7 @@
 Basset
 =============
 
-Basset is an Information Retrieval library. It provides different ways of searching through documents in a collection by applying advanced and experimental IR techniques gathered from different Research studies and Conferences, most notably:
+Basset is a PHP Information Retrieval library. It provides different ways of searching through documents in a collection by applying advanced and experimental IR techniques gathered from different Research studies and Conferences, most notably:
 
 1. [TREC](http://trec.nist.gov/) 
 
@@ -356,7 +356,8 @@ Basset have the following Similarity(implements SimilarityInterface) for scoring
 
 
 VectorSpaceModel also requires Feature Extraction for building the tf-idf vector.
-setFeature(FeatureExtractionInterface)
+
+*setFeature(FeatureExtractionInterface)*
 
 just like our code above:
 
