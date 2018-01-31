@@ -1,0 +1,25 @@
+{
+	"name": "jtejido/basset",
+	"description": "Basset is another one of those tools that does IR in PHP.",
+	"keywords": ["information retrieval"],
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Jericko Tejido",
+			"email": "jtbibliomania@gmail.com"
+		}
+	],
+	"require": {
+		"php": "^7.0"
+	},
+	"autoload": {
+		"psr-0": {
+			"Basset\\": "src/"
+		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "0.1"
+		}
+	}
+}
