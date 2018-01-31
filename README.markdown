@@ -28,7 +28,7 @@ In your composer.json, yo'll have to right it like this:
 ```
 {
     "require": {
-        "nlp-tools/nlp-tools": "1.0.*@dev"
+        "jtejido/basset": "1.0.*@dev"
     }
 }
 ```
