@@ -185,6 +185,7 @@ use Basset\FeatureExtraction\TfIdfFeatureExtraction;
 
 // Returns number of occurences of all words in the document.
 	$tfidf = new TfIdfFeatureExtraction();
+	$tfidf->setIndex($index);
 	$tfidf->getFeature($documents[0]);
 ```
 
