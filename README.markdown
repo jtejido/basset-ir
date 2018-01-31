@@ -28,7 +28,7 @@ In your composer.json, you'll have to write it like this:
 ```
 {
     "require": {
-        "jtejido/basset": "1.0.*@dev"
+        "jtejido/basset": "^0.1"
     }
 }
 ```
