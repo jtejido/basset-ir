@@ -250,7 +250,7 @@ General Use
 
 
 
-[Ranking Options](https://github.com/jtejido/basset/tree/master/src/Basset/Ranking)
+[Ranking Options](https://github.com/jtejido/basset-ir/tree/master/src/Basset/Ranking)
 =============
 
 Each Ranking options accepts specific parameters, please read each Classes to read which papers they're derived from and which parameters can be set and values set by default.
