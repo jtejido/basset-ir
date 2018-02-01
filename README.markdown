@@ -304,7 +304,6 @@ Probabilistic Models
 3. JelinekMercerLM() - Based on the Jelinek-Mercer smoothing method.
 4. AbsoluteDiscountingLM() - Absolute Discounting smoothing method.
 5. TwoStageLM() - Leave-one-out method. This is also a generalization of both DirichletLM and JelinekMercerLM methods.
-6. KullbackLeiblerLM() - Based on Kullback-Leibler divergence.
 
 
 ***Information-based Models***
