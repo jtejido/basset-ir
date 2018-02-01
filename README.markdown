@@ -258,8 +258,8 @@ General Use
 
 // or Algebraic Models
 	$search = new VectorSpaceModel(new CosineSimilarity(), $documents);
-    $search->setFeature(new PivotTfIdfFeatureExtraction);
-    $search->search($query_tokenized);
+	$search->setFeature(new PivotTfIdfFeatureExtraction);
+	$search->search($query_tokenized);
 
 ```
 

@@ -37,7 +37,8 @@ class VectorSpaceModel extends AbstractRanking
         parent::__construct($set);
         $this->stats = new Statistics($this->set);
         $this->sim = $type;
-        $this->tfidf = null;
+        $ff = new TfIdfFeatureExtraction();
+        $this->tfidf = $ff->setIndex($this->stats);
     }
 
     /**
@@ -46,12 +47,8 @@ class VectorSpaceModel extends AbstractRanking
      * @param  FeatureExtractionInterface $ff
      * @return instance
      */
-    public function setFeature(FeatureExtractionInterface $ff = null)
+    public function setFeature(FeatureExtractionInterface $ff)
     {
-        if ($this->tfidf === null) {
-            $ff = new TfIdfFeatureExtraction();
-        }
-
         $this->tfidf = $ff->setIndex($this->stats);
     }
 
