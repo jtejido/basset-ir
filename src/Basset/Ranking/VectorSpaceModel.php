@@ -5,10 +5,9 @@ namespace Basset\Ranking;
 use Basset\Collections\CollectionSet;
 use Basset\Documents\DocumentInterface;
 use Basset\FeatureExtraction\FeatureExtractionInterface;
+use Basset\FeatureExtraction\TfIdfFeatureExtraction;
 use Basset\Statistics\Statistics;
 use Basset\Similarity\SimilarityInterface;
-use Basset\Similarity\SoftCosineSimilarity;
-use Basset\Similarity\LevenshteinDistance;
 
 
 /**
@@ -49,6 +48,9 @@ class VectorSpaceModel extends AbstractRanking
      */
     public function setFeature(FeatureExtractionInterface $ff = null)
     {
+        if ($this->tfidf === null) {
+            $ff = new TfIdfFeatureExtraction();
+        }
 
         $this->tfidf = $ff->setIndex($this->stats);
     }
@@ -62,22 +64,11 @@ class VectorSpaceModel extends AbstractRanking
     public function search(DocumentInterface $q)
     {
 
-        if ($this->tfidf === null) {
-            throw new \Exception('Feature Vector should be set.');
-        }
-
         $score = array();
 
         foreach($this->set as $class => $doc) {
             $query_vector = $this->tfidf->getFeature($q);
             $document_vector = $this->tfidf->getFeature($doc);
-
-            if($this->sim instanceof SoftCosineSimilarity){
-                $distance = new LevenshteinDistance();
-                $dist = $distance->dist($query_vector, $document_vector);
-                $this->sim = new SoftCosineSimilarity($dist);
-            }
-
             $score[$class] = $this->sim->similarity($query_vector, $document_vector);
         }
 

@@ -31,7 +31,7 @@ class HiemstraLM implements ScoringInterface
      * @param  string $term
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount)
+    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
     {
         $score = 0;
 

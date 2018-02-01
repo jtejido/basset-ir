@@ -39,7 +39,7 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
     public function addDocument(DocumentInterface $d, $class = null)
     {
         if((empty($class)) && $this->keytype == self::CLASS_AS_KEY) {
-            throw new \Exception("Class or Label cannot be null.");
+            throw new \Exception('Class or Label cannot be null.');
         }
         $this->documents[] = new TrainingDocument($d, $class);
     }
@@ -85,7 +85,7 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
             case self::OFFSET_AS_KEY:
                 return key($this->documents);
             default:
-                throw new \Exception("Undefined type as key");
+                throw new \Exception('Undefined type as key');
         }
     }
     // === Implementation of \Iterator interface finished ===
@@ -93,11 +93,11 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
     // ====== Implementation of \ArrayAccess interface =========
     public function offsetSet($key,$value)
     {
-        throw new \Exception("Shouldn't add documents this way, add them through addDocument()");
+        throw new \Exception('Shouldn\'t add documents this way, add them through addDocument()');
     }
     public function offsetUnset($key)
     {
-        throw new \Exception("Cannot unset any document");
+        throw new \Exception('Cannot unset any document');
     }
     public function offsetGet($key)
     {

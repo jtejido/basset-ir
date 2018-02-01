@@ -58,7 +58,8 @@ class Ranking extends AbstractRanking
         //∑(Document, Query)
 
         $collectionLength = $this->stats->numberofCollectionTokens();
-        $collectionCount = $this->stats->numberofDocuments(); 
+        $collectionCount = $this->stats->numberofDocuments();
+        $keylength = count($q->getDocument());
 
         foreach($this->set as $class => $doc) {
             $this->vector = $this->getVector($doc);
@@ -72,7 +73,7 @@ class Ranking extends AbstractRanking
                 $termFrequency = $this->stats->termFrequency($term);
 
                 if($tf != 0) {
-                    $score[$class] += $this->type->score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount);
+                    $score[$class] += $this->type->score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength);
                 }
             }
         }
