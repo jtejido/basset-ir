@@ -282,6 +282,9 @@ Probabilistic Models
 ***Probabilistic Relevance Models***
 
 1. BM25() - Okapi's Best Matching algorithm.
+1. ModBM25() - Ensures negative IDF don't violate Term-Frequency, Length Normalization and Tf-length Constraints.
+1. BM25QI() - Capturing interaction between IDF and query length.
+1. BM25Plus() - based on Lv and Zhai's work for lower bounding BM25.
 
 
 ***Ready-made Divergence-From-Randomness Models***
@@ -301,6 +304,8 @@ Probabilistic Models
 3. JelinekMercerLM() - Based on the Jelinek-Mercer smoothing method.
 4. AbsoluteDiscountingLM() - Absolute Discounting smoothing method.
 5. TwoStageLM() - Leave-one-out method. This is also a generalization of both DirichletLM and JelinekMercerLM methods.
+6. KullbackLeiblerLM() - Based on Kullback-Leibler divergence.
+
 
 ***Information-based Models***
 
@@ -367,7 +372,6 @@ Basset have the following Similarity(implements SimilarityInterface) for scoring
 3. JaccardIndex() - Also known as Intersection over Union or Jaccard-Tanimoto Coefficient.
 3. TverskyIndex() - A Generalization of JaccardIndex and DiceSimilarity. TverskyIndex accepts parameters, so please take a look at the class.
 5. Euclidean() - Simple computation using Euclidean Norm.
-6. SoftCosineSimilarity() - My experimental attempt to do CosineSimilarity with Levenshtein distance, by [Sidorov Et al.](http://www.cic.ipn.mx/~sidorov/similarity.pdf).
 
 
 VectorSpaceModel also requires Feature Extraction for building the tf-idf vector.
