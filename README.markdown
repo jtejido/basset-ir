@@ -369,11 +369,12 @@ Basset have the following Similarity(implements SimilarityInterface) for scoring
 1. CosineSimilarity() - Classic (D,Q) tf-idf vectors computed thru Cosine similarity.
 2. DiceSimilarity() - It was independently developed by the botanists Thorvald Sørensen and Lee Raymond Dice.
 3. JaccardIndex() - Also known as Intersection over Union or Jaccard-Tanimoto Coefficient.
-3. TverskyIndex() - A Generalization of JaccardIndex and DiceSimilarity. TverskyIndex accepts parameters, so please take a look at the class.
+4. TverskyIndex() - A Generalization of JaccardIndex and DiceSimilarity. TverskyIndex accepts parameters, so please take a look at the class.
 5. Euclidean() - Simple computation using Euclidean Norm.
+6. SqrtCosineSimilarity() - SqrtCosine implementation using HellingerDistance norm.
 
 
-VectorSpaceModel also requires Feature Extraction for building the tf-idf vector.
+VectorSpaceModel also accepts Feature Extraction for building the tf-idf vector (default is TfIdfFeatureExtraction).
 
 *setFeature(FeatureExtractionInterface)*
 
@@ -390,7 +391,7 @@ The following Features are built-in with Basset.
 ***Feature Types***
 
 1. TfIdfFeatureExtraction() - Classic (D,Q) tf-idf vectors.
-2. PivotTfIdfFeatureExtraction() - Uses cosine normalization that removes a bias inherent in standard length normalization see Singhal Et al. [work](http://singhal.info/pivoted-dln.pdf).
+2. PivotTfIdfFeatureExtraction() - Uses cosine normalization that removes a bias inherent in standard length normalization see Singhal Et al.'s [work](http://singhal.info/pivoted-dln.pdf).
 3. LemurTfIdfFeatureExtraction() - Implementation of Robertson's Tf in tf-idf Vector.
 
 
