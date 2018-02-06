@@ -47,9 +47,9 @@ class AbsoluteDiscountingLM implements ScoringInterface
         $score = 0;
 
         if($tf != 0){
-            $smoothed_probability = $termFrequency / $collectionLength;
+            $mle_collection = $termFrequency / $collectionLength;
             $sigma = ($this->delta * $uniqueTermsCount) / $docLength;
-            $score += $keyFrequency * log(1 + ((max($tf - $this->delta, 0) / $docLength) + ($sigma * $smoothed_probability)));
+            $score += $keyFrequency * log(1 + ((max($tf - $this->delta, 0) / $docLength) + ($sigma * $mle_collection)));
         }
 
         return $score;

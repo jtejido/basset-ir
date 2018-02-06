@@ -50,8 +50,9 @@ class TwoStageLM implements ScoringInterface
         $score = 0;
 
         if($tf != 0){
-            $smoothed_probability = $termFrequency / $collectionLength;
-            $score += $keyFrequency * log(1 + (((1 - $this->lambda) * ($tf + ($this->mu * $smoothed_probability)) / ($docLength + $this->mu)) + ($this->lambda * $smoothed_probability)));
+            // smoothed probability of words seen in the collection
+            $mle_collection = $termFrequency / $collectionLength;
+            $score += $keyFrequency * log(1 + (((1 - $this->lambda) * ($tf + ($this->mu * $mle_collection)) / ($docLength + $this->mu)) + ($this->lambda * $mle_collection)));
 
         }
 

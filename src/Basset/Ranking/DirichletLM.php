@@ -41,8 +41,10 @@ class DirichletLM implements ScoringInterface
         $score = 0;
 
         if($tf != 0){
-            $smoothed_probability = $termFrequency / $collectionLength;
-            $score += $keyFrequency * log(1 + ($tf + $this->mu * $smoothed_probability) / ($docLength + $this->mu));
+            // smoothed probability of words seen in the collection
+            $mle_collection = $termFrequency / $collectionLength;
+
+            $score += $keyFrequency * log(1 + ($tf + $this->mu * $mle_collection) / ($docLength + $this->mu));
 
         }
 

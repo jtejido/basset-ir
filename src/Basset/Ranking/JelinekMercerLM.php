@@ -43,8 +43,12 @@ class JelinekMercerLM implements ScoringInterface
         $score = 0;
 
         if($tf != 0){
-            $smoothed_probability = $termFrequency / $collectionLength;
-            $score += $keyFrequency * log(1 + (((1 - $this->lambda) * $tf) / $docLength) + ($this->lambda * $smoothed_probability));
+            // smoothed probability of words seen in the collection
+            $mle_collection = $termFrequency / $collectionLength;
+            // smoothed probability of words seen in the document
+            $mle_document = $tf / $docLength;
+
+            $score += $keyFrequency * log(1 + ( (1 - $this->lambda) * $mle_document + ($this->lambda * $mle_collection)) );
         }
 
         return $score;

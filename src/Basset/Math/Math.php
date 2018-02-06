@@ -12,7 +12,6 @@ namespace Basset\Math;
 class Math
 {
 
-
     /**
      * The base 2 log of the given expression
      * mostly used in DFR models
@@ -78,6 +77,17 @@ class Math
                 $dotProduct += ($a[$key] * $b[$key]);
         }
         return $dotProduct;
+    }
+
+    /**
+     * Statistical mean/average of vector
+     *
+     * @param array $arr
+     * @return float
+     */
+    public function mean(array $arr)
+    {
+        return ($arr) ? array_sum($arr)/count($arr) : 0;
     }
 
 }
