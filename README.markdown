@@ -5,7 +5,9 @@
 Basset
 =============
 
-Basset is a PHP Information Retrieval library. It provides different ways of searching through documents in a collection by applying advanced and experimental IR techniques gathered from different Research studies and Conferences, most notably:
+Basset is a PHP Information Retrieval library. This is a culmination of developments in the field and ported over for research purposes.
+
+Basset provides different ways of searching through documents in a collection, by applying advanced and experimental IR techniques gathered from different Research studies and Conferences, most notably:
 
 1. [TREC](http://trec.nist.gov/) 
 
@@ -63,7 +65,9 @@ $doc3 = file_get_contents('../location/for/file3.txt');
 
 You can either use WhitespaceTokenizer, which breaks it down for every space and newline, or WhitespaceAndPunctuationTokenizer, which also tokenizes punctuations.
 
-By default, CollectionSet is set to false, which means label is not needed, even if it's filled in, as it uses its array key as identifier for indexing later instead of the label. So this format is valid as long as it's left at default.
+By default, CollectionSet accepts 'keytype' as parameter (defaults to false), this directs the class to either register its offset as key or a known id/label/class, setting this to false means that label is not needed, even if it's filled in, as it uses its array key as identifier for indexing later on instead of the label.
+
+So this format is valid as long as it's left at default.
 
 ```
 	$documents = new CollectionSet(); 
@@ -78,12 +82,25 @@ When set to true, an exception will be thrown when a label isn't filled.
 Transforming Documents
 -------------
 
-When indexing documents, different transformations can be done to minimize processing time, and also alleviate the issue of not giving proper weight to documents *'that actually matters'* to an intended query.
+Before indexing documents, different transformations can be done to pre-process each documents.
+
+From tokenization, to canonicalizing tokens, to filtering words that has little value, to removal of derivational affixes, to morphological analysis, etc. all with the purpose of simplifying succeeding process/es and, in the case of Basset, to alleviate the issue of not giving proper weights/ranks/scores to documents 'that actually matter' to an intended query.
+
+The following is not within Basset's scope, but pretty much any NLP tools can help. One such is php-nlp-tools:
+
+* Language-classifier based Tokenizers
+* Language-classifier based Normalizers
+* Filters (Stopword, Date, Email/Domain, Special characters, etc.)
+* Thesauri
+* Lemmatization
+* Stemming
 
 Normalizing documents ensures that each tokens are 'canonical' and equivalent to provide better expectation of the result.
-The default in Basset, and mostly common, is by transforming all tokens to lowercase.
 
-Transformations had to be done BEFORE indexing.
+The same process/es done to documents is expected to be done on queries, as query is also a form of document in Basset. (We cannot search for 'and', if 'and' is filtered on all documents before indexing)
+
+Basset's default (English Class) is simply transforming all tokens to lowercase.
+Stopwords list isn't provided and Stemmer is a plain Regex stemmer.
 
 ```
 use Basset\Normalizers\English;
@@ -268,7 +285,7 @@ General Use
 [Ranking Options](https://github.com/jtejido/basset-ir/tree/master/src/Basset/Ranking)
 =============
 
-Each Ranking options accepts specific parameters, please read each Classes to read which papers they're derived from and which parameters can be set and values set by default.
+Each Ranking options accepts specific parameters, please read each Classes to read which papers they're derived from and which parameters can be set and values set by default. (though the scoring method should be better dealt with by a Parameter Class instead of its current state, which I'll leave as to-do atm)
 
 
 Probabilistic Models
@@ -371,7 +388,7 @@ Basset have the following Similarity(implements SimilarityInterface) for scoring
 3. JaccardIndex() - Also known as Intersection over Union or Jaccard-Tanimoto Coefficient.
 4. TverskyIndex() - A Generalization of JaccardIndex and DiceSimilarity. TverskyIndex accepts parameters, so please take a look at the class.
 5. Euclidean() - Simple computation using Euclidean Norm.
-6. SqrtCosineSimilarity() - SqrtCosine implementation using HellingerDistance norm.
+6. SqrtCosineSimilarity() - Square Root Cosine implementation using HellingerDistance norm. Much better in high-dimensional vector/s.
 
 
 VectorSpaceModel also accepts Feature Extraction for building the tf-idf vector (default is TfIdfFeatureExtraction).
