@@ -8,7 +8,9 @@ namespace Basset\Similarity;
 class DiceSimilarity implements SimilarityInterface, DistanceInterface
 {
     /**
-    * The similarity returned by this algorithm is a number between 0,1
+     * @param  array $A
+     * @param  array $B
+     * @return float
     */
     public function similarity(array $A, array $B)
     {

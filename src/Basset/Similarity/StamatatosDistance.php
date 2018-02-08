@@ -2,12 +2,10 @@
 
 namespace Basset\Similarity;
 
-use Basset\Math\Math;
-
 /**
- * https://en.wikipedia.org/wiki/Hellinger_distance
+ * http://www.icsd.aegean.gr/lecturers/stamatatos/papers/survey.pdf
  */
-class HellingerDistance implements DistanceInterface
+class StamatatosDistance implements DistanceInterface
 {
 
     /**
@@ -17,12 +15,8 @@ class HellingerDistance implements DistanceInterface
      */
     public function dist(array $A, array $B)
     {
-        $math = new Math();
-        $meanV1 = $math->mean($A);
-        $meanV2 = $math->mean($B);
 
-        $n = count($A);
-        $sum = 0;
+        $dist = 0;
         $keysA = array_keys(array_filter($A));
         $keysB = array_keys(array_filter($B));
 
@@ -30,12 +24,11 @@ class HellingerDistance implements DistanceInterface
 
         foreach ($uniqueKeys as $key) {
             if (!empty($A[$key]) && !empty($B[$key])){
-                $sum += pow(sqrt($A[$key]/$meanV1)-sqrt($B[$key]/$meanV2),2);
+                $dist += pow(2 * ($A[$key]-$B[$key]) / ($A[$key]+$B[$key]), 2);
             }
         }
 
-
-        return sqrt($sum) * (1/sqrt(2));
+        return $dist;
 
     }
 

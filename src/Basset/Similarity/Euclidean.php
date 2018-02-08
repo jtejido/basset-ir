@@ -2,19 +2,16 @@
 
 namespace Basset\Similarity;
 
-use Basset\Math\Math;
 
-class Euclidean implements SimilarityInterface, DistanceInterface
+class Euclidean implements DistanceInterface
 {
 
     /**
-     * This class computes the very simple euclidean distance between
-     * two vectors ( sqrt(sum((a_i-b_i)^2)) ).
-     * @param  array $A Either a vector or a collection of tokens to be transformed to a vector
-     * @param  array $B Either a vector or a collection of tokens to be transformed to a vector
-     * @return float The euclidean distance between $A and $B
+     * @param  array $A
+     * @param  array $B
+     * @return float
      */
-    public function similarity(array $A, array $B)
+    public function dist(array $A, array $B)
     {
 
         $r = array();
@@ -41,8 +38,4 @@ class Euclidean implements SimilarityInterface, DistanceInterface
 
     }
 
-    public function dist(array $A, array $B)
-    {
-        return 1-$this->similarity($A,$B);
-    }
 }

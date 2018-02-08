@@ -18,9 +18,9 @@ class CosineSimilarity implements SimilarityInterface, DistanceInterface
      * where theta is the angle between the two sets if they are treated
      * as n-dimensional vectors.
      *
-     * @param  array $A Either feature vector or simply vector
-     * @param  array $B Either feature vector or simply vector
-     * @return float The cosinus of the angle between the two vectors
+     * @param  array $A
+     * @param  array $B
+     * @return float
      */
     public function similarity(array $A, array $B)
     {

@@ -3,7 +3,7 @@
 namespace Basset\Similarity;
 
 /**
- * This class implements the Levenshtein distance of two sets.
+ * This class implements the Levenshtein distance of two arrays.
  * This accepts 2 arrays of arbitrary lengths.
  * https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Levenshtein_distance#PHP
  * 
@@ -11,11 +11,9 @@ namespace Basset\Similarity;
 class LevenshteinDistance implements DistanceInterface
 {
     /**
-     * Count the number of positions that A and B differ.
-     *
-     * @param  string $A
-     * @param  string $B
-     * @return int    The Levenshtein distance of the two strings A and B
+     * @param  array $A
+     * @param  array $B
+     * @return int
      */
     public function dist(array $A, array $B)
     {

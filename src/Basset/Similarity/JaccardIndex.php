@@ -2,7 +2,6 @@
 
 namespace Basset\Similarity;
 
-
 /**
  * http://en.wikipedia.org/wiki/Jaccard_index
  */
@@ -10,7 +9,9 @@ class JaccardIndex implements SimilarityInterface, DistanceInterface
 {
 
     /**
-     * The similarity returned by this algorithm is a number between 0,1
+     * @param  array $A
+     * @param  array $B
+     * @return float
      */
     public function similarity(array $A, array $B)
     {

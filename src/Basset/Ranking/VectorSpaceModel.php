@@ -8,16 +8,13 @@ use Basset\FeatureExtraction\FeatureExtractionInterface;
 use Basset\FeatureExtraction\TfIdfFeatureExtraction;
 use Basset\Statistics\Statistics;
 use Basset\Similarity\SimilarityInterface;
+use Basset\Similarity\DistanceInterface;
 
 
 /**
- * Vector Space Model is a Class for calculating Relevance ranking by comparing the deviation of angles
- * between each document vector and the original query vector.
+ * Vector Space Model is a Class for calculating similarity between the document vector and the original query vector.
  *
- * It uses Cosine Similarity as similarity measure between tfidf vector matrices.
- * You can use current implementation of cosine similarity but it was made to return an
- * Exception in case of 0 vector product instead of 0.
- *
+ * By default, it uses tf-idf feature
  * https://en.wikipedia.org/wiki/Vector_space_model#Example:_tf-idf_weights
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
@@ -32,11 +29,15 @@ class VectorSpaceModel extends AbstractRanking
 
     protected $sim;
 
-    public function __construct(SimilarityInterface $type, CollectionSet $set)
+    public function __construct($type, CollectionSet $set)
     {
         parent::__construct($set);
         $this->stats = new Statistics($this->set);
-        $this->sim = $type;
+        if(($type instanceof SimilarityInterface) || ($type instanceof DistanceInterface)){
+            $this->sim = $type;
+        } else {
+            throw new \Exception('Only instance of Similarity Interface or Distance Interface is allowed.');
+        }
         $ff = new TfIdfFeatureExtraction();
         $this->tfidf = $ff->setIndex($this->stats);
     }
@@ -66,7 +67,11 @@ class VectorSpaceModel extends AbstractRanking
         foreach($this->set as $class => $doc) {
             $query_vector = $this->tfidf->getFeature($q);
             $document_vector = $this->tfidf->getFeature($doc);
-            $score[$class] = $this->sim->similarity($query_vector, $document_vector);
+            if($this->sim instanceof SimilarityInterface){
+                $score[$class] = $this->sim->similarity($query_vector, $document_vector);
+            } elseif($this->sim instanceof DistanceInterface){
+                $score[$class] = $this->sim->dist($query_vector, $document_vector);
+            }
         }
 
         arsort($score);
