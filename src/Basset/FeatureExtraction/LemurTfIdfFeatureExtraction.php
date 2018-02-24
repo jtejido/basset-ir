@@ -8,6 +8,10 @@ use Basset\Statistics\Statistics;
 class LemurTfIdfFeatureExtraction implements FeatureExtractionInterface
 {
     protected $stats;
+
+    protected $b;
+
+    protected $k;
   
     const B = 0.75;
 

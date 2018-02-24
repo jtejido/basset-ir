@@ -5,7 +5,7 @@ namespace Basset\Similarity;
 /**
  * http://www.naun.org/main/NAUN/ijmmas/mmmas-49.pdf
  */
-class MotykaSimilarity implements SimilarityInterface, DistanceInterface
+class MotykaSimilarity implements SimilarityInterface
 {
     /**
     * The similarity returned by this algorithm is a number between 0,1
@@ -31,8 +31,4 @@ class MotykaSimilarity implements SimilarityInterface, DistanceInterface
         return $denom != 0 ? $num/$denom : 0;
     }
 
-    public function dist(array $A, array $B)
-    {
-        return 1-$this->similarity($A,$B);
-    }
 }

@@ -13,7 +13,7 @@ namespace Basset\Similarity;
  * been made symmetrical as applied here (by Jimenez, S., Becerra, C., Gelbukh,
  * A.): http://aclweb.org/anthology/S/S13/S13-1028.pdf
  */
-class TverskyIndex implements SimilarityInterface, DistanceInterface
+class TverskyIndex implements SimilarityInterface
 {
     /**
      * @param $alpha Set to 0.5 to get either Jaccard Index or Dice Similarity
@@ -49,8 +49,4 @@ class TverskyIndex implements SimilarityInterface, DistanceInterface
         return $intersect/($intersect + ($beta * ($alpha * $min + $max*(1-$alpha)) ));
     }
 
-    public function dist(array $A, array $B)
-    {
-        return 1-$this->similarity($A,$B);
-    }
 }

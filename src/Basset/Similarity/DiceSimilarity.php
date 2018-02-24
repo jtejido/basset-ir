@@ -5,7 +5,7 @@ namespace Basset\Similarity;
 /**
  * http://en.wikipedia.org/wiki/Sørensen–Dice_coefficient
  */
-class DiceSimilarity implements SimilarityInterface, DistanceInterface
+class DiceSimilarity implements SimilarityInterface
 {
     /**
      * @param  array $A
@@ -26,8 +26,4 @@ class DiceSimilarity implements SimilarityInterface, DistanceInterface
         return (2*$intersect)/($a_count + $b_count);
     }
 
-    public function dist(array $A, array $B)
-    {
-        return 1-$this->similarity($A,$B);
-    }
 }

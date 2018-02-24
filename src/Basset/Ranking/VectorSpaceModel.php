@@ -29,6 +29,8 @@ class VectorSpaceModel extends AbstractRanking
 
     protected $sim;
 
+    protected $tfidf;
+
     public function __construct($type, CollectionSet $set)
     {
         parent::__construct($set);

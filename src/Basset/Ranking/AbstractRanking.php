@@ -8,7 +8,9 @@ use Basset\Documents\DocumentInterface;
 abstract class AbstractRanking
 {
 
-    protected $tset;
+    protected $set;
+
+    protected $keyValues;
 
     public function __construct(CollectionSet $set)
     {

@@ -5,7 +5,7 @@ namespace Basset\Similarity;
 /**
  * http://en.wikipedia.org/wiki/Jaccard_index
  */
-class JaccardIndex implements SimilarityInterface, DistanceInterface
+class JaccardIndex implements SimilarityInterface
 {
 
     /**
@@ -24,9 +24,4 @@ class JaccardIndex implements SimilarityInterface, DistanceInterface
         return $intersect/$union;
     }
 
-
-    public function dist(array $A, array $B)
-    {
-        return 1-$this->similarity($A,$B);
-    }
 }

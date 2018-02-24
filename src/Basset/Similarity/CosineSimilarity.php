@@ -10,7 +10,7 @@ use Basset\Math\Math;
  *
  * cos(theta) = A•B / |A||B|
  */
-class CosineSimilarity implements SimilarityInterface, DistanceInterface
+class CosineSimilarity implements SimilarityInterface
 {
 
     /**
@@ -35,8 +35,4 @@ class CosineSimilarity implements SimilarityInterface, DistanceInterface
 
     }
 
-    public function dist(array $A, array $B)
-    {
-        return 1-$this->similarity($A,$B);
-    }
 }

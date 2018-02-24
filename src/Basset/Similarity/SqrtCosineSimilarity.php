@@ -19,7 +19,7 @@ namespace Basset\Similarity;
  * Due to the concentration of distance in high-dimensional spaces, the ratio of the 
  * distances of the nearest and farthest neighbors to a given target is almost one.
  */
-class SqrtCosineSimilarity implements SimilarityInterface, DistanceInterface
+class SqrtCosineSimilarity implements SimilarityInterface
 {
 
     /**
@@ -60,8 +60,4 @@ class SqrtCosineSimilarity implements SimilarityInterface, DistanceInterface
         return $prod/($v1_norm * $v2_norm);
     }
 
-    public function dist(array $A, array $B)
-    {
-        return 1-$this->similarity($A,$B);
-    }
 }
