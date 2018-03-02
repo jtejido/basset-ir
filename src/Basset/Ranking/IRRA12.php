@@ -1,8 +1,7 @@
-, $keylength<?php
+<?php
 
 namespace Basset\Ranking;
 
-use Basset\Ranking\ScoringInterface;
 
 
 /**
@@ -15,20 +14,24 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class IRRA12 implements ScoringInterface
+class IRRA12 extends SimilarityBase implements ScoringInterface
 {
 
     /**
      * ∑qtf × ∆(Iij) × Λij
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
         // eij+
-        $expected = (($termFrequency +1 ) * ($docLength + 1)) / ($collectionLength + 1);
+        $expected = (($this->getTermFrequency() +1 ) * ($docLength + 1)) / ($this->getNumberOfTokens() + 1);
 
         if($tf <= $expected){
             return $score;

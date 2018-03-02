@@ -1,27 +1,23 @@
 <?php
 
-namespace Basset\Ranking\BasicModel;
+namespace Basset\Ranking;
 
-use Basset\Statistics\EntryStatistics;
 use Basset\Statistics\CollectionStatistics;
-use Basset\Math\Math;
+use Basset\Statistics\EntryStatistics;
 
-abstract class BasicModel
+
+/**
+ *
+ * This class should be extended by Scoring types
+ *
+ */
+
+abstract class SimilarityBase
 {
-
-    protected $math;
 
     protected $cs;
 
     protected $es;
-
-
-    public function __construct()
-    {
-        $this->math = new Math();
-    }
-
-    
 
     public function setCollectionStatistics(CollectionStatistics $cs)
     {
@@ -37,6 +33,13 @@ abstract class BasicModel
 
     }
 
+    protected function getAverageDocumentLength()
+    {
+
+        return $this->cs->getAverageDocumentLength();
+        
+    }
+
     protected function getNumberOfTokens()
     {
 
@@ -48,6 +51,13 @@ abstract class BasicModel
     {
 
         return $this->cs->getNumberOfDocuments();
+        
+    }
+
+    protected function getNumberOfUniqueTerms()
+    {
+
+        return $this->cs->getNumberOfUniqueTerms();
         
     }
 
@@ -65,10 +75,21 @@ abstract class BasicModel
         
     }
 
-    abstract protected function score($tf);
+    protected function getTotalByTermPresence()
+    {
 
-    protected function idfDFR($collectionCount, $d) {
-        return $this->math->DFRlog(($collectionCount+1)/($d+0.5));
+        return $this->es->getTotalByTermPresence();
+        
     }
+
+    protected function getDocsByTermPresence()
+    {
+
+        return $this->es->getDocsByTermPresence();
+        
+    }
+
+
+    abstract protected function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength);
 
 }

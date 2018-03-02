@@ -6,6 +6,6 @@ namespace Basset\Ranking\BasicModel;
 interface BasicModelInterface
 {
 
-    public function score($tfn, $docLength, $documentFrequency, $termFrequency, $collectionLength, $collectionCount);
+    public function score($tf);
 
 }

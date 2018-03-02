@@ -3,7 +3,6 @@
 namespace Basset\Ranking;
 
 use Basset\Math\Math;
-use Basset\Ranking\ScoringInterface;
 
 
 /**
@@ -21,7 +20,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class DFI implements ScoringInterface
+class DFI extends SimilarityBase implements ScoringInterface
 {
 
     const SATURATED = 1;
@@ -42,13 +41,17 @@ class DFI implements ScoringInterface
     }
  
     /**
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
-        $expected = ($termFrequency * $docLength) / $collectionLength;
+        $expected = ($this->getTermFrequency() * $docLength) / $this->getNumberOfTokens();
 
         if($tf <= $expected){
             return $score;

@@ -2,7 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Ranking\ScoringInterface;
 
 /**
  * BM25 is a class for ranking documents against a query where we made use of a delta(δ) value of 1, 
@@ -23,7 +22,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class BM25Plus implements ScoringInterface
+class BM25Plus extends SimilarityBase implements ScoringInterface
 {
 
     const B = 0.75;
@@ -53,18 +52,22 @@ class BM25Plus implements ScoringInterface
     /**
      * To avoid negative results when the underlying term tj occurs in more than half of
      * the documents (documentFrequency > numberofDocuments/2) we add 1 before getting log().
-     * @param  string $term
+     *
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
-        if($tf != 0){
-            $idf = log(1 + (($collectionCount-$documentFrequency+0.5)/($documentFrequency + 0.5)));
-            $avg_dl = $docLength/$collectionLength;
+        if($tf > 0){
+            $idf = log(1 + (($this->getNumberOfDocuments()-$this->getDocumentFrequency()+0.5)/($this->getDocumentFrequency() + 0.5)));
             $num = $tf * ($this->k1 + 1);
-            $denom = $tf + $this->k1 * (1 - $this->b + $this->b * ($docLength / $avg_dl));
+            $denom = $tf + $this->k1 * (1 - $this->b + $this->b * ($docLength / $this->getAverageDocumentLength()));
             $score += (($this->k3 + 1) * $keyFrequency/($this->k3 + $keyFrequency)) * $idf * (($num / $denom) + $this->d);
         }
 

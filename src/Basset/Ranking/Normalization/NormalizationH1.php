@@ -23,9 +23,8 @@ class NormalizationH1 extends Normalization implements NormalizationInterface
 
     }
 
-    public function normalise($tf, $docLength, $termFrequency, $collectionLength) {
-    	$avg_dl = $docLength/$collectionLength;
-    	return $tf * $this->c * ($avg_dl / $docLength);
+    public function normalise($tf, $docLength) {
+    	return $tf * $this->c * ($this->getAverageDocumentLength() / $docLength);
     }
 
 }

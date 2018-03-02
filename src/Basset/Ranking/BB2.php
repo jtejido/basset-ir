@@ -17,7 +17,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class BB2 implements ScoringInterface
+class BB2 extends SimilarityBase implements ScoringInterface
 {
 
     const C = 1;
@@ -49,7 +49,7 @@ class BB2 implements ScoringInterface
 
     private function getBB2($NORM, $keyFrequency, $numberOfDocuments, $termFrequency, $TF)
     {
-        return $NORM * $keyFrequency
+        return ($NORM * $keyFrequency
                         * ( -($this->math->DFRlog($numberOfDocuments  - 1))
                             - $this->math->log2ofE()
                             + $this->math->stirlingPower(
@@ -60,24 +60,27 @@ class BB2 implements ScoringInterface
                                     + $termFrequency
                                     - $TF
                                     - 2)
-                            - $this->math->stirlingPower($termFrequency, $termFrequency - $TF));
+                            - $this->math->stirlingPower($termFrequency, $termFrequency - $TF)));
     }
 
  
     /**
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
 
         $score = 0;
 
-        if($tf != 0){
-            $avg_dl = $docLength/$collectionLength;
-            $TF = $tf * $this->getTfN2($docLength, $avg_dl);
-            $NORM = ($termFrequency + 1) / ($documentFrequency * ($TF + 1));
-            $score += $this->getBB2($NORM, $keyFrequency, $collectionCount, $termFrequency, $TF);
+        if($tf > 0){
+            $TF = $tf * $this->getTfN2($docLength, $this->getAverageDocumentLength());
+            $NORM = ($this->getTermFrequency() + 1) / ($this->getDocumentFrequency() * ($TF + 1));
+            $score += $this->getBB2($NORM, $keyFrequency, $this->getNumberOfDocuments(), $this->getTermFrequency(), $TF);
         }
 
         return $score;

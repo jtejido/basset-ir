@@ -45,7 +45,7 @@ class Math
     public function stirlingPower($a, $b)
     {
         $diff = $a - $b;
-        return ($b + 0.5) * $this->log($a / $b) + $diff * $this->log($a);
+        return ($b + 0.5) * log($a / $b) + $diff * log($a);
     }
 
     /**
@@ -88,6 +88,71 @@ class Math
     public function mean(array $arr)
     {
         return ($arr) ? array_sum($arr)/count($arr) : 0;
+    }
+
+    /**
+     * Digamma (psi) function
+     * J Bernardo,
+     * Psi ( Digamma ) Function,
+     * Algorithm AS 103,
+     * Applied Statistics,
+     * Volume 25, Number 3, pages 315-317, 1976.
+     * From http://www.psc.edu/~burkardt/src/dirichlet/dirichlet.f
+     * Extended based on Radfort Neal
+     * http://www.cs.toronto.edu/~radford/fbm.software.html
+     *
+     * @param array $x
+     * @return float
+     */
+    public function digamma($x)
+    {
+        $large = 9.5;
+        $d1 = -0.5772156649015328606065121;
+        $d2 = pow(pi(),2)/6;
+        $small = 1e-6;
+        $s3 = 1.0/12.0;
+        $s4 = 1.0/120.0;
+        $s5 = 1.0/252.0;
+        $s6 = 1.0/240.0;
+        $s7 = 1.0/132.0;
+        $s8 = 691.0/32760.0;
+        $s9 = 1.0/12.0;
+        $s10 = 3617.0/8160.0;
+        $y = 0.0;
+        $r = 0.0;
+        
+
+        if ($x == 0.0) {
+            return -1.0/0.0;
+        }
+        
+        if ($x < 0.0) {
+            $y = $this->digamma(-$x+1) + pi()*(1.0/tan(-pi()*$x));
+            return $y;
+        }
+        
+        if ($x <= $small) {
+            $y = $y + $d1 - 1.0/$x + $d2*$x;
+            return $y;
+        }
+        
+        while(true) {
+            if ($x > $small && $x < $large) {
+                $y = $y - 1.0/$x;
+                $x = $x + 1.0;
+            } else {
+                break;
+            }
+        }
+        
+        if ($x >= $large) {
+          $r = 1.0/$x;
+          $y = $y + log($x) - 0.5*$r;
+          $r = $r * $r;
+          $y = $y - $r * ( $s3 - $r * ( $s4 - $r * ($s5 - $r * ($s6 - $r * ($s7 - $r * ($s8 - $r * ($s9 - $r * $s10)))))));
+        }
+        
+        return $y;
     }
 
 }

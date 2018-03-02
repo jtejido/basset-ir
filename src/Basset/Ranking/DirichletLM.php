@@ -2,7 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Ranking\ScoringInterface;
 
 
 /**
@@ -19,7 +18,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class DirichletLM implements ScoringInterface
+class DirichletLM extends SimilarityBase implements ScoringInterface
 {
 
     const MU = 2500;
@@ -33,18 +32,22 @@ class DirichletLM implements ScoringInterface
     }
  
     /**
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
-        if($tf != 0){
+        if($tf > 0){
             // smoothed probability of words seen in the collection
-            $mle_collection = $termFrequency / $collectionLength;
+            $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
 
-            $score += $keyFrequency * log(1 + ($tf + $this->mu * $mle_collection) / ($docLength + $this->mu));
+            $score += $keyFrequency * log(1 + ($tf + $this->mu * $mle_c) / ($docLength + $this->mu));
 
         }
 

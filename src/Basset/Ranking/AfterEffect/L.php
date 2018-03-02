@@ -6,8 +6,8 @@ namespace Basset\Ranking\AfterEffect;
 class L extends AfterEffect implements AfterEffectInterface
 {
 
-    public function gain($tfn, $documentFrequency, $termFrequency) {
-    	return 1/(1+$tfn);
+    public function gain($tf) {
+    	return 1/(1+$tf);
     }
 
 }

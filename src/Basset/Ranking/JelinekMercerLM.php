@@ -2,7 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Ranking\ScoringInterface;
 
 
 /**
@@ -19,7 +18,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class JelinekMercerLM implements ScoringInterface
+class JelinekMercerLM extends SimilarityBase implements ScoringInterface
 {
 
     const LAMBDA = 0.20;
@@ -35,20 +34,24 @@ class JelinekMercerLM implements ScoringInterface
     }
  
     /**
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
-        if($tf != 0){
+        if($tf > 0){
             // smoothed probability of words seen in the collection
-            $mle_collection = $termFrequency / $collectionLength;
+            $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
             // smoothed probability of words seen in the document
-            $mle_document = $tf / $docLength;
+            $mle_d = $tf / $docLength;
 
-            $score += $keyFrequency * log(1 + ( (1 - $this->lambda) * $mle_document + ($this->lambda * $mle_collection)) );
+            $score += $keyFrequency * log(1 + ( (1 - $this->lambda) * $mle_d + ($this->lambda * $mle_c)) );
         }
 
         return $score;

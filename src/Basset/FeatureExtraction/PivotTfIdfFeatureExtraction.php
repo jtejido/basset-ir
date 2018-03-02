@@ -2,7 +2,7 @@
 namespace Basset\FeatureExtraction;
 
 use Basset\Documents\DocumentInterface;
-use Basset\Statistics\Statistics;
+use Basset\Statistics\CollectionStatistics;
 
  
 class PivotTfIdfFeatureExtraction implements FeatureExtractionInterface
@@ -18,7 +18,7 @@ class PivotTfIdfFeatureExtraction implements FeatureExtractionInterface
         $this->slope = $slope;
     }
 
-    public function setIndex(Statistics $stats)
+    public function setIndex(CollectionStatistics $stats)
     {
         $this->stats = $stats;
         return $this;
@@ -30,12 +30,14 @@ class PivotTfIdfFeatureExtraction implements FeatureExtractionInterface
             throw new \Exception('Index should be set.');
         }
 
+        $documentfrequencies = $this->stats->getDocumentFrequencies();
+        $numberofdocuments = $this->stats->getNumberOfDocuments();
+        $avg_dl = $this->stats->getAverageDocumentLength();
+
         $length = count($doc->getDocument());
-        $numberofTokens = $this->stats->numberofCollectionTokens();
-        $avg_dl = $length/$numberofTokens;
         $tokens = array_count_values($doc->getDocument());
         foreach ($tokens as $key=>&$value) {
-             $value = ($value != 0) ?  (1+log(1+log($value))) / ((1-$this->slope) + ($this->slope * ($length / $avg_dl))) * $this->stats->smoothedidf($key) : 0;
+             $value = ($value != 0) ?  (1+log(1+log($value))) / ((1-$this->slope) + ($this->slope * ($length / $avg_dl))) * log(1+($numberofdocuments/$documentfrequencies[$key])) : 0;
         }
 
         return $tokens;

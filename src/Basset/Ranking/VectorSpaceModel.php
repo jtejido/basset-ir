@@ -6,7 +6,7 @@ use Basset\Collections\CollectionSet;
 use Basset\Documents\DocumentInterface;
 use Basset\FeatureExtraction\FeatureExtractionInterface;
 use Basset\FeatureExtraction\TfIdfFeatureExtraction;
-use Basset\Statistics\Statistics;
+use Basset\Statistics\CollectionStatistics;
 use Basset\Similarity\SimilarityInterface;
 use Basset\Similarity\DistanceInterface;
 
@@ -34,7 +34,7 @@ class VectorSpaceModel extends AbstractRanking
     public function __construct($type, CollectionSet $set)
     {
         parent::__construct($set);
-        $this->stats = new Statistics($this->set);
+        $this->stats = new CollectionStatistics($this->set);
         if(($type instanceof SimilarityInterface) || ($type instanceof DistanceInterface)){
             $this->sim = $type;
         } else {

@@ -2,7 +2,7 @@
 namespace Basset\FeatureExtraction;
 
 use Basset\Documents\DocumentInterface;
-use Basset\Statistics\Statistics;
+use Basset\Statistics\CollectionStatistics;
 
  
 class LemurTfIdfFeatureExtraction implements FeatureExtractionInterface
@@ -23,7 +23,7 @@ class LemurTfIdfFeatureExtraction implements FeatureExtractionInterface
         $this->k = $k;
     }
 
-    public function setIndex(Statistics $stats)
+    public function setIndex(CollectionStatistics $stats)
     {
         $this->stats = $stats;
         return $this;
@@ -35,12 +35,14 @@ class LemurTfIdfFeatureExtraction implements FeatureExtractionInterface
             throw new \Exception('Index should be set.');
         }
         
+        $documentfrequencies = $this->stats->getDocumentFrequencies();
+        $numberofdocuments = $this->stats->getNumberOfDocuments();
+        $avg_dl = $this->stats->getAverageDocumentLength();
+
         $length = count($doc->getDocument());
-        $numberofTokens = $this->stats->numberofCollectionTokens();
-        $avg_dl = $length/$numberofTokens;
         $tokens = array_count_values($doc->getDocument());
         foreach ($tokens as $key=>&$value) {
-               $value = ($value != 0) ? (($value * $this->k) / ($value + $this->k * (1 - $this->b + $this->b * ($length / $avg_dl)))) * $this->stats->idf($key) : 0;
+               $value = ($value != 0) ? (($value * $this->k) / ($value + $this->k * (1 - $this->b + $this->b * ($length / $avg_dl)))) * log($numberofdocuments/$documentfrequencies[$key]) : 0;
         }
 
         return $tokens;

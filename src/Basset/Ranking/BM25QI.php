@@ -2,7 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Ranking\ScoringInterface;
 
 /**
  * BM25QI builds on Fang Et al.'s work by capturing interaction between IDF and query length (QLN-IDF).
@@ -15,7 +14,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class BM25QI implements ScoringInterface
+class BM25QI extends SimilarityBase implements ScoringInterface
 {
 
     const B = 0.75;
@@ -39,18 +38,22 @@ class BM25QI implements ScoringInterface
 
     /**
      * We'll use pivoted normalized Idf as BM25's Idf.
-     * @param  string $term
+     *
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
-        if($tf != 0){
-            $idf = log(($collectionCount + 1)/$documentFrequency);
-            $avg_dl = $docLength/$collectionLength;
+        if($tf > 0){
+            $idf = log(($this->getNumberOfDocuments() + 1)/$this->getDocumentFrequency());
             $num = $tf * ($this->k1 + 1);
-            $denom = $tf + $this->k1 * (1 - $this->b + $this->b * ($docLength / $avg_dl));
+            $denom = $tf + $this->k1 * (1 - $this->b + $this->b * ($docLength / $this->getAverageDocumentLength()));
             $score += (($this->k3 + 1) * $keyFrequency/($this->k3 + $keyFrequency)) * ($num / $denom) * pow(($idf + 1), log($keylength + 1));
         }
 

@@ -2,8 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Ranking\ScoringInterface;
-
 
 /**
  * TwoStageLM is a class for ranking documents that explicitly captures the different influences of the query and document 
@@ -24,7 +22,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class TwoStageLM implements ScoringInterface
+class TwoStageLM extends SimilarityBase implements ScoringInterface
 {
 
     const LAMBDA = 0.20;
@@ -42,17 +40,21 @@ class TwoStageLM implements ScoringInterface
     }
  
     /**
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
-        if($tf != 0){
+        if($tf > 0){
             // smoothed probability of words seen in the collection
-            $mle_collection = $termFrequency / $collectionLength;
-            $score += $keyFrequency * log(1 + (((1 - $this->lambda) * ($tf + ($this->mu * $mle_collection)) / ($docLength + $this->mu)) + ($this->lambda * $mle_collection)));
+            $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
+            $score += $keyFrequency * log(1 + (((1 - $this->lambda) * ($tf + ($this->mu * $mle_c)) / ($docLength + $this->mu)) + ($this->lambda * $mle_c)));
 
         }
 

@@ -7,8 +7,8 @@ class B extends AfterEffect implements AfterEffectInterface
 {
 
 
-    public function gain($tfn, $documentFrequency, $termFrequency) {
-    	return ($termFrequency + 1) / ($documentFrequency * ($tfn + 1));
+    public function gain($tf) {
+    	return ($this->getTermFrequency() + 1) / ($this->getDocumentFrequency() * ($tf + 1));
     }
 
 }

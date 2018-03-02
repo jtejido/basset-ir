@@ -3,11 +3,14 @@
 namespace Basset\Ranking\Normalization;
 
 use Basset\Math\Math;
+use Basset\Statistics\CollectionStatistics;
 
 abstract class Normalization
 {
 
     protected $math;
+
+    protected $cs;
 
 
     public function __construct()
@@ -15,6 +18,21 @@ abstract class Normalization
         $this->math = new Math();
     }
 
-    abstract protected function normalise($tf, $docLength, $termFrequency, $collectionLength);
+    public function setCollectionStatistics(CollectionStatistics $cs)
+    {
+
+        $this->cs = $cs;
+
+    }
+
+
+    protected function getAverageDocumentLength()
+    {
+
+        return $this->cs->getAverageDocumentLength();
+        
+    }
+
+    abstract protected function normalise($tf, $docLength);
 
 }

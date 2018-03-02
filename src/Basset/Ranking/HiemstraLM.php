@@ -2,7 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Ranking\ScoringInterface;
 
 
 /**
@@ -15,7 +14,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class HiemstraLM implements ScoringInterface
+class HiemstraLM extends SimilarityBase implements ScoringInterface
 {
 
     const C = 0.15;
@@ -28,15 +27,19 @@ class HiemstraLM implements ScoringInterface
     }
 
     /**
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
-        if($tf != 0){
-            $score += $keyFrequency * log(1 + ( ($this->c * $tf * $collectionLength) / ((1-$this->c) * $termFrequency * $docLength)));
+        if($tf > 0){
+            $score += $keyFrequency * log(1 + ( ($this->c * $tf * $this->getNumberOfTokens()) / ((1-$this->c) * $this->getTermFrequency() * $docLength)));
         }
 
         return $score;

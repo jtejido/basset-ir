@@ -2,7 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Ranking\ScoringInterface;
 
 /**
  * XSqrA_M is a class that implements the XSqrA_M weighting model which computed the 
@@ -18,27 +17,31 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class XSqrA_M implements ScoringInterface
+class XSqrA_M extends SimilarityBase implements ScoringInterface
 {
 
     /**
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
-        if($tf != 0){
-            $mle = $tf/$docLength;
+        if($tf > 0){
+            $mle_d = $tf/$docLength;
 
             $smoothedProbability = ($tf + 1)/($docLength + 1);
 
-            $collectionPrior = $termFrequency/$collectionLength;
+            $mle_c = $this->getTermFrequency()/$this->getNumberOfTokens();
 
-            $XSqrA = pow(1-$mle,2)/($tf+1);  
+            $XSqrA = pow(1-$mle_d,2)/($tf+1);  
 
-            $InformationDelta =  ($tf+1) * log($smoothedProbability/$collectionPrior) - $tf*log($mle /$collectionPrior) +0.5*log($smoothedProbability/$mle);
+            $InformationDelta =  ($tf+1) * log($smoothedProbability/$mle_c) - $tf*log($mle_d /$mle_c) +0.5*log($smoothedProbability/$mle_d);
 
             $score += $keyFrequency * $tf * $XSqrA * $InformationDelta;
         }

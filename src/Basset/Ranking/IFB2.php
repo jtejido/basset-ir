@@ -3,7 +3,6 @@
 namespace Basset\Ranking;
 
 use Basset\Math\Math;
-use Basset\Ranking\ScoringInterface;
 
 
 /**
@@ -18,7 +17,7 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class IFB2 implements ScoringInterface
+class IFB2 extends SimilarityBase implements ScoringInterface
 {
 
     const C = 1.0;
@@ -50,19 +49,22 @@ class IFB2 implements ScoringInterface
     }
 
     /**
-     * @param  string $term
+     * @param  int $tf
+     * @param  int $docLength
+     * @param  int $docUniqueLength
+     * @param  int $keyFrequency
+     * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount, $keylength)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
 
         $score = 0;
 
-        if($tf != 0){
-            $avg_dl = $docLength/$collectionLength;
-            $TF = $tf * $this->getTfN2($docLength, $avg_dl);
-            $NORM = ($termFrequency + 1) / ($documentFrequency * ($TF + 1));
-            $score += ($TF * $this->math->DFRlog(($termFrequency+1)/0.5) * $keyFrequency * $NORM);
+        if($tf > 0){
+            $TF = $tf * $this->getTfN2($docLength, $this->getAverageDocumentLength());
+            $NORM = ($this->getTermFrequency() + 1) / ($this->getDocumentFrequency() * ($TF + 1));
+            $score += ($TF * $this->math->DFRlog(($this->getTermFrequency()+1)/0.5) * $keyFrequency * $NORM);
         }
 
         return $score;

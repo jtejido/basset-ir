@@ -18,14 +18,14 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
 
     protected $documents;
 
-    protected $keytype;
+    protected $keyed;
 
     protected $currentDocument;
     
-    public function __construct($keytype = false)
+    public function __construct($keyed = false)
     {
         $this->documents = array();
-        $this->keytype = ($keytype == true) ? self::CLASS_AS_KEY : self::OFFSET_AS_KEY;
+        $this->keyed = ($keyed == true) ? self::CLASS_AS_KEY : self::OFFSET_AS_KEY;
 
     }
 
@@ -38,7 +38,7 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
      */
     public function addDocument(DocumentInterface $d, $class = null)
     {
-        if((empty($class)) && $this->keytype == self::CLASS_AS_KEY) {
+        if((empty($class)) && $this->keyed == self::CLASS_AS_KEY) {
             throw new \Exception('Class or Label cannot be null.');
         }
         $this->documents[] = new TrainingDocument($d, $class);
@@ -79,7 +79,7 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
     }
     public function key()
     {
-        switch ($this->keytype) {
+        switch ($this->keyed) {
             case self::CLASS_AS_KEY:
                 return $this->currentDocument->getClass();
             case self::OFFSET_AS_KEY:

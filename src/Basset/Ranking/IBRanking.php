@@ -7,47 +7,45 @@ use Basset\Documents\DocumentInterface;
 use Basset\Statistics\CollectionStatistics;
 use Basset\Statistics\PostingStatistics;
 use Basset\Statistics\EntryStatistics;
-use Basset\Ranking\BasicModel\BasicModelInterface;
-use Basset\Ranking\AfterEffect\AfterEffectInterface;
+use Basset\Ranking\ProbabilisticDistribution\ProbabilisticDistributionInterface;
+use Basset\Ranking\IBLambda\IBLambdaInterface;
 use Basset\Ranking\Normalization\NormalizationInterface;
 
 
 /**
- * DFRWeightingModel is a framework for ranking documents against a query based on Harter's 2-Poisson index-model.
- * S.P. Harter. A probabilistic approach to automatic keyword indexing. PhD thesis, Graduate Library, The University of
- * Chicago, Thesis No. T25146, 1974
- * This class provides an alternative way of specifying an arbitrary DFR weighting model, by mixing the used components.
+ * Provides a framework for the family of information-based models, as described
+ * in St&eacute;phane Clinchant and Eric Gaussier. 2010. Information-based
+ * models for ad hoc IR. In Proceeding of the 33rd international ACM SIGIR
+ * conference on Research and development in information retrieval (SIGIR '10).
+ * ACM, New York, NY, USA, 234-241.
  *
- * The implementation is strictly based on G. Amati, C. Rijsbergen paper:
- * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.97.8274&rep=rep1&type=pdf
- *
- * DFR models are obtained by instantiating the three components of the framework: 
- * selecting a basic randomness model, applying the first normalisation and normalising the term frequencies.
+ * Information-based models are obtained by instantiating the three components of the framework: 
+ * selecting a ProbabilisticDistribution, selecting the lambda parameter and applying the tf normalisation.
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
 
-class DFRRanking extends AbstractRanking
+class IBRanking extends AbstractRanking
 {
 
-    protected $basicmodel;
+    protected $probdist;
 
-    protected $aftereffect;
+    protected $lambda;
 
     protected $normalization;
 
     protected $collectionstats;
 
-    public function __construct(BasicModelInterface $basicmodel, AfterEffectInterface $aftereffect, NormalizationInterface $normalization, CollectionSet $set)
+    public function __construct(ProbabilisticDistributionInterface $probdist, IBLambdaInterface $lambda, NormalizationInterface $normalization, CollectionSet $set)
     {
         parent::__construct($set);
-        $this->basicmodel    = $basicmodel;
-        $this->aftereffect    = $aftereffect;
+        $this->probdist    = $probdist;
+        $this->lambda    = $lambda;
         $this->normalization    = $normalization;
         $this->collectionstats = new CollectionStatistics($this->set);
 
-        if ($this->basicmodel == null || $this->aftereffect == null || $this->normalization == null) {
+        if ($this->probdist == null || $this->lambda == null || $this->normalization == null) {
             throw new \Exception("Null Parameters not allowed.");
         }
 
@@ -80,16 +78,17 @@ class DFRRanking extends AbstractRanking
                         $tf = $this->normalization->normalise($tf, $docLength); 
                     }
 
-                    $gain = 1;
-
-                    if ($this->aftereffect) {
-                        $this->aftereffect->setEntryStatistics($entrystats);
-                        $gain = $this->aftereffect->gain($tf);
+                    if ($this->lambda) {
+                        $this->lambda->setCollectionStatistics($this->collectionstats);
+                        $this->lambda->setEntryStatistics($entrystats);
+                        $lambda = $this->lambda->getLambda();
+                        if ($lambda == 1) {
+                          // SPLDistribution cannot work with values of lambda that are equal to 1
+                          $lambda = 0.9999999999;
+                        }
                     }
-                    // ∑qtf x gain x Inf1(tf)
-                    $this->basicmodel->setEntryStatistics($entrystats);
-                    $this->basicmodel->setCollectionStatistics($this->collectionstats);
-                    $score[$class] += $keyFrequency * $gain * $this->basicmodel->score($tf);
+
+                    $score[$class] += $keyFrequency * $this->probdist->score($tf, $lambda);
                 }
             }
         }
