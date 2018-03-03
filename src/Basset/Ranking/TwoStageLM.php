@@ -35,6 +35,7 @@ class TwoStageLM extends SimilarityBase implements ScoringInterface
 
     public function __construct($lambda = self::LAMBDA, $mu = self::MU)
     {
+        parent::__construct();
         $this->mu = $mu;
         $this->lambda = $lambda;
     }

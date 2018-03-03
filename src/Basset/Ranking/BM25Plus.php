@@ -43,6 +43,7 @@ class BM25Plus extends SimilarityBase implements ScoringInterface
 
     public function __construct($b = self::B, $k1 = self::K1, $k3 = self::K3, $d = self::D)
     {
+        parent::__construct();
         $this->b = $b;
         $this->k1 = $k1;
         $this->k3 = $k3;

@@ -23,6 +23,7 @@ class HiemstraLM extends SimilarityBase implements ScoringInterface
 
     public function __construct($c = self::C)
     {
+        parent::__construct();
         $this->c    = $c;
     }
 

@@ -27,6 +27,7 @@ class AbsoluteDiscountingLM extends SimilarityBase implements ScoringInterface
 
     public function __construct($delta = self::DELTA)
     {
+        parent::__construct();
         $this->delta = $delta;
 
     }

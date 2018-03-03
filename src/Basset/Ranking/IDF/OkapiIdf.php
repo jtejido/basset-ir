@@ -12,7 +12,11 @@ namespace Basset\Ranking\IDF;
 class OkapiIdf extends BaseIdf implements IdfInterface
 {
 
-
+	public function __construct()
+    {
+    	parent::__construct();
+    }
+    
     public function getIdf() {
     	return $this->math->DFRlog(($this->getNumberOfDocuments()-$this->getDocumentFrequency()+0.5)/($this->getDocumentFrequency() + 0.5));
     }

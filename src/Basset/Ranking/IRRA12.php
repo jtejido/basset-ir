@@ -17,6 +17,12 @@ namespace Basset\Ranking;
 class IRRA12 extends SimilarityBase implements ScoringInterface
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+
     /**
      * ∑qtf × ∆(Iij) × Λij
      * @param  int $tf

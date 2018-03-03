@@ -27,6 +27,7 @@ class DirichletLM extends SimilarityBase implements ScoringInterface
 
     public function __construct($mu = self::MU)
     {
+        parent::__construct();
         $this->mu = $mu;
 
     }

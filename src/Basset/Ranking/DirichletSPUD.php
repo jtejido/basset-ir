@@ -33,6 +33,7 @@ class DirichletSPUD extends SimilarityBase implements ScoringInterface
 
     public function __construct($omega = self::OMEGA, $iteration = self::ITERATION, $m = self::M)
     {
+        parent::__construct();
         $this->omega = $omega;
         $this->iteration = $iteration;
         $this->m = $m;

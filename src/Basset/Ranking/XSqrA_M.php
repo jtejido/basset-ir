@@ -20,6 +20,11 @@ namespace Basset\Ranking;
 class XSqrA_M extends SimilarityBase implements ScoringInterface
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * @param  int $tf
      * @param  int $docLength

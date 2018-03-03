@@ -13,7 +13,7 @@ use Basset\Ranking\Normalization\NormalizationInterface;
 
 
 /**
- * DFRWeightingModel is a framework for ranking documents against a query based on Harter's 2-Poisson index-model.
+ * DFR is a framework for ranking documents against a query based on Harter's 2-Poisson index-model.
  * S.P. Harter. A probabilistic approach to automatic keyword indexing. PhD thesis, Graduate Library, The University of
  * Chicago, Thesis No. T25146, 1974
  * This class provides an alternative way of specifying an arbitrary DFR weighting model, by mixing the used components.
@@ -86,7 +86,7 @@ class DFRRanking extends AbstractRanking
                         $this->aftereffect->setEntryStatistics($entrystats);
                         $gain = $this->aftereffect->gain($tf);
                     }
-                    // ∑qtf x gain x Inf1(tf)
+
                     $this->basicmodel->setEntryStatistics($entrystats);
                     $this->basicmodel->setCollectionStatistics($this->collectionstats);
                     $score[$class] += $keyFrequency * $gain * $this->basicmodel->score($tf);

@@ -6,7 +6,11 @@ namespace Basset\Ranking\IBLambda;
 
 class LambdaDF extends Lambda implements IBLambdaInterface
 {
-
+	
+	public function __construct()
+    {
+    	parent::__construct();
+    }
 
     public function getLambda(){
 

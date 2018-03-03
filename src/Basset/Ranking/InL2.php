@@ -26,6 +26,7 @@ class InL2 extends SimilarityBase implements ScoringInterface
 
     public function __construct($c = self::C)
     {
+        parent::__construct();
         $this->c    = 1.0;
 
     }

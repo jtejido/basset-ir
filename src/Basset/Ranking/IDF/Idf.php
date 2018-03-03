@@ -12,7 +12,11 @@ namespace Basset\Ranking\IDF;
 class Idf extends BaseIdf implements IdfInterface
 {
 
-
+	public function __construct()
+    {
+    	parent::__construct();
+    }
+    
     public function getIdf() {
     	return $this->math->DFRlog($this->getNumberOfDocuments()/$this->getDocumentFrequency());
     }

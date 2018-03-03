@@ -27,6 +27,7 @@ class JelinekMercerLM extends SimilarityBase implements ScoringInterface
 
     public function __construct($lambda = self::LAMBDA)
     {
+        parent::__construct();
         $this->lambda = $lambda;
 
     }

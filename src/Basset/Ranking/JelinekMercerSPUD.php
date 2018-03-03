@@ -18,6 +18,11 @@ namespace Basset\Ranking;
 
 class JelinekMercerSPUD extends SimilarityBase implements ScoringInterface
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
  
     /**
      * Estimation of the Background DCM (EDCM) via Multivariate Polya Distribution
