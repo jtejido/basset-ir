@@ -12,14 +12,12 @@ use Basset\Ranking\IDF\IdfInterface;
 
 
 /**
- * Provides a framework for the family of information-based models, as described
- * in St&eacute;phane Clinchant and Eric Gaussier. 2010. Information-based
- * models for ad hoc IR. In Proceeding of the 33rd international ACM SIGIR
- * conference on Research and development in information retrieval (SIGIR '10).
- * ACM, New York, NY, USA, 234-241.
+ * Provides a framework for nonparametric index term weighting model using the notion of independence, as described
+ * in Kocabas et al's paper.
+ * http://trec.nist.gov/pubs/trec18/papers/muglau.WEB.MQ.pdf
  *
- * Information-based models are obtained by instantiating the three components of the framework: 
- * selecting a ProbabilisticDistribution, selecting the lambda parameter and applying the tf normalisation.
+ * DFI models are obtained by instantiating the three components of the framework: 
+ * selecting a divergence measure and selecting an idf method, take note that it uses log2 similar to DFR.
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
