@@ -37,7 +37,7 @@ class PivotTfIdfFeatureExtraction implements FeatureExtractionInterface
         $length = count($doc->getDocument());
         $tokens = array_count_values($doc->getDocument());
         foreach ($tokens as $key=>&$value) {
-             $value = ($value != 0) ?  (1+log(1+log($value))) / ((1-$this->slope) + ($this->slope * ($length / $avg_dl))) * log(1+($numberofdocuments/$documentfrequencies[$key])) : 0;
+             $value = ($value != 0) ?  (1+log(1+log($value))) / ((1-$this->slope) + ($this->slope * ($length / $avg_dl))) * log(($numberofdocuments+1)/$documentfrequencies[$key]) : 0;
         }
 
         return $tokens;
