@@ -23,8 +23,6 @@ class JelinekMercerLM extends SimilarityBase implements ScoringInterface
 
     const LAMBDA = 0.20;
 
-    protected $math;
-
     protected $lambda;
 
     public function __construct($lambda = self::LAMBDA)

@@ -2,8 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Math\Math;
-
 
 /**
  * InL2 is a DFR class for ranking documents against a query based on Inverse document frequency model
@@ -24,14 +22,11 @@ class InL2 extends SimilarityBase implements ScoringInterface
 
     const C = 1.0;
 
-    protected $math;
-
     protected $c;
 
     public function __construct($c = self::C)
     {
         $this->c    = 1.0;
-        $this->math = new Math();
 
     }
 

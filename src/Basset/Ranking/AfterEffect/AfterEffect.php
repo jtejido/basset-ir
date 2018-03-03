@@ -2,32 +2,10 @@
 
 namespace Basset\Ranking\AfterEffect;
 
-use Basset\Statistics\EntryStatistics;
+use Basset\Ranking\WeightedModel;
 
-abstract class AfterEffect
+abstract class AfterEffect extends WeightedModel
 {
-	protected $es;
-
-    public function setEntryStatistics(EntryStatistics $es)
-    {
-
-        $this->es = $es;
-
-    }
-
-    protected function getTermFrequency()
-    {
-
-        return $this->es->getTermFrequency();
-        
-    }
-
-    protected function getDocumentFrequency()
-    {
-
-        return $this->es->getDocumentFrequency();
-        
-    }
     
     abstract protected function gain($tf);
 

@@ -2,8 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Math\Math;
-use Basset\Ranking\ScoringInterface;
 
 
 /**
@@ -22,14 +20,12 @@ class BB2 extends SimilarityBase implements ScoringInterface
 
     const C = 1;
 
-    protected $math;
 
     protected $c;
 
     public function __construct($c = self::C)
     {
         $this->c    = $c;
-        $this->math = new Math();
     }
 
     /**
@@ -45,22 +41,6 @@ class BB2 extends SimilarityBase implements ScoringInterface
     private function getTfN2($docLength, $avg_dl)
     {
         return $this->math->DFRlog(1 + ($this->c * $avg_dl)/$docLength);
-    }
-
-    private function getBB2($NORM, $keyFrequency, $numberOfDocuments, $termFrequency, $TF)
-    {
-        return ($NORM * $keyFrequency
-                        * ( -($this->math->DFRlog($numberOfDocuments  - 1))
-                            - $this->math->log2ofE()
-                            + $this->math->stirlingPower(
-                                $numberOfDocuments
-                                    + $termFrequency
-                                    - 1,
-                                $numberOfDocuments
-                                    + $termFrequency
-                                    - $TF
-                                    - 2)
-                            - $this->math->stirlingPower($termFrequency, $termFrequency - $TF)));
     }
 
  
@@ -80,7 +60,18 @@ class BB2 extends SimilarityBase implements ScoringInterface
         if($tf > 0){
             $TF = $tf * $this->getTfN2($docLength, $this->getAverageDocumentLength());
             $NORM = ($this->getTermFrequency() + 1) / ($this->getDocumentFrequency() * ($TF + 1));
-            $score += $this->getBB2($NORM, $keyFrequency, $this->getNumberOfDocuments(), $this->getTermFrequency(), $TF);
+            $score += $NORM * $keyFrequency
+                        * ( -($this->math->DFRlog($numberOfDocuments  - 1))
+                            - $this->math->log2ofE()
+                            + $this->math->stirlingPower(
+                                $numberOfDocuments
+                                    + $termFrequency
+                                    - 1,
+                                $numberOfDocuments
+                                    + $termFrequency
+                                    - $TF
+                                    - 2)
+                            - $this->math->stirlingPower($termFrequency, $termFrequency - $TF));
         }
 
         return $score;

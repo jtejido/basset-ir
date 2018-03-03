@@ -2,9 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Math\Math;
-use Basset\Ranking\ScoringInterface;
-
 
 /**
  * AbsoluteDiscountingLM is a class for ranking documents against a query by lowering down the probability of seen words by
@@ -21,19 +18,16 @@ use Basset\Ranking\ScoringInterface;
  */
 
 
-class AbsoluteDiscountingLM implements ScoringInterface
+class AbsoluteDiscountingLM extends SimilarityBase implements ScoringInterface
 {
 
     const DELTA = 0.7;
-
-    protected $math;
 
     protected $delta;
 
     public function __construct($delta = self::DELTA)
     {
         $this->delta = $delta;
-        $this->math = new Math();
 
     }
  
@@ -46,14 +40,14 @@ class AbsoluteDiscountingLM implements ScoringInterface
      * @param  int $keylength
      * @return float
      */
-    public function score($tf, $docLength, $documentFrequency, $keyFrequency, $termFrequency, $collectionLength, $collectionCount, $uniqueTermsCount)
+    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
     {
         $score = 0;
 
-        if($tf != 0){
-            $mle_collection = $termFrequency / $collectionLength;
-            $sigma = ($this->delta * $uniqueTermsCount) / $docLength;
-            $score += $keyFrequency * log(1 + ((max($tf - $this->delta, 0) / $docLength) + ($sigma * $mle_collection)));
+        if($tf > 0){
+            $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
+            $sigma = ($this->delta * $docUniqueLength) / $docLength;
+            $score += $keyFrequency * log(1 + ((max($tf - $this->delta, 0) / $docLength) + ($sigma * $mle_c)));
         }
 
         return $score;

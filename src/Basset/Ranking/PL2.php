@@ -2,7 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Math\Math;
 
 
 /**
@@ -22,14 +21,11 @@ class PL2 extends SimilarityBase implements ScoringInterface
 
     const C = 1.0;
 
-    protected $math;
-
     protected $c;
 
     public function __construct($c = self::C)
     {
         $this->c    = 1.0;
-        $this->math = new Math();
 
     }
 

@@ -2,8 +2,6 @@
 
 namespace Basset\Ranking;
 
-use Basset\Math\Math;
-
 
 /**
  * DirichletSPUD is a class for ranking documents that captures the tendency of a term to repeat itself within a document 
@@ -32,12 +30,9 @@ class DirichletSPUD extends SimilarityBase implements ScoringInterface
 
     protected $m;
 
-    protected $math;
-
 
     public function __construct($omega = self::OMEGA, $iteration = self::ITERATION, $m = self::M)
     {
-        $this->math = new Math();
         $this->omega = $omega;
         $this->iteration = $iteration;
         $this->m = $m;

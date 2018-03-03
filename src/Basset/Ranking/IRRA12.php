@@ -41,7 +41,7 @@ class IRRA12 extends SimilarityBase implements ScoringInterface
             // Λij
             $suppress_junk = pow($alpha, (3/4)) * pow($beta, (1/4));
             // ∆(Iij)
-            $score += (($tf + 1) * log(($tf + 1)/sqrt($expected))) - ($tf * log($tf/sqrt($expected)));
+            $score += (($tf + 1) * $this->math->DFRlog(($tf + 1)/sqrt($expected))) - ($tf * $this->math->DFRlog($tf/sqrt($expected)));
             return $score * $keyFrequency * $suppress_junk;
         
 
