@@ -15,5 +15,5 @@ interface FeatureExtractionInterface
      * @param  DocumentInterface $d The document for which we are calculating features
      * @return array
      */
-    public function getFeature(DocumentInterface $d);
+    public function getFeature(DocumentInterface $doc);
 }

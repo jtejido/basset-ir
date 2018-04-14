@@ -2,28 +2,31 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
+
+
 /**
  * http://www.naun.org/main/NAUN/ijmmas/mmmas-49.pdf
  */
-class RuzickaSimilarity implements SimilarityInterface
+class RuzickaSimilarity extends Similarity implements SimilarityInterface
 {
     /**
-    * The similarity returned by this algorithm is a number between 0,1
-    */
-    public function similarity(array $A, array $B)
+     * @param  QueryDocument $q
+     * @param  Document $doc
+     * @return float
+     */
+    public function similarity(DocumentInterface $q, DocumentInterface $doc)
     {
-
+        $A = $this->getTokens($q);
+        $B = $this->getTokens($doc);
         $num = 0;
         $denom = 0;
-        $keysA = array_keys(array_filter($A));
-        $keysB = array_keys(array_filter($B));
-
-        $uniqueKeys = array_unique(array_merge($keysA, $keysB));
+        $uniqueKeys = $this->getAllUniqueKeys($A, $B);
 
         foreach ($uniqueKeys as $key) {
             if (!empty($A[$key]) && !empty($B[$key])){
-                $num += min($A[$key], $B[$key]);
-                $denom += max($A[$key], $B[$key]);
+                $num += min($this->getScore($q, $key), $this->getScore($doc, $key));
+                $denom += max($this->getScore($q, $key), $this->getScore($doc, $key));
             }
         }
 

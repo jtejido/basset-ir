@@ -3,7 +3,8 @@
 namespace Basset\Statistics;
 
 use Basset\Statistics\CollectionStatistics;
-use Basset\Statistics\PostingStatistics;
+use Basset\FeatureExtraction\TfFeatureExtraction;
+use Basset\Ranking\Tf;
 
 /**
  * EntryStatistics implements basic statistics about a lexical entry (usually a term).
@@ -14,11 +15,12 @@ use Basset\Statistics\PostingStatistics;
 class EntryStatistics
 {
 
-    protected $stats;
+    private $stats;
 
-    protected $set;
+    private $set;
 
-    protected $term;
+    private $term;
+
 
     /**
      *
@@ -27,15 +29,25 @@ class EntryStatistics
      * @param string $term The term we'll be getting stats for
      *
      */
-    public function __construct(CollectionStatistics $stats, string $term)
+    public function __construct(CollectionStatistics $stats)
     {
 
         $this->stats = $stats;
-        $this->term = $term;
         $this->set = $this->stats->getCollection();
-        if($this->term === null){
+        $this->term = null;
+    }
+
+    /**
+     * sets the term we'll compute stats for.
+     * 
+     * @return string
+     */
+    public function setTerm($term = null)
+    {
+        if($term === null){
             throw new \Exception('Term should be set.');
         }
+        $this->term = $term;
     }
 
     /**
@@ -55,13 +67,11 @@ class EntryStatistics
      */
     public function getTermFrequency()
     {
-        $termfrequencies = $this->stats->getTermFrequencies();
-
-        if (isset($termfrequencies[$this->term])) {
-            return $termfrequencies[$this->term];
-        } else {
-            return 0;
+        if($this->getTerm() === null){
+            throw new \Exception('Specify a term.');
         }
+
+        return isset($this->stats->getTermFrequencies()[$this->getTerm()]) ? $this->stats->getTermFrequencies()[$this->getTerm()] : 0;
 
     }
 
@@ -72,14 +82,12 @@ class EntryStatistics
      */
     public function getDocumentFrequency()
     {
-
-        $documentfrequencies = $this->stats->getDocumentFrequencies();
-
-        if (isset($documentfrequencies[$this->term])) {
-            return $documentfrequencies[$this->term];
-        } else {
-            return 0;
+        if($this->getTerm() === null){
+            throw new \Exception('Specify a term.');
         }
+
+        return isset($this->stats->getDocumentFrequencies()[$this->getTerm()]) ? $this->stats->getDocumentFrequencies()[$this->getTerm()] : 0;
+
 
     }
 
@@ -91,16 +99,60 @@ class EntryStatistics
      */
 
     /**
-     * Returns the total number of unique terms in the only set of documents where the word appears.
+     * Returns the total number of tokens in the only set of documents where the word appears.
      * 
      * @return int
      */
     public function getTotalByTermPresence() {
+        
+        if($this->getTerm() === null){
+            throw new \Exception('Specify a term.');
+        }
+
         $sum = 0;
-        for($i = 0; $i < $this->stats->getNumberOfDocuments(); $i++) {
-            $posting_stats = new PostingStatistics($this->set->offsetGet($i));
-            if($posting_stats->getTf($this->term) > 0) {
-                $sum += $posting_stats->getNumberOfUniqueTerms();
+
+        $term = $this->getTerm();
+
+        $numberOfDocs = $this->stats->getNumberOfDocuments();
+
+        for($i = 0; $i < $numberOfDocs; $i++) {
+
+            $array = array_count_values($this->set->offsetGet($i)->getDocument());
+
+            if(isset($array[$term])) {
+
+                $sum += array_sum($array);
+
+            }
+        }
+        return $sum;
+    }
+
+    /**
+     * Returns the total number of unique terms in the only set of documents where the word appears.
+     * 
+     * @return int
+     */
+    public function getUniqueTotalByTermPresence() {
+        
+        if($this->getTerm() === null){
+            throw new \Exception('Specify a term.');
+        }
+
+        $sum = 0;
+
+        $term = $this->getTerm();
+
+        $numberOfDocs = $this->stats->getNumberOfDocuments();
+
+        for($i = 0; $i < $numberOfDocs; $i++) {
+
+            $array = array_count_values($this->set->offsetGet($i)->getDocument());
+
+            if(isset($array[$term])) {
+
+                $sum += count($array);
+
             }
         }
         return $sum;
@@ -112,13 +164,24 @@ class EntryStatistics
      * @return array
      */
     public function getDocsByTermPresence() {
+
+        if($this->getTerm() === null){
+            throw new \Exception('Specify a term.');
+        }
+
+        $related_docs = array();
+
         for($i = 0; $i < $this->stats->getNumberOfDocuments(); $i++) {
-            $posting_stats = new PostingStatistics($this->set->offsetGet($i));
-            if($posting_stats->getTf($this->term) > 0) {
-                $array[$i] = $this->set->offsetGet($i)->getDocument();
+
+            $array = array_count_values($this->set->offsetGet($i)->getDocument());
+
+            if(isset($array[$this->getTerm()])) {
+
+                $related_docs[$i] = $array;
+
             }
         }
-        return $array;
+        return $related_docs;
     }
 
 }

@@ -2,31 +2,34 @@
 
 namespace Basset\Similarity;
 
-use Basset\Math\Math;
+use Basset\Documents\DocumentInterface;
 
 /**
  * https://en.wikipedia.org/wiki/Hellinger_distance
  */
-class HellingerDistance implements DistanceInterface
+class HellingerDistance extends Similarity implements DistanceInterface
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
-     * @param  array $A
-     * @param  array $B
+     * @param  QueryDocument $q
+     * @param  Document $doc
      * @return float
      */
-    public function dist(array $A, array $B)
+    public function dist(DocumentInterface $q, DocumentInterface $doc)
     {
-        $math = new Math();
-        $meanV1 = $math->mean($A);
-        $meanV2 = $math->mean($B);
+        $A = $this->getTokens($q, true);
+        $B = $this->getTokens($doc, true);
+        $meanV1 = $this->math->mean(array_count_values(array_keys($A)));
+        $meanV2 = $this->math->mean(array_count_values(array_keys($B)));
 
         $n = count($A);
         $sum = 0;
-        $keysA = array_keys(array_filter($A));
-        $keysB = array_keys(array_filter($B));
-
-        $uniqueKeys = array_unique(array_merge($keysA, $keysB));
+        $uniqueKeys = $this->getAllUniqueKeys($A, $B);
 
         foreach ($uniqueKeys as $key) {
             if (!empty($A[$key]) && !empty($B[$key])){

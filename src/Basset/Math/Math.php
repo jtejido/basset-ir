@@ -12,17 +12,6 @@ namespace Basset\Math;
 class Math
 {
 
-    /**
-     * The base 2 log of the given expression
-     * mostly used in DFR models
-     * 
-     * @param  mixed $expression
-     * @return mixed
-     */
-    public function DFRlog($expression)
-    {
-        return log($expression) * $this->log2ofE();
-    }
 
     /**
      * Returns the logarithm in base 2 of e, used to change the base of logarithms

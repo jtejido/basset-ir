@@ -2,33 +2,41 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
+
 /**
  * http://www.naun.org/main/NAUN/ijmmas/mmmas-49.pdf
  */
-class MotykaSimilarity implements SimilarityInterface
+class MotykaSimilarity extends Similarity implements SimilarityInterface
 {
-    /**
-    * The similarity returned by this algorithm is a number between 0,1
-    */
-    public function similarity(array $A, array $B)
-    {
 
+    public function __construct()
+    {
+      parent::__construct();
+    }
+
+    /**
+     * @param  QueryDocument $q
+     * @param  Document $doc
+     * @return float
+     */
+    public function similarity(DocumentInterface $q, DocumentInterface $doc)
+    {
+        $A = $this->getTokens($q);
+        $B = $this->getTokens($doc);
         $num = 0;
         $denom = 0;
-        $keysA = array_keys(array_filter($A));
-        $keysB = array_keys(array_filter($B));
-
-        $uniqueKeys = array_unique(array_merge($keysA, $keysB));
+        $uniqueKeys = $this->getAllUniqueKeys($A, $B);
 
         foreach ($uniqueKeys as $key) {
             if (!empty($A[$key]) && !empty($B[$key])){
-                $num += min($A[$key], $B[$key]);
-                $denom += $A[$key] + $B[$key];
+                $num += min($this->getScore($doc, $key), $this->getScore($q, $key));
+                $denom += ($this->getScore($q, $key) + $this->getScore($doc, $key));
             }
         }
 
 
-        return $denom != 0 ? $num/$denom : 0;
+        return ($denom > 0) ? ($num/$denom) : 0;
     }
 
 }

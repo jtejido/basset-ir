@@ -2,6 +2,7 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
 
 /**
  * This is based on Sohangir and Wang's improved implementation of Zhu Et al.'s Square Root Cosine similarity.
@@ -9,7 +10,6 @@ namespace Basset\Similarity;
  * high-dimensional applications.
  * DOI: 10.1109/ICCSE.2012.6295217 
  *
- * Improved by Sohangir and Wang
  * DOI 10.1186/s40537-017-0083-6
  * https://journalofbigdata.springeropen.com/track/pdf/10.1186/s40537-017-0083-6?site=journalofbigdata.springeropen.com
  *
@@ -19,41 +19,48 @@ namespace Basset\Similarity;
  * Due to the concentration of distance in high-dimensional spaces, the ratio of the 
  * distances of the nearest and farthest neighbors to a given target is almost one.
  */
-class SqrtCosineSimilarity implements SimilarityInterface
+class SqrtCosineSimilarity extends Similarity implements SimilarityInterface
 {
 
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
-     * @param  array $A
-     * @param  array $B
+     * @param  QueryDocument $q
+     * @param  Document $doc
      * @return float
      */
-    public function similarity(array $A, array $B)
+    public function similarity(DocumentInterface $q, DocumentInterface $doc)
     {
 
-        $v1 = $A;
-        $v2 = $B;
-        $prod = 0;
+        $A = $this->getTokens($q, true);
+        $B = $this->getTokens($doc, true);
         
+        $keysA = array_keys(array_filter($A));
+        $keysB = array_keys(array_filter($B));
+
+        $uniqueKeys = array_unique(array_merge($keysA, $keysB));
+        $prod = 0;
         $v1_norm = 0;
-        foreach ($v1 as $i=>$xi) {
-            if(isset($v2[$i])){
-                $prod += sqrt($xi*$v2[$i]);
-                $v1_norm += sqrt($xi) * sqrt($xi);
+        $v2_norm = 0;
+        foreach ($uniqueKeys as $key) {
+            if (!empty($A[$key]) && !empty($B[$key])){
+                $prod += sqrt($A[$key] * $B[$key]);
+            }
+            if (!empty($A[$key])) {
+                $v1_norm += sqrt($A[$key]) * sqrt($A[$key]);
+            }
+            if (!empty($B[$key])) {
+                $v2_norm += sqrt($B[$key]) * sqrt($B[$key]);
             }
         }
         $v1_norm = sqrt($v1_norm);
-
-        if ($v1_norm==0){
-            return 0;
-        }
-
-        $v2_norm = 0;
-        foreach ($v2 as $i=>$xi) {
-            $v2_norm += sqrt($xi) * sqrt($xi);
-        }
         $v2_norm = sqrt($v2_norm);
 
-        if ($v2_norm==0){
+        if ($v1_norm==0 || $v2_norm==0){
             return 0;
         }
 

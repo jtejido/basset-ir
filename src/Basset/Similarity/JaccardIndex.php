@@ -1,20 +1,31 @@
- <?php
+<?php
 
 namespace Basset\Similarity;
+
+use Basset\Documents\DocumentInterface;
+
 
 /**
  * http://en.wikipedia.org/wiki/Jaccard_index
  */
-class JaccardIndex implements SimilarityInterface
+class JaccardIndex extends Similarity implements SimilarityInterface
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
-     * @param  array $A
-     * @param  array $B
+     * @param  QueryDocument $q
+     * @param  Document $doc
      * @return float
      */
-    public function similarity(array $A, array $B)
+    public function similarity(DocumentInterface $q, DocumentInterface $doc)
     {
+        $A = $this->getTokens($q, true);
+        $B = $this->getTokens($doc, true);
+
         $a = array_fill_keys($A,1);
         $b = array_fill_keys($B,1);
 

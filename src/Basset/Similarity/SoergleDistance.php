@@ -2,31 +2,36 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
+
 /**
  * http://www.orgchm.bas.bg/~vmonev/SimSearch.pdf
  */
-class SoergleDistance implements DistanceInterface
+class SoergleDistance extends Similarity implements DistanceInterface
 {
 
+    public function __construct()
+    {
+      parent::__construct();
+    }
+    
     /**
-     * @param  array $A
-     * @param  array $B
+     * @param  QueryDocument $q
+     * @param  Document $doc
      * @return float
      */
-    public function dist(array $A, array $B)
+    public function dist(DocumentInterface $q, DocumentInterface $doc)
     {
-
+        $A = $this->getTokens($q);
+        $B = $this->getTokens($doc);
         $num = 0;
         $denom = 0;
-        $keysA = array_keys(array_filter($A));
-        $keysB = array_keys(array_filter($B));
-
-        $uniqueKeys = array_unique(array_merge($keysA, $keysB));
+        $uniqueKeys = $this->getAllUniqueKeys($A, $B);
 
         foreach ($uniqueKeys as $key) {
             if (!empty($A[$key]) && !empty($B[$key])){
-                $num += abs($A[$key]-$B[$key]);
-                $denom += max($A[$key], $B[$key]);
+                $num += abs($this->getScore($doc, $key) - $this->getScore($q, $key));
+                $denom += max($this->getScore($doc, $key), $this->getScore($q, $key));
             }
         }
 

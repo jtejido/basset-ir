@@ -2,30 +2,39 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
+
 /**
  * http://www.itl.nist.gov/div898/handbook/eda/section3/eda35f.htm
  * The formula appeas assymetric so we'll just change it to be symmetric to both sets
  */
-class ChiSquareDistance implements DistanceInterface
+class ChiSquareDistance extends Similarity implements DistanceInterface
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+    
     /**
-     * @param  array $A
-     * @param  array $B
+     * @param  QueryDocument $q
+     * @param  Document $doc
      * @return float
      */
-    public function dist(array $A, array $B)
+    public function dist(DocumentInterface $q, DocumentInterface $doc)
     {
 
-        $sum = 0;
-        $keysA = array_keys(array_filter($A));
-        $keysB = array_keys(array_filter($B));
+        $A = $this->getTokens($q);
+        $B = $this->getTokens($doc);
 
-        $uniqueKeys = array_unique(array_merge($keysA, $keysB));
+        $sum = 0;
+        $uniqueKeys = $this->getAllUniqueKeys($A, $B);
 
         foreach ($uniqueKeys as $key) {
             if (!empty($A[$key]) && !empty($B[$key])){
-                $sum += ($A[$key]-$B[$key]) * ($A[$key]-$B[$key]) / ($A[$key]+$B[$key]) ;
+                $num = ($this->getScore($q, $key)-$this->getScore($doc, $key)) * ($this->getScore($q, $key)-$this->getScore($doc, $key));
+                $denom = ($this->getScore($q, $key)+$this->getScore($doc, $key));
+                $sum += ($denom > 0) ? $num/$denom : 0  ;
             }
         }
 

@@ -2,29 +2,38 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
+
 /**
  * https://en.wikipedia.org/wiki/Canberra_distance
  */
-class CanberraDistance implements DistanceInterface
+class CanberraDistance extends Similarity implements DistanceInterface
 {
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
-     * @param  array $A
-     * @param  array $B
+     * @param  QueryDocument $q
+     * @param  Document $doc
      * @return float
      */
-    public function dist(array $A, array $B)
+    public function dist(DocumentInterface $q, DocumentInterface $doc)
     {
 
-        $sum = 0;
-        $keysA = array_keys(array_filter($A));
-        $keysB = array_keys(array_filter($B));
+        $A = $this->getTokens($q);
+        $B = $this->getTokens($doc);
 
-        $uniqueKeys = array_unique(array_merge($keysA, $keysB));
+        $sum = 0;
+        $uniqueKeys = $this->getAllUniqueKeys($A, $B);
 
         foreach ($uniqueKeys as $key) {
             if (!empty($A[$key]) && !empty($B[$key])){
-                $sum += abs($A[$key]-$B[$key]) / ($A[$key]+$B[$key]) ;
+                $num = abs($this->getScore($q, $key)-$this->getScore($doc, $key));
+                $denom = $this->getScore($q, $key)+$this->getScore($doc, $key);
+                $sum += ($denom > 0) ? $num/$denom : 0  ;
             }
         }
 

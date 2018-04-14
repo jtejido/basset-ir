@@ -3,7 +3,7 @@
 namespace Basset\Statistics;
 
 use Basset\Documents\DocumentInterface;
-use Basset\FeatureExtraction\TfFeatureExtraction;
+use Basset\FeatureExtraction\FeatureExtraction;
 
 
 /**
@@ -18,27 +18,27 @@ class PostingStatistics
 
     protected $document;
 
+    protected $preweighted;
+
 
     /**
      * @param DocumentInterface $d The posting listing (AKA document)
      */
-    public function __construct(DocumentInterface $d)
+    public function __construct(DocumentInterface $d, bool $preweighted = false)
     {
-        $tffe = new TfFeatureExtraction();
+        $tffe = new FeatureExtraction($preweighted);
         $this->document = $tffe->getFeature($d);
-
+        $this->preweighted = $preweighted;
     }
 
     /**
-     * Return the document.
+     * Return the pre-counted tokens.
      * 
      * @return Document
      */
-    public function getDocument()
+    public function getTokens()
     {
-
         return $this->document; 
-
     }
 
     /**
@@ -49,9 +49,10 @@ class PostingStatistics
      */
     public function getTf($term)
     {
-
-        return isset($this->document[$term]) ? $this->document[$term] : 0; 
-
+        if($this->preweighted) {
+            throw new \Exception('The Posting Statistics for this document is pre-weighted.');
+        }
+        return isset($this->getTokens()[$term]) ? $this->getTokens()[$term] : 0; 
     }
 
     /**
@@ -61,9 +62,10 @@ class PostingStatistics
      */
     public function getDocumentLength()
     {
-
-        return array_sum($this->document);
-
+        if($this->preweighted) {
+            throw new \Exception('The Posting Statistics for this document is pre-weighted.');
+        }
+        return array_sum($this->getTokens());
     }
 
     /**
@@ -73,9 +75,10 @@ class PostingStatistics
      */
     public function getNumberOfUniqueTerms()
     {
-
-        return count($this->document);
-
+        if($this->preweighted) {
+            throw new \Exception('The Posting Statistics for this document is pre-weighted.');
+        }
+        return count($this->getTokens());
     }
 
 }

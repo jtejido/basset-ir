@@ -3,8 +3,9 @@
 namespace Basset\Collections;
 
 use Basset\Documents\DocumentInterface;
-use Basset\Documents\TrainingDocument;
+use Basset\Documents\Document;
 use Basset\Utils\TransformationInterface;
+use Basset\Models\Contracts\WeightedModelInterface;
 
 /**
  * A collection of Document objects.
@@ -21,10 +22,13 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
     protected $keyed;
 
     protected $currentDocument;
+
+    protected $model;
     
     public function __construct($keyed = false)
     {
         $this->documents = array();
+        $this->model = null;
         $this->keyed = ($keyed == true) ? self::CLASS_AS_KEY : self::OFFSET_AS_KEY;
 
     }
@@ -41,7 +45,7 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
         if((empty($class)) && $this->keyed == self::CLASS_AS_KEY) {
             throw new \Exception('Class or Label cannot be null.');
         }
-        $this->documents[] = new TrainingDocument($d, $class);
+        $this->documents[] = new Document($d, $class);
     }
 
     /**
@@ -56,6 +60,27 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
         foreach ($this->documents as $doc) {
             $doc->applyTransformation($transform);
         }
+    }
+
+    /**
+     * Sets the model for use when ranking each documents
+     *
+     * @param WeightedModelInterface $model The model to be used
+     */
+    public function applyModel(WeightedModelInterface $model)
+    {
+        foreach ($this->documents as $doc) {
+            $doc->setModel($model);
+        }
+        $this->model = $model;
+    }
+
+    /**
+     * Get the assigned applied to each documents
+     */
+    public function getModel()
+    {
+        return $this->model;
     }
 
 

@@ -2,7 +2,9 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
+
 interface DistanceInterface
 {
-    public function dist(array $A, array $B);
+    public function dist(DocumentInterface $q, DocumentInterface $doc);
 }

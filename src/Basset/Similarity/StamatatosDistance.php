@@ -2,29 +2,35 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
+
 /**
  * http://www.icsd.aegean.gr/lecturers/stamatatos/papers/survey.pdf
  */
-class StamatatosDistance implements DistanceInterface
+class StamatatosDistance extends Similarity implements DistanceInterface
 {
 
+    public function __construct()
+    {
+      parent::__construct();
+    }
+
     /**
-     * @param  array $A
-     * @param  array $B
+     * @param  QueryDocument $q
+     * @param  Document $doc
      * @return float
      */
-    public function dist(array $A, array $B)
+    public function dist(DocumentInterface $q, DocumentInterface $doc)
     {
-
+        
+        $A = $this->getTokens($q, true);
+        $B = $this->getTokens($doc, true);
         $dist = 0;
-        $keysA = array_keys(array_filter($A));
-        $keysB = array_keys(array_filter($B));
-
-        $uniqueKeys = array_unique(array_merge($keysA, $keysB));
+        $uniqueKeys = $this->getAllUniqueKeys($A, $B);
 
         foreach ($uniqueKeys as $key) {
             if (!empty($A[$key]) && !empty($B[$key])){
-                $dist += pow(2 * ($A[$key]-$B[$key]) / ($A[$key]+$B[$key]), 2);
+                $dist += pow(2 * ($this->getScore($q, $key)-$this->getScore($doc, $key)) / ($this->getScore($q, $key)+$this->getScore($doc, $key)), 2);
             }
         }
 

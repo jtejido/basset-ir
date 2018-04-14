@@ -2,6 +2,8 @@
 
 namespace Basset\Similarity;
 
+use Basset\Documents\DocumentInterface;
+
 /**
  * A Generalization of Jaccard Index and Dice Similarity.
  *
@@ -13,14 +15,25 @@ namespace Basset\Similarity;
  * been made symmetrical as applied here (by Jimenez, S., Becerra, C., Gelbukh,
  * A.): http://aclweb.org/anthology/S/S13/S13-1028.pdf
  */
-class TverskyIndex implements SimilarityInterface
+class TverskyIndex extends Similarity implements SimilarityInterface
 {
+
+    CONST ALPHA = 0.5;
+
+    CONST BETA = 1;
+
+    protected $alpha;
+
+    protected $beta;
+
+
     /**
      * @param $alpha Set to 0.5 to get either Jaccard Index or Dice Similarity
      * @param $beta  Set to 1 to get Jaccard Index and 2 for Dice Similarity
      */
-    public function __construct($alpha=0.5, $beta=1)
+    public function __construct($alpha=self::ALPHA, $beta=self::BETA)
     {
+        parent::__construct();
         $this->alpha = $alpha;
         $this->beta = $beta;
     }
@@ -28,13 +41,14 @@ class TverskyIndex implements SimilarityInterface
     /**
      * Compute the similarity using the alpha and beta values given in the
      * constructor.
-     *
-     * @param  array $A
-     * @param  array $B
+     * @param  QueryDocument $q
+     * @param  Document $doc
      * @return float
      */
-    public function similarity(array $A, array $B)
+    public function similarity(DocumentInterface $q, DocumentInterface $doc)
     {
+        $A = $this->getTokens($q, true);
+        $B = $this->getTokens($doc, true);
         $alpha = $this->alpha;
         $beta = $this->beta;
 
