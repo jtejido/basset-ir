@@ -22,4 +22,4 @@ Basset provides different ways of searching through documents in a collection, b
 Documentation
 =============
 
-You can read about it [here](https:/myth-of-sissyphus.blogspot.com/2018/02/basset-information-retrieval-library-in.html)
+You can read about it [here](https://myth-of-sissyphus.blogspot.com/2018/02/basset-information-retrieval-library-in.html)
