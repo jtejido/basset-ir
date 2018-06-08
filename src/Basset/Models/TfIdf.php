@@ -28,8 +28,9 @@ class TfIdf extends WeightedModel implements WeightedModelInterface
      * @return float
      */
     public function score($tf, $docLength, $docUniqueLength)
-    {
-        return $this->getDocumentFrequency() > 0 ? $tf * log(($this->getNumberOfDocuments() / $this->getDocumentFrequency()), $this->base) : 0;
+    {   
+
+        return $this->getDocumentFrequency() > 0 ? $tf * log(1 + ($this->getNumberOfDocuments() / $this->getDocumentFrequency()), $this->base) : 0;
 
     }
 

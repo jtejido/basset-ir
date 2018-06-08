@@ -41,7 +41,7 @@ class LemurTfIdf extends WeightedModel implements WeightedModelInterface
         $num = $tf * ($this->k1 + 1);
         $denom = $tf + $this->k1 * (1 - $this->b + $this->b * ($docLength / $this->getAverageDocumentLength()));
         $tf = $num / $denom;
-        $idf = log($this->getNumberOfDocuments()/$this->getDocumentFrequency());
+        $idf = log(1 + ($this->getNumberOfDocuments()/$this->getDocumentFrequency()));
         return $tf * $idf;
 
     }

@@ -29,7 +29,7 @@ class IdfOkapi extends BaseIdf implements WeightedModelInterface, IDFInterface
     public function score($tf, $docLength, $docUniqueLength)
     {
         
-        return $this->getDocumentFrequency() > 0 ? log((($this->getNumberOfDocuments()-$this->getDocumentFrequency()+0.5)/($this->getDocumentFrequency() + 0.5)), $this->getBase()) : 0;
+        return $this->getDocumentFrequency() > 0 ? log(1 + (($this->getNumberOfDocuments()-$this->getDocumentFrequency()+0.5)/($this->getDocumentFrequency() + 0.5)), $this->getBase()) : 0;
 
     }
 
