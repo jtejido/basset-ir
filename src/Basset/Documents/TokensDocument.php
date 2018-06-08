@@ -41,7 +41,7 @@ class TokensDocument implements DocumentInterface
                     $this->tokens
                 ),
                 function ($token) {
-                    return $token!==null;
+                    return $token !== null;
                 }
             )
         );

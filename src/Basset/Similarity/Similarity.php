@@ -40,7 +40,6 @@ class Similarity
     public function getScore(DocumentInterface $document, $term)
     {
         $document->getModel()->getIndex()->setTerm($term);
-
         return $document->getModel()->getScore($document->getTf($term), $document->getDocumentLength(), $document->getNumberOfUniqueTerms());
     }
 

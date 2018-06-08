@@ -29,7 +29,7 @@ class IdfSpackRobertson extends BaseIdf implements WeightedModelInterface, IDFIn
     public function score($tf, $docLength, $docUniqueLength)
     {
         
-        return log((($this->getNumberOfDocuments() + 1)/$this->getDocumentFrequency()), $this->getBase());
+        return $this->getDocumentFrequency() > 0 ? log((($this->getNumberOfDocuments() + 1)/$this->getDocumentFrequency()), $this->getBase()) : 0;
 
     }
 

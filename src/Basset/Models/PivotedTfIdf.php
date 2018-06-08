@@ -37,7 +37,7 @@ class PivotedTfIdf extends WeightedModel implements WeightedModelInterface
     public function score($tf, $docLength, $docUniqueLength)
     {
 
-        return (1+log(1+log($tf))) / ((1-$this->slope) + ($this->slope * ($docLength / $this->getAverageDocumentLength()))) * log(($this->getNumberOfDocuments()+1)/$this->getDocumentFrequency());
+        return $this->getDocumentFrequency() > 0 ? (1+log(1+log($tf))) / ((1-$this->slope) + ($this->slope * ($docLength / $this->getAverageDocumentLength()))) * log(($this->getNumberOfDocuments()+1)/$this->getDocumentFrequency()) : 0;
 
     }
 

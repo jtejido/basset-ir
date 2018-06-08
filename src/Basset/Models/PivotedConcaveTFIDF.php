@@ -42,7 +42,7 @@ class PivotedConcaveTFIDF extends WeightedModel implements WeightedModelInterfac
         $denom = 1 - $this->b + $this->b * ($docLength / $this->getAverageDocumentLength());
         $idf = log(($this->getNumberOfDocuments() + 1)/$this->getDocumentFrequency());
         
-        return (1+log(1+log(($num/$denom) + $this->d))) * $idf;
+        return $this->getDocumentFrequency() > 0 ? (1+log(1+log(($num/$denom) + $this->d))) * $idf : 0;
 
     }
 

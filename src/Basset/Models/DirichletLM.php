@@ -66,7 +66,6 @@ class DirichletLM extends WeightedModel implements WeightedModelInterface, KLDiv
         $constant = $this->getConstant();
         $document_constant = $this->getDocumentConstant($docLength, $docUniqueLength);
         // smoothed probability of words seen in the collection
-        
         $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
 
         // log(1 + ($tf + $constant * $mle_c) / ($docLength + $constant));

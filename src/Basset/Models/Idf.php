@@ -30,7 +30,7 @@ class Idf extends BaseIdf implements WeightedModelInterface, IDFInterface
     public function score($tf, $docLength, $docUniqueLength)
     {
         
-        return log(($this->getNumberOfDocuments()/$this->getDocumentFrequency()), $this->getBase());
+        return $this->getDocumentFrequency() > 0 ? log(($this->getNumberOfDocuments()/$this->getDocumentFrequency()), $this->getBase()) : 0;
 
     }
 
