@@ -16,29 +16,11 @@ use Basset\FeatureExtraction\FeatureExtraction;
 class PostingStatistics
 {
 
-    protected $document;
+    private $tf;
 
-    protected $preweighted;
-
-
-    /**
-     * @param DocumentInterface $d The posting listing (AKA document)
-     */
-    public function __construct(DocumentInterface $d, bool $preweighted = false)
+    public function __construct()
     {
-        $tffe = new FeatureExtraction($preweighted);
-        $this->document = $tffe->getFeature($d);
-        $this->preweighted = $preweighted;
-    }
-
-    /**
-     * Return the pre-counted tokens.
-     * 
-     * @return Document
-     */
-    public function getTokens()
-    {
-        return $this->document; 
+        $this->tf = null;
     }
 
     /**
@@ -47,38 +29,20 @@ class PostingStatistics
      * @param  string $term
      * @return int
      */
-    public function getTf($term)
+    public function getTf(): int
     {
-        if($this->preweighted) {
-            throw new \Exception('The Posting Statistics for this document is pre-weighted.');
-        }
-        return isset($this->getTokens()[$term]) ? $this->getTokens()[$term] : 0; 
+        return $this->tf; 
     }
 
     /**
-     * Return the length of the document for this posting.
+     * Return the frequency of the term in the current document.
      * 
+     * @param  string $term
      * @return int
      */
-    public function getDocumentLength()
+    public function setTf(int $tf)
     {
-        if($this->preweighted) {
-            throw new \Exception('The Posting Statistics for this document is pre-weighted.');
-        }
-        return array_sum($this->getTokens());
-    }
-
-    /**
-     * Returns the total number of unique terms for the posting.
-     * 
-     * @return int
-     */
-    public function getNumberOfUniqueTerms()
-    {
-        if($this->preweighted) {
-            throw new \Exception('The Posting Statistics for this document is pre-weighted.');
-        }
-        return count($this->getTokens());
+        $this->tf = $tf; 
     }
 
 }

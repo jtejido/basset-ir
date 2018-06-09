@@ -10,7 +10,7 @@ class WhitespaceTokenizer implements TokenizerInterface
 {
     const PATTERN = '/[\pZ\pC]+/u';
 
-    public function tokenize($str)
+    public function tokenize(string $str): array
     {
         $arr = array();
 

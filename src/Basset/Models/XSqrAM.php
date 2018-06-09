@@ -4,6 +4,8 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 
 /**
@@ -25,6 +27,8 @@ class XSqrAM extends WeightedModel implements WeightedModelInterface, Probabilis
     public function __construct()
     {
         parent::__construct();
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
     }
 
     /**

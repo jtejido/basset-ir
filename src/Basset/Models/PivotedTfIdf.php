@@ -3,6 +3,7 @@
 namespace Basset\Models;
 
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\CosineSimilarity;
 
 /**
  * AKA Pivoted Normalization Weighting.
@@ -24,9 +25,10 @@ class PivotedTfIdf extends WeightedModel implements WeightedModelInterface
 
     public function __construct($slope = self::SLOPE)
     {
+        parent::__construct();
         $this->slope = $slope;
+        $this->metric = new CosineSimilarity;
     }
-
 
     /**
      * @param  int $tf
@@ -36,8 +38,8 @@ class PivotedTfIdf extends WeightedModel implements WeightedModelInterface
      */
     public function score($tf, $docLength, $docUniqueLength)
     {
-
-        return $this->getDocumentFrequency() > 0 ? (1+log(1+log($tf))) / ((1-$this->slope) + ($this->slope * ($docLength / $this->getAverageDocumentLength()))) * log(($this->getNumberOfDocuments()+1)/$this->getDocumentFrequency()) : 0;
+        $df = $this->getDocumentFrequency();
+        return $df > 0 ? (1+log(1+log($tf))) / ((1-$this->slope) + ($this->slope * ($docLength / $this->getAverageDocumentLength()))) * log(($this->getNumberOfDocuments()+1)/$df) : 0;
 
     }
 

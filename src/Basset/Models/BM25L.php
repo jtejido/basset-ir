@@ -4,6 +4,8 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 /**
  * BM25L is a work of Lv and Zhai to rewrite BM25 due to Singhal et al's observation for having it penalized
@@ -37,6 +39,8 @@ class BM25L extends WeightedModel implements WeightedModelInterface, Probabilist
         $this->b = $b;
         $this->k1 = $k1;
         $this->d = $d;
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
     }
 
     /**

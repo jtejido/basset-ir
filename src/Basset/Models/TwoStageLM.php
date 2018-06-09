@@ -6,6 +6,8 @@ use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
 use Basset\Models\Contracts\LanguageModelInterface;
 use Basset\Models\Contracts\KLDivergenceLMInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermFrequency;
 
 /**
  * TwoStageLM is a class for ranking documents that explicitly captures the different influences of the query and document 
@@ -41,6 +43,8 @@ class TwoStageLM extends WeightedModel implements WeightedModelInterface, Probab
         parent::__construct();
         $this->mu = $mu;
         $this->lambda = $lambda;
+        $this->queryModel = new TermFrequency;
+        $this->metric = new VectorSimilarity;
     }
 
     private function getConstant(string $constant) {

@@ -4,6 +4,7 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\IDFInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\CosineSimilarity;
 
 /**
  * Okapi BM25's idf implementation
@@ -18,6 +19,7 @@ class IdfOkapi extends BaseIdf implements WeightedModelInterface, IDFInterface
     public function __construct($base = parent::E)
     {
         parent::__construct($base);
+        $this->metric = new CosineSimilarity;
     }
     
     /**
@@ -28,8 +30,8 @@ class IdfOkapi extends BaseIdf implements WeightedModelInterface, IDFInterface
      */
     public function score($tf, $docLength, $docUniqueLength)
     {
-        
-        return $this->getDocumentFrequency() > 0 ? log(1 + (($this->getNumberOfDocuments()-$this->getDocumentFrequency()+0.5)/($this->getDocumentFrequency() + 0.5)), $this->getBase()) : 0;
+        $df = $this->getDocumentFrequency();
+        return $df > 0 ? log(1 + (($this->getNumberOfDocuments()-$df+0.5)/($df + 0.5)), $this->getBase()) : 0;
 
     }
 

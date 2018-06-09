@@ -3,6 +3,7 @@
 namespace Basset\Models;
 
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\CosineSimilarity;
 
 /**
  * PivotedConcaveTF with K. Sparck-Jones' IDF
@@ -27,6 +28,7 @@ class PivotedConcaveTFIDF extends WeightedModel implements WeightedModelInterfac
         parent::__construct();
         $this->d = $d;
         $this->b = $b;
+        $this->metric = new CosineSimilarity;
     }
 
     /**
@@ -39,10 +41,11 @@ class PivotedConcaveTFIDF extends WeightedModel implements WeightedModelInterfac
     {
 
         $num = $tf;
+        $df = $this->getDocumentFrequency();
         $denom = 1 - $this->b + $this->b * ($docLength / $this->getAverageDocumentLength());
-        $idf = log(($this->getNumberOfDocuments() + 1)/$this->getDocumentFrequency());
+        $idf = $df > 0 ? log(($this->getNumberOfDocuments() + 1)/$df) : 0;
         
-        return $this->getDocumentFrequency() > 0 ? (1+log(1+log(($num/$denom) + $this->d))) * $idf : 0;
+        return (1+log(1+log(($num/$denom) + $this->d))) * $idf;
 
     }
 

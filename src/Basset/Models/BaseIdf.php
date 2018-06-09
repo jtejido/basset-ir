@@ -22,11 +22,13 @@ class BaseIdf extends WeightedModel
         $this->base = $base;
     }
 
-    public function getBase() {
+    public function getBase() 
+    {
         return $this->base;
     }
 
-    public function setBase($base) {
+    public function setBase($base) 
+    {
         $this->base = $base;
     }
 

@@ -2,12 +2,15 @@
 
 namespace Basset\Models;
 
-use Basset\Index\IndexInterface;
+use Basset\Statistics\EntryStatistics;
+use Basset\Statistics\CollectionStatistics;
 use Basset\Models\DFRModels\BasicModelInterface;
 use Basset\Models\DFRAfterEffect\AfterEffectInterface;
 use Basset\Models\Normalization\NormalizationInterface;
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 
 class DFRModel extends WeightedModel implements WeightedModelInterface, ProbabilisticModelInterface
@@ -42,17 +45,27 @@ class DFRModel extends WeightedModel implements WeightedModelInterface, Probabil
         $this->model = $model;
         $this->aftereffect = $aftereffect;
         $this->normalization = $normalization;
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
         if ($this->model == null || $this->aftereffect == null || $this->normalization == null) {
             throw new \Exception("Null Parameters not allowed.");
         }
     }
 
-    public function setIndex(IndexInterface $index)
+    public function setStats(EntryStatistics $stats)
     {
-        $this->index = $index;
-        $this->normalization->setIndex($this->index);
-        $this->aftereffect->setIndex($this->index);
-        $this->model->setIndex($this->index);
+        $this->stats = $stats;
+        $this->normalization->setStats($this->stats);
+        $this->aftereffect->setStats($this->stats);
+        $this->model->setStats($this->stats);
+    }
+
+    public function setCollectionStatistics(CollectionStatistics $cs)
+    {
+        $this->cs = $cs;
+        $this->normalization->setCollectionStatistics($this->cs);
+        $this->aftereffect->setCollectionStatistics($this->cs);
+        $this->model->setCollectionStatistics($this->cs);
     }
 
     public function score($tf, $docLength, $docUniqueLength)

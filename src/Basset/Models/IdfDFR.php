@@ -4,6 +4,7 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\IDFInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\CosineSimilarity;
 
 /**
  * DFR's idf implementation
@@ -19,6 +20,7 @@ class IdfDFR extends BaseIdf implements WeightedModelInterface, IDFInterface
     {
         // DFR's idf is always binary log
         parent::__construct(2);
+        $this->metric = new CosineSimilarity;
     }
 
     /**
@@ -29,8 +31,8 @@ class IdfDFR extends BaseIdf implements WeightedModelInterface, IDFInterface
      */
     public function score($tf, $docLength, $docUniqueLength)
     {
-        
-        return $this->getDocumentFrequency() > 0 ? log(1 + (($this->getNumberOfDocuments()+1)/($this->getDocumentFrequency()+0.5)), $this->getBase()) : 0;
+        $df = $this->getDocumentFrequency();
+        return $df > 0 ? log(1 + (($this->getNumberOfDocuments()+1)/($df+0.5)), $this->getBase()) : 0;
 
     }
 

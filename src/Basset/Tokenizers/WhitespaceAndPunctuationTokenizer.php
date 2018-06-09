@@ -10,7 +10,7 @@ namespace Basset\Tokenizers;
  */
 class WhitespaceAndPunctuationTokenizer implements TokenizerInterface
 {
-    public function tokenize($str)
+    public function tokenize(string $str): array
     {
         $arr = array();
 

@@ -6,6 +6,8 @@ use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
 use Basset\Models\Contracts\LanguageModelInterface;
 use Basset\Models\Contracts\KLDivergenceLMInterface;
+use Basset\Models\TermFrequency;
+use Basset\Metric\VectorSimilarity;
 
 /**
  * AbsoluteDiscountingLM is a class for ranking documents against a query by lowering down the probability of seen words by
@@ -33,13 +35,17 @@ class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterf
     {
         parent::__construct();
         $this->delta = $delta;
+        $this->queryModel = new TermFrequency;
+        $this->metric = new VectorSimilarity;
     }
 
-    private function getConstant() {
+    private function getConstant() 
+    {
         return $this->delta;
     }
 
-    private function getDocumentConstant($docLength, $docUniqueLength) {
+    public function getDocumentConstant($docLength, $docUniqueLength) 
+    {
         return ($this->getConstant() * $docUniqueLength) / $docLength;
     }
  
@@ -68,8 +74,8 @@ class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterf
         
         // log(1 + ((max($tf - $this->delta, 0) / $docLength) + ((($this->delta * $docUniqueLength) / $docLength) * $mle_c)))
         return log(1 + ( ($tf-$constant) / ($constant * $docUniqueLength * $mle_c) ) );
-
     }
+
 
     
 }

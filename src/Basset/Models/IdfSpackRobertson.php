@@ -4,6 +4,7 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\IDFInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\CosineSimilarity;
 
 /**
  * Robertson-Sparck's IDF
@@ -18,6 +19,7 @@ class IdfSpackRobertson extends BaseIdf implements WeightedModelInterface, IDFIn
     public function __construct($base = parent::E)
     {
         parent::__construct($base);
+        $this->metric = new CosineSimilarity;
     }
     
     /**
@@ -28,8 +30,8 @@ class IdfSpackRobertson extends BaseIdf implements WeightedModelInterface, IDFIn
      */
     public function score($tf, $docLength, $docUniqueLength)
     {
-        
-        return $this->getDocumentFrequency() > 0 ? log((($this->getNumberOfDocuments() + 1)/$this->getDocumentFrequency()), $this->getBase()) : 0;
+        $df = $this->getDocumentFrequency();
+        return $df > 0 ? log((($this->getNumberOfDocuments() + 1)/$df), $this->getBase()) : 0;
 
     }
 

@@ -22,4 +22,20 @@ Basset provides different ways of searching through documents in a collection, b
 Documentation
 =============
 
-You can read about it [here](https://myth-of-sissyphus.blogspot.com/2018/02/basset-information-retrieval-library-in.html)
+You can read about it [here](https://basset-ir.blogspot.com/2018/02/basset-information-retrieval-library-in.html)
+
+
+
+Using Existing Cranfield and Test file
+=============
+
+[Cranfield Collection](http://ir.dcs.gla.ac.uk/resources/test_collections/) has been the pioneer collection in information retrieval to validate a system's effectiveness.
+
+I've included the 1400 abstract Cranfield Collection as an XML file that you can parse into separate files.
+
+The test file at Test/test.php can be executed right away to do the parsing and do a search for a single test query.
+Customize it to your needs if needed.
+
+You can read Cranfield/cranfield-collection/cranqrel for Glassgow's qrels result.
+
+I've also included SMART system's stopword list for standardization (see stopwords/stopwords.txt).

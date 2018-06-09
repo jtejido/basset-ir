@@ -4,6 +4,8 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 /**
  * JelinekMercerSPUD is a class for ranking documents that captures the tendency of a term to repeat itself within
@@ -23,26 +25,24 @@ class JelinekMercerSPUD extends WeightedModel implements WeightedModelInterface,
     public function __construct()
     {
         parent::__construct();
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
     }
  
     /**
      * Estimation of the Background DCM (EDCM) via Multivariate Polya Distribution
+     *
      * @param  int $tf
      * @param  int $docLength
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength, $keyFrequency, $keylength)
+    public function score($tf, $docLength, $docUniqueLength)
     {
-        $score = 0;
+        $lambda = $docUniqueLength/$docLength;
+        $mle = $tf/$docLength;
 
-        if($tf > 0){
-            $lambda = $docUniqueLength/$docLength;
-            $mle = $tf/$docLength;
-            $score += $keyFrequency * log( 1 + ((1-$lambda) * $mle + $lambda * ($this->getDocumentFrequency()/$this->getUniqueTotalByTermPresence())));
-        }
-
-        return $score;
+        return log(((1-$lambda) * $mle + $lambda * ($this->getDocumentFrequency()/$this->getUniqueTotalByTermPresence())));
 
     }
 

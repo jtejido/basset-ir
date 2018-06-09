@@ -2,11 +2,14 @@
 
 namespace Basset\Models;
 
-use Basset\Index\IndexInterface;
+use Basset\Statistics\EntryStatistics;
+use Basset\Statistics\CollectionStatistics;
 use Basset\Models\Contracts\IDFInterface;
 use Basset\Models\DFIModels\DFIInterface;
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 class DFIModel extends WeightedModel implements WeightedModelInterface, ProbabilisticModelInterface
 {
@@ -33,17 +36,27 @@ class DFIModel extends WeightedModel implements WeightedModelInterface, Probabil
         parent::__construct();
         $this->model = $model;
         $this->idf = $idf;
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
         if ($this->model == null || $this->idf == null) {
             throw new \Exception("Null Parameters not allowed.");
         }
     }
 
-    public function setIndex(IndexInterface $index)
+    public function setStats(EntryStatistics $stats)
     {
-        $this->index = $index;
-        $this->model->setIndex($this->index);
-        $this->idf->setIndex($this->index);
+        $this->stats = $stats;
+        $this->model->setStats($this->stats);
+        $this->idf->setStats($this->stats);
     }
+
+    public function setCollectionStatistics(CollectionStatistics $cs)
+    {
+        $this->cs = $cs;
+        $this->model->setCollectionStatistics($this->cs);
+        $this->idf->setCollectionStatistics($this->cs);
+    }
+
 
     public function score($tf, $docLength, $docUniqueLength)
     {

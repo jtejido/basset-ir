@@ -3,6 +3,7 @@
 namespace Basset\Statistics;
 
 use Basset\Collections\CollectionSet;
+use Basset\Statistics\PostingStatistics;
 use Basset\FeatureExtraction\FeatureExtractionInterface;
 use Basset\FeatureExtraction\DataAsFeatures;
 
@@ -17,52 +18,26 @@ use Basset\FeatureExtraction\DataAsFeatures;
 
 class CollectionStatistics
 {
-    protected $numberofDocuments;
-    protected $termFrequency;
-    protected $documentFrequency;
-    protected $set;
+    private $numberOfDocuments;
+
+    private $averageDocumentLength;
+
+    private $numberOfTokens;
+
+    private $numberOfUniqueTokens;
+
 
     /**
      * @param CollectionSet $set The set of documents for which we will compute token stats
      * @param FeatureExtractionInterface $fe A feature factory to translate the document data to 
      * single tokens
      */
-    public function __construct(CollectionSet $set, FeatureExtractionInterface $fe=null)
+    public function __construct()
     {
-
-        if ($fe===null){
-            $fe = new DataAsFeatures();
-        }
-
-        $this->set = $set;
-
-        $this->numberofDocuments = 0;
-        foreach ($this->set as $class=>$doc) {
-            $this->numberofDocuments++;
-            $tokens = $fe->getFeature($doc);
-            $flag = array();
-            foreach ($tokens as $term) {
-                $flag[$term] = isset($flag[$term]) && $flag[$term] === true ? true : false;
-
-                if (isset($this->termFrequency[$term])){
-                    $this->termFrequency[$term]++;
-                } else {
-                    $this->termFrequency[$term] = 1;
-                }
-
-                if (isset($this->documentFrequency[$term])){
-                    if ($flag[$term] === false){
-                        $flag[$term] = true;
-                        $this->documentFrequency[$term]++;
-                    }
-                } else {
-                    $flag[$term] = true;
-                    $this->documentFrequency[$term] = 1;
-                }
-            }
-            
-        }
-
+        $this->numberOfDocuments = null;
+        $this->averageDocumentLength = null;
+        $this->numberOfTokens = null;
+        $this->numberOfUniqueTokens = null;
     }
 
 
@@ -71,7 +46,7 @@ class CollectionStatistics
      * 
      * @return mixed
      */
-    public function getNumberOfDocuments()
+    public function getNumberOfDocuments(): int
     {
 
         return $this->numberofDocuments;
@@ -79,38 +54,14 @@ class CollectionStatistics
     }
 
     /**
-     * Returns number of occurences of all words in the entire collection.
-     * 
-     * @param  string $term
-     * @return int
-     */
-    public function getTermFrequencies()
-    {
-        return $this->termFrequency;
-    }
-
-    /**
      * Returns average document length.
      * 
      * @return mixed
      */
-    public function getAverageDocumentLength()
+    public function getAverageDocumentLength(): float
     {
 
-        return array_sum($this->termFrequency)/$this->numberofDocuments;
-
-    }
-
-    /**
-     * Returns number of documents containing all words in the entire collection.
-     * 
-     * @param  string $term
-     * @return int
-     */
-    public function getDocumentFrequencies()
-    {
-
-        return $this->documentFrequency;
+        return $this->averageDocumentLength;
 
     }
 
@@ -119,9 +70,9 @@ class CollectionStatistics
      * 
      * @return int
      */
-    public function getNumberOfTokens()
+    public function getNumberOfTokens(): int
     {
-        return array_sum($this->termFrequency);
+        return $this->numberOfTokens;
     }
 
     /**
@@ -129,19 +80,50 @@ class CollectionStatistics
      * 
      * @return int
      */
-    public function getNumberOfUniqueTerms()
+    public function getNumberOfUniqueTokens(): int
     {
-        return count($this->termFrequency);
+        return $this->numberOfUniqueTokens;
     }
 
     /**
-     * Returns the collection set.
-     * 
-     * @return Collection
+     * Returns number of documents in the collection.
+     * @param  int $value
      */
-    public function getCollection()
+    public function setNumberOfDocuments(int $value)
     {
-        return $this->set;
+
+        $this->numberofDocuments = $value;
+
     }
+
+    /**
+     * Returns average document length.
+     * @param  int $value
+     */
+    public function setAverageDocumentLength(float $value)
+    {
+
+        $this->averageDocumentLength = $value;
+
+    }
+
+    /**
+     * Returns total number of all tokens in the entire collection.
+     * @param  int $value
+     */
+    public function setNumberOfTokens(int $value)
+    {
+        $this->numberOfTokens = $value;
+    }
+
+    /**
+     * Returns the total number of unique terms in the collection.
+     * @param  int $class
+     */
+    public function setNumberOfUniqueTokens(int $value)
+    {
+        $this->numberOfUniqueTokens = $value;
+    }
+
 
 }

@@ -4,6 +4,8 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 
 /**
@@ -27,6 +29,8 @@ class HiemstraLM extends WeightedModel implements WeightedModelInterface, Probab
     {
         parent::__construct();
         $this->c    = $c;
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
     }
 
     /**

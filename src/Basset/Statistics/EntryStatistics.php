@@ -2,7 +2,7 @@
 
 namespace Basset\Statistics;
 
-use Basset\Statistics\CollectionStatistics;
+use Basset\Statistics\PostingStatistics;
 use Basset\FeatureExtraction\TfFeatureExtraction;
 use Basset\Ranking\Tf;
 
@@ -15,64 +15,31 @@ use Basset\Ranking\Tf;
 class EntryStatistics
 {
 
-    private $stats;
+    private $termFrequency;
 
-    private $set;
+    private $documentFrequency;
 
-    private $term;
+    private $totalTermByPresence;
 
+    private $uniqueTotalByTermPresence;
 
-    /**
-     *
-     * TO-DO(when persistence is done, this should be termID)
-     * @param CollectionStatistics $stats The precomputed collection we want to extend
-     * @param string $term The term we'll be getting stats for
-     *
-     */
-    public function __construct(CollectionStatistics $stats)
+    public function __construct()
     {
-
-        $this->stats = $stats;
-        $this->set = $this->stats->getCollection();
-        $this->term = null;
+        $this->termFrequency = null;
+        $this->documentFrequency = null;
+        $this->totalTermByPresence = null;
+        $this->uniqueTotalByTermPresence = null;
     }
 
-    /**
-     * sets the term we'll compute stats for.
-     * 
-     * @return string
-     */
-    public function setTerm($term = null)
-    {
-        if($term === null){
-            throw new \Exception('Term should be set.');
-        }
-        $this->term = $term;
-    }
-
-    /**
-     * Returns the term.
-     * 
-     * @return string
-     */
-    public function getTerm()
-    {
-        return $this->term;
-    }
 
     /**
      * Returns number of occurences of the word in the entire collection.
      * 
      * @return int
      */
-    public function getTermFrequency()
+    public function getTermFrequency(): int
     {
-        if($this->getTerm() === null){
-            throw new \Exception('Specify a term.');
-        }
-
-        return isset($this->stats->getTermFrequencies()[$this->getTerm()]) ? $this->stats->getTermFrequencies()[$this->getTerm()] : 0;
-
+        return $this->termFrequency;
     }
 
     /**
@@ -80,52 +47,19 @@ class EntryStatistics
      * 
      * @return int
      */
-    public function getDocumentFrequency()
+    public function getDocumentFrequency(): int
     {
-        if($this->getTerm() === null){
-            throw new \Exception('Specify a term.');
-        }
-
-        return isset($this->stats->getDocumentFrequencies()[$this->getTerm()]) ? $this->stats->getDocumentFrequencies()[$this->getTerm()] : 0;
-
-
+        return $this->documentFrequency;
     }
-
-    /**
-     *
-     * THE FOLLOWING ARE USED FOR SPUD (JelinekMercerSPUD and DirichletSPUD) BACKGROUND ESTIMATION OF DCM, 
-     * THIS IS RESOURCE EXPENSIVE, SO USE THOSE MODELS AT YOUR OWN RISK.
-     *
-     */
 
     /**
      * Returns the total number of tokens in the only set of documents where the word appears.
      * 
      * @return int
      */
-    public function getTotalByTermPresence() {
-        
-        if($this->getTerm() === null){
-            throw new \Exception('Specify a term.');
-        }
-
-        $sum = 0;
-
-        $term = $this->getTerm();
-
-        $numberOfDocs = $this->stats->getNumberOfDocuments();
-
-        for($i = 0; $i < $numberOfDocs; $i++) {
-
-            $array = array_count_values($this->set->offsetGet($i)->getDocument());
-
-            if(isset($array[$term])) {
-
-                $sum += array_sum($array);
-
-            }
-        }
-        return $sum;
+    public function getTotalByTermPresence(): int
+    {
+        return $this->totalTermByPresence;
     }
 
     /**
@@ -133,55 +67,46 @@ class EntryStatistics
      * 
      * @return int
      */
-    public function getUniqueTotalByTermPresence() {
-        
-        if($this->getTerm() === null){
-            throw new \Exception('Specify a term.');
-        }
+    public function getUniqueTotalByTermPresence(): int
+    {
+        return $this->uniqueTotalByTermPresence;
+    }
 
-        $sum = 0;
+    public function setTermFrequency(int $value)
+    {
+        $this->termFrequency = $value;
+    }
 
-        $term = $this->getTerm();
+    public function setDocumentFrequency(int $value)
+    {
+        $this->documentFrequency = $value;
+    }
 
-        $numberOfDocs = $this->stats->getNumberOfDocuments();
+    public function setTotalByTermPresence(int $value)
+    {
+        $this->totalTermByPresence = $value;
+    }
 
-        for($i = 0; $i < $numberOfDocs; $i++) {
-
-            $array = array_count_values($this->set->offsetGet($i)->getDocument());
-
-            if(isset($array[$term])) {
-
-                $sum += count($array);
-
-            }
-        }
-        return $sum;
+    public function setUniqueTotalByTermPresence(int $value)
+    {
+        $this->uniqueTotalByTermPresence = $value;
     }
 
     /**
-     * Returns the array of tokenized documents where the word appears (this only uses offset as key).
+     * Returns the posting list for the term.
      * 
-     * @return array
+     * @return int
      */
-    public function getDocsByTermPresence() {
-
-        if($this->getTerm() === null){
-            throw new \Exception('Specify a term.');
-        }
-
-        $related_docs = array();
-
-        for($i = 0; $i < $this->stats->getNumberOfDocuments(); $i++) {
-
-            $array = array_count_values($this->set->offsetGet($i)->getDocument());
-
-            if(isset($array[$this->getTerm()])) {
-
-                $related_docs[$i] = $array;
-
-            }
-        }
-        return $related_docs;
+    public function getPostingList(): array
+    {
+        return $this->postinglist;
     }
+
+    public function setPostingList($class, PostingStatistics $value)
+    {
+        $this->postinglist[$class] = $value;
+    }
+
+
 
 }

@@ -4,6 +4,8 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\WeightedModelInterface;
 use Basset\Models\Contracts\KLDivergenceLMInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermFrequency;
 
 /**
  * JelinekMercerLM is a class for ranking documents against a query based on Linear interpolation of the maximum 
@@ -20,7 +22,7 @@ use Basset\Models\Contracts\KLDivergenceLMInterface;
  */
 
 
-class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface
+class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface, ProbabilisticModelInterface
 {
 
     const LAMBDA = 0.7;
@@ -31,6 +33,8 @@ class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, K
     {
         parent::__construct();
         $this->lambda = $lambda;
+        $this->queryModel = new TermFrequency;
+        $this->metric = new VectorSimilarity;
 
     }
 

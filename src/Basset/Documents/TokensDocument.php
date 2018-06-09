@@ -21,7 +21,7 @@ class TokensDocument implements DocumentInterface
      * Simply return the tokens received in the constructor
      * @return array The tokens array
      */
-    public function getDocument()
+    public function getDocument(): array
     {
         return $this->tokens;
     }
@@ -41,7 +41,7 @@ class TokensDocument implements DocumentInterface
                     $this->tokens
                 ),
                 function ($token) {
-                    return $token !== null;
+                    return $token!==null;
                 }
             )
         );

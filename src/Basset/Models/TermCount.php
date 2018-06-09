@@ -5,6 +5,7 @@ namespace Basset\Models;
 use Basset\Models\Contracts\TFInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
 
+
 /**
  * simple term count implementation
  *
@@ -15,7 +16,6 @@ use Basset\Models\Contracts\WeightedModelInterface;
 class TermCount extends WeightedModel implements WeightedModelInterface, TFInterface
 {
 
-
     /**
      * @param  int $tf
      * @param  int $docLength
@@ -23,10 +23,8 @@ class TermCount extends WeightedModel implements WeightedModelInterface, TFInter
      * @return float
      */
     public function score($tf, $docLength, $docUniqueLength)
-    {
-        
+    {  
         return $tf;
-
     }
 
 

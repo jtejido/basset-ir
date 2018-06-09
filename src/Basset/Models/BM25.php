@@ -4,6 +4,8 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 /**
  * BM25 is a class for ranking documents against a query.
@@ -35,6 +37,8 @@ class BM25 extends WeightedModel implements WeightedModelInterface, Probabilisti
         parent::__construct();
         $this->b = $b;
         $this->k1 = $k1;
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
     }
 
     /**

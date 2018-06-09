@@ -22,9 +22,7 @@ class TfConcaveLog extends WeightedModel implements WeightedModelInterface, TFIn
      */
     public function score($tf, $docLength, $docUniqueLength)
     {
-
         return 1 + log(1 + log($tf));
-
     }
 
 

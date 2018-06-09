@@ -14,7 +14,7 @@ interface DocumentInterface
      *
      * @return mixed
      */
-    public function getDocument();
+    public function getDocument(): array;
 
     /**
      * Apply the transformation to the document.

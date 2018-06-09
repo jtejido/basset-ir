@@ -4,6 +4,8 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 /**
  * An experimental IRRA system that aims to evaluate a new DFI-based term weighting model developed on the basis of
@@ -21,6 +23,8 @@ class IRRA12 extends WeightedModel implements WeightedModelInterface, Probabilis
     public function __construct()
     {
         parent::__construct();
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
     }
 
 
@@ -47,7 +51,7 @@ class IRRA12 extends WeightedModel implements WeightedModelInterface, Probabilis
             // Λij
             $suppress_junk = pow($alpha, (3/4)) * pow($beta, (1/4));
             // ∆(Iij)
-            $score += (($tf + 1) * log((($tf + 1)/sqrt($expected_plus))), 2) - ($tf * log(($tf/sqrt($expected)), 2));
+            $score += (($tf + 1) * log((($tf + 1)/sqrt($expected_plus)), 2)) - ($tf * log(($tf/sqrt($expected)), 2));
             return $score  * $suppress_junk;
         
 

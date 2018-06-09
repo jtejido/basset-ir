@@ -15,7 +15,6 @@ use Basset\Models\Contracts\WeightedModelInterface;
 class TermFrequency extends WeightedModel implements WeightedModelInterface, TFInterface
 {
 
-
     /**
      * @param  int $tf
      * @param  int $docLength
@@ -23,10 +22,8 @@ class TermFrequency extends WeightedModel implements WeightedModelInterface, TFI
      * @return float
      */
     public function score($tf, $docLength, $docUniqueLength)
-    {
-        
+    {     
         return $tf / $docLength;
-
     }
 
 

@@ -4,6 +4,8 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 /**
  * ATIRE BM25 is a class that uses Robertson-Walker IDF instead of the original Robertson-Sparck IDF.
@@ -34,6 +36,8 @@ class AtireBM25 extends WeightedModel implements WeightedModelInterface, Probabi
         parent::__construct();
         $this->b = $b;
         $this->k1 = $k1;
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
     }
 
     /**

@@ -8,15 +8,22 @@ use Basset\Index\IndexInterface;
 use Basset\Models\Normalization\NormalizationInterface;
 use Basset\Models\AfterEffect\AfterEffectInterface;
 use Basset\Math\Math;
+use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\MetricInterface;
 
 abstract class WeightedModel
 {
 
+
+    private $stats;
+
     private $cs;
 
-    private $es;
-
     protected $math;
+
+    protected $queryModel;
+
+    protected $metric;
 
     CONST E = M_E;
 
@@ -25,72 +32,79 @@ abstract class WeightedModel
         $this->math = new Math();
     }
 
-    public function setIndex(IndexInterface $index)
+    public function setMetric(MetricInterface $metric)
     {
-        $this->index = $index;
-        $this->cs = $this->index->getCollectionStatistics();
-        $this->es = $this->index->getEntryStatistics();
+        $this->metric = $metric;
     }
 
-    public function getIndex()
+    public function getMetric(): MetricInterface
     {
-        return $this->index;
+        return $this->metric;
     }
 
+    public function setQueryModel(WeightedModelInterface $model)
+    {
+        $this->queryModel = $model;
+    }
 
-    public function getCollectionStatistics()
+    public function getQueryModel(): WeightedModelInterface
+    {
+        return $this->queryModel;
+    }
+
+    public function setStats(EntryStatistics $stats)
+    {
+        $this->stats = $stats;
+    }
+
+    public function setCollectionStatistics(CollectionStatistics $cs)
+    {
+        $this->cs = $cs;
+    }
+
+    public function getCollectionStatistics(): CollectionStatistics
     {
         return $this->cs;
     }
 
-    public function getEntryStatistics()
+    protected function getTermFrequency(): int
     {
-        return $this->es;
+        return $this->stats->getTermFrequency();
     }
 
-    protected function getTermFrequency()
+    protected function getDocumentFrequency(): int
     {
-        return $this->es->getTermFrequency();
+        return $this->stats->getDocumentFrequency();
     }
 
-    protected function getDocumentFrequency()
+    protected function getAverageDocumentLength(): float
     {
-        return $this->es->getDocumentFrequency();
+        return $this->getCollectionStatistics()->getAverageDocumentLength();
     }
 
-    protected function getAverageDocumentLength()
+    protected function getNumberOfTokens(): int
     {
-        return $this->cs->getAverageDocumentLength();
+        return $this->getCollectionStatistics()->getNumberOfTokens();
     }
 
-    protected function getNumberOfTokens()
+    protected function getNumberOfUniqueTerms(): int
     {
-        return $this->cs->getNumberOfTokens();
+        return $this->getCollectionStatistics()->getNumberOfUniqueTokens();
     }
 
-    protected function getNumberOfUniqueTerms()
+    protected function getNumberOfDocuments(): int
     {
-        return $this->cs->getNumberOfUniqueTerms();
+        return $this->getCollectionStatistics()->getNumberOfDocuments();
     }
 
-    protected function getNumberOfDocuments()
+    protected function getTotalByTermPresence(): int
     {
-        return $this->cs->getNumberOfDocuments();
+        return $this->stats->getTotalByTermPresence();
     }
 
-    protected function getTotalByTermPresence()
+    protected function getUniqueTotalByTermPresence(): int
     {
-        return $this->es->getTotalByTermPresence();
-    }
-
-    protected function getUniqueTotalByTermPresence()
-    {
-        return $this->es->getUniqueTotalByTermPresence();
-    }
-
-    protected function getDocsByTermPresence()
-    {
-        return $this->es->getDocsByTermPresence();
+        return $this->stats->getUniqueTotalByTermPresence();
     }
 
     public function getScore($tf, $docLength, $docUniqueLength)

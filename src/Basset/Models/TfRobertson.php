@@ -27,6 +27,7 @@ class TfRobertson extends WeightedModel implements WeightedModelInterface, TFInt
 
     public function __construct($k = self::K, $b = self::B)
     {
+        parent::__construct();
         $this->b = $b;
         $this->k = $k;
     }

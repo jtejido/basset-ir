@@ -30,12 +30,10 @@ class TfConcaveK extends WeightedModel implements WeightedModelInterface, TFInte
      */
     public function score($tf, $docLength, $docUniqueLength)
     {
-        
         $num = $tf * ($this->k1 + 1);
         $denom = $tf + $this->k1;
 
         return $num/$denom;
-
     }
 
 

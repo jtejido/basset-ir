@@ -2,12 +2,15 @@
 
 namespace Basset\Models;
 
-use Basset\Index\IndexInterface;
+use Basset\Statistics\EntryStatistics;
+use Basset\Statistics\CollectionStatistics;
 use Basset\Models\IBDistribution\IBDistributionInterface;
 use Basset\Models\IBLambda\IBLambdaInterface;
 use Basset\Models\Normalization\NormalizationInterface;
 use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermCount;
 
 
 class IBModel extends WeightedModel implements WeightedModelInterface, ProbabilisticModelInterface
@@ -41,16 +44,25 @@ class IBModel extends WeightedModel implements WeightedModelInterface, Probabili
         $this->model = $model;
         $this->lambda = $lambda;
         $this->normalization = $normalization;
+        $this->queryModel = new TermCount;
+        $this->metric = new VectorSimilarity;
         if ($this->model === null || $this->lambda === null || $this->normalization === null) {
             throw new \Exception("Null Parameters not allowed.");
         }
     }
 
-    public function setIndex(IndexInterface $index)
+    public function setStats($stats)
     {
-        $this->index = $index;
-        $this->normalization->setIndex($this->index);
-        $this->lambda->setIndex($this->index);
+        $this->stats = $stats;
+        $this->normalization->setStats($this->stats);
+        $this->lambda->setStats($this->stats);
+    }
+
+    public function setCollectionStatistics(CollectionStatistics $cs)
+    {
+        $this->cs = $cs;
+        $this->normalization->setCollectionStatistics($this->cs);
+        $this->lambda->setCollectionStatistics($this->cs);
     }
 
     public function score($tf, $docLength, $docUniqueLength)

@@ -13,7 +13,7 @@ class FeatureExtraction implements FeatureExtractionInterface
         $this->preweighted = $preweighted;
     }
 
-    public function getFeature(DocumentInterface $doc)
+    public function getFeature(DocumentInterface $doc): array
     {
 
     	$tokens = array_count_values($doc->getDocument());

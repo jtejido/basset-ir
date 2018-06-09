@@ -6,6 +6,8 @@ use Basset\Models\Contracts\ProbabilisticModelInterface;
 use Basset\Models\Contracts\WeightedModelInterface;
 use Basset\Models\Contracts\LanguageModelInterface;
 use Basset\Models\Contracts\KLDivergenceLMInterface;
+use Basset\Metric\VectorSimilarity;
+use Basset\Models\TermFrequency;
 
 /**
  * DirichletLM is a class for ranking documents against a query based on Bayesian smoothing with 
@@ -32,14 +34,18 @@ class DirichletLM extends WeightedModel implements WeightedModelInterface, KLDiv
     {
         parent::__construct();
         $this->mu = $mu;
+        $this->queryModel = new TermFrequency;
+        $this->metric = new VectorSimilarity;
 
     }
 
-    private function getConstant() {
+    private function getConstant() 
+    {
         return $this->mu;
     }
 
-    public function getDocumentConstant($docLength, $docUniqueLength) {
+    public function getDocumentConstant($docLength, $docUniqueLength) 
+    {
         return $this->getConstant()/($this->getConstant() + $docLength);
     }
  
@@ -66,10 +72,11 @@ class DirichletLM extends WeightedModel implements WeightedModelInterface, KLDiv
         $constant = $this->getConstant();
         $document_constant = $this->getDocumentConstant($docLength, $docUniqueLength);
         // smoothed probability of words seen in the collection
+        
         $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
 
         // log(1 + ($tf + $constant * $mle_c) / ($docLength + $constant));
-        return log(1 + ($tf / ($constant * $mle_c)));
+        return log(1 + ($tf / ($constant * $mle_c))) + log($document_constant);
 
     }
 

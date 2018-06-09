@@ -3,6 +3,7 @@
 namespace Basset\Models;
 
 use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Metric\CosineSimilarity;
 
 /**
  * LemurTfIdf as implemented in Lemur toolkit implementation AKA Robertson's TF x IDF
@@ -24,8 +25,10 @@ class LemurTfIdf extends WeightedModel implements WeightedModelInterface
 
     public function __construct($k = self::K, $b = self::B)
     {
+        parent::__construct();
         $this->b = $b;
         $this->k = $k;
+        $this->metric = new CosineSimilarity;
     }
 
 
@@ -41,7 +44,8 @@ class LemurTfIdf extends WeightedModel implements WeightedModelInterface
         $num = $tf * ($this->k1 + 1);
         $denom = $tf + $this->k1 * (1 - $this->b + $this->b * ($docLength / $this->getAverageDocumentLength()));
         $tf = $num / $denom;
-        $idf = log(1 + ($this->getNumberOfDocuments()/$this->getDocumentFrequency()));
+        $df = $this->getDocumentFrequency();
+        $idf = $df > 0 ? log(1 + ($this->getNumberOfDocuments()/$df)) : 0;
         return $tf * $idf;
 
     }
