@@ -99,7 +99,7 @@ class Similarity {
 
         $search = new Search($indexReader);
         $search->query($query);
-        $search->model(new TfIdf);
+        $search->model(new BM25);
         print_r($search->search(15)); 
 
         /* 
