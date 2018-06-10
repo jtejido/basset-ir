@@ -1,11 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Statistics;
 
-use Basset\Collections\CollectionSet;
-use Basset\Statistics\PostingStatistics;
-use Basset\FeatureExtraction\FeatureExtractionInterface;
-use Basset\FeatureExtraction\DataAsFeatures;
 
 
 /**
@@ -27,11 +25,6 @@ class CollectionStatistics
     private $numberOfUniqueTokens;
 
 
-    /**
-     * @param CollectionSet $set The set of documents for which we will compute token stats
-     * @param FeatureExtractionInterface $fe A feature factory to translate the document data to 
-     * single tokens
-     */
     public function __construct()
     {
         $this->numberOfDocuments = null;
@@ -98,7 +91,7 @@ class CollectionStatistics
 
     /**
      * Returns average document length.
-     * @param  int $value
+     * @param  float $value
      */
     public function setAverageDocumentLength(float $value)
     {

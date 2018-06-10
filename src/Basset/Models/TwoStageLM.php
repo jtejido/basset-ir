@@ -1,13 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Models\Contracts\LanguageModelInterface;
-use Basset\Models\Contracts\KLDivergenceLMInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermFrequency;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface,
+        LanguageModelInterface,
+        KLDivergenceLMInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermFrequency
+    };
+
 
 /**
  * TwoStageLM is a class for ranking documents that explicitly captures the different influences of the query and document 
@@ -47,7 +54,8 @@ class TwoStageLM extends WeightedModel implements WeightedModelInterface, Probab
         $this->metric = new VectorSimilarity;
     }
 
-    private function getConstant(string $constant) {
+    private function getConstant(string $constant): float
+    {
         if($constant === 'lambda') {
             return $this->lambda;
         } elseif($constant === 'mu') {
@@ -57,7 +65,8 @@ class TwoStageLM extends WeightedModel implements WeightedModelInterface, Probab
         }
     }
 
-    public function getDocumentConstant($docLength, $docUniqueLength) {
+    public function getDocumentConstant(int $docLength, int $docUniqueLength): float
+    {
         return ((1-$this->getConstant('lambda')) * $docLength + $this->getConstant('mu')) / ($docLength + $this->getConstant('mu'));
     }
  
@@ -77,7 +86,7 @@ class TwoStageLM extends WeightedModel implements WeightedModelInterface, Probab
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
             $mu = $this->getConstant('mu');

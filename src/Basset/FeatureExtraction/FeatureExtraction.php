@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Basset\FeatureExtraction;
 
 use Basset\Documents\DocumentInterface;

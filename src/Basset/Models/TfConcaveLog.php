@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\TFInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Models\Contracts\{
+        TFInterface,
+        WeightedModelInterface
+    };
+
 
 /**
  * @author Jericko Tejido <jtbibliomania@gmail.com>
@@ -20,7 +25,7 @@ class TfConcaveLog extends WeightedModel implements WeightedModelInterface, TFIn
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         return 1 + log(1 + log($tf));
     }

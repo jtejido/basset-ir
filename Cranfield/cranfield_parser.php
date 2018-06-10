@@ -25,6 +25,8 @@ Class CranfieldParser {
 		$string = str_replace(array("\r", "\n"), '', $doc);
 		$xml = new \SimpleXMLElement($string);
 		foreach($xml as $key => $value){
+			$file = null;
+			$filename = null;
 			foreach($value as $node => $content){
 				if ($node === 'DOCNO'){
 					$filename = $content;
@@ -32,9 +34,10 @@ Class CranfieldParser {
 
 				if ($node === 'TEXT'){
 					$file = $content;
-					if(!file_exists(self::BASE . $filename)) {
-						file_put_contents(self::BASE . $filename, $file);
-					}
+				}
+
+				if($file && $filename && !file_exists(self::BASE . $filename)) {
+					file_put_contents(self::BASE . $filename, $file);
 				}
 				
 			}

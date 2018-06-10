@@ -1,15 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Statistics\EntryStatistics;
-use Basset\Statistics\CollectionStatistics;
-use Basset\Index\IndexInterface;
-use Basset\Models\Normalization\NormalizationInterface;
-use Basset\Models\AfterEffect\AfterEffectInterface;
-use Basset\Math\Math;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Metric\MetricInterface;
+use Basset\Statistics\{
+        EntryStatistics,
+        CollectionStatistics
+    };
+use Basset\Models\{
+        Normalization\NormalizationInterface,
+        AfterEffect\AfterEffectInterface,
+        Contracts\WeightedModelInterface
+    };
+use Basset\{
+        Index\IndexInterface,
+        Math\Math,
+        Metric\MetricInterface
+    };
+    
 
 abstract class WeightedModel
 {
@@ -107,7 +116,7 @@ abstract class WeightedModel
         return $this->stats->getUniqueTotalByTermPresence();
     }
 
-    public function getScore($tf, $docLength, $docUniqueLength)
+    public function getScore($tf, $docLength, $docUniqueLength): float
     {
         return $this->score($tf, $docLength, $docUniqueLength);
     }

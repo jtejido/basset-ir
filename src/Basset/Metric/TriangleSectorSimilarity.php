@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Metric;
 
-use Basset\Metric\CosineSimilarity;
-use Basset\Metric\EuclideanDistance;
+use Basset\Metric\{
+        CosineSimilarity, 
+        EuclideanDistance
+    };
 
 /**
  * This is based on Heidarian and Dinneen's Hybrid Geometric Approach for cosine similarity.

@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Statistics;
 
 use Basset\Statistics\PostingStatistics;
-use Basset\FeatureExtraction\TfFeatureExtraction;
-use Basset\Ranking\Tf;
 
 /**
  * EntryStatistics implements basic statistics about a lexical entry (usually a term).
@@ -72,6 +72,16 @@ class EntryStatistics
         return $this->uniqueTotalByTermPresence;
     }
 
+    /**
+     * Returns the posting list for the term.
+     * 
+     * @return int
+     */
+    public function getPostingList(): array
+    {
+        return $this->postinglist;
+    }
+
     public function setTermFrequency(int $value)
     {
         $this->termFrequency = $value;
@@ -90,16 +100,6 @@ class EntryStatistics
     public function setUniqueTotalByTermPresence(int $value)
     {
         $this->uniqueTotalByTermPresence = $value;
-    }
-
-    /**
-     * Returns the posting list for the term.
-     * 
-     * @return int
-     */
-    public function getPostingList(): array
-    {
-        return $this->postinglist;
     }
 
     public function setPostingList($class, PostingStatistics $value)

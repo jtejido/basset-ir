@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Index;
 
-use Basset\Structure\TrieManager;
-use Basset\Structure\Trie;
+use Basset\Structure\{
+        TrieManager, 
+        Trie
+    };
 
 
 /**
@@ -32,7 +36,7 @@ class IndexReader
 
     private $indexManager;
 
-    public function __construct($path = null)
+    public function __construct(string $path = null)
     {
 
         $this->path = $path;
@@ -68,7 +72,7 @@ class IndexReader
         return $this->index;
     }
 
-    private function readFile($path = self::FILENAME): IndexInterface 
+    private function readFile(string $path = self::FILENAME): IndexInterface 
     {
         return unserialize(file_get_contents($path));
     }
@@ -79,7 +83,7 @@ class IndexReader
         $data = $index->getData();
 
         foreach($data as $term => $meta) {
-            $this->trieManager->addEntry($term, $meta);
+            $this->trieManager->addEntry((string) $term, $meta);
         }
 
         return true;

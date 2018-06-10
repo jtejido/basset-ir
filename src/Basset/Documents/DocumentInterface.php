@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Documents;
 
 use Basset\Utils\TransformationInterface;
@@ -12,14 +14,14 @@ interface DocumentInterface
     /**
      * Return the document.
      *
-     * @return mixed
+     * @return array
      */
     public function getDocument(): array;
 
     /**
      * Apply the transformation to the document.
      *
-     * @param TransformationInterface $transform The transformation to be applied
+     * @param TransformationInterface
      */
     public function applyTransformation(TransformationInterface $transform);
 }

@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermCount;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermCount
+    };
 
 /**
  * BSDS is a class that implements the Binary Standard Document Score (BSDS) with document length normalization. 
@@ -46,7 +52,7 @@ class BSDS extends WeightedModel implements WeightedModelInterface, Probabilisti
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
         $tf_num = $tf * ($this->k1 + 1);

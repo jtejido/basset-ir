@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
 use Basset\Models\Contracts\WeightedModelInterface;
@@ -30,7 +32,7 @@ class TfIdf extends WeightedModel implements WeightedModelInterface
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         $df = $this->getDocumentFrequency();
         return $df > 0 ? $tf * log(1 + ($this->getNumberOfDocuments() / $df), $this->base) : 0;

@@ -1,16 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Statistics\EntryStatistics;
-use Basset\Statistics\CollectionStatistics;
-use Basset\Models\IBDistribution\IBDistributionInterface;
-use Basset\Models\IBLambda\IBLambdaInterface;
-use Basset\Models\Normalization\NormalizationInterface;
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermCount;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface
+    };
+use Basset\Models\Statistics\{
+        EntryStatistics,
+        CollectionStatistics
+    };
+use Basset\Models\{
+        IBDistribution\IBDistributionInterface,
+        IBLambda\IBLambdaInterface,
+        Normalization\NormalizationInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermCount
+    };
 
 
 class IBModel extends WeightedModel implements WeightedModelInterface, ProbabilisticModelInterface
@@ -65,7 +75,7 @@ class IBModel extends WeightedModel implements WeightedModelInterface, Probabili
         $this->lambda->setCollectionStatistics($this->cs);
     }
 
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
         $tf = $this->normalization->normalise($tf, $docLength);

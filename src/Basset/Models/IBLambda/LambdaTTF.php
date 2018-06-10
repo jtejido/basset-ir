@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models\IBLambda;
 
 
@@ -12,7 +14,8 @@ class LambdaTTF extends Lambda implements IBLambdaInterface
     	parent::__construct();
     }
     
-    public function getLambda(){
+    public function getLambda(): float
+    {
 
         return ($this->getTermFrequency()+1) / ($this->getNumberOfDocuments()+1);
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models\DFRModels;
 
 
@@ -12,7 +14,8 @@ class G extends BasicModel implements BasicModelInterface
 
     }
 
-    public function score($tf, $docLength, $docUniqueLength){
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
+    {
 
         $collectionCount = $this->getNumberOfDocuments();
         $termFrequency = $this->getTermFrequency();

@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\TFInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Models\Contracts\{
+        TFInterface,
+        WeightedModelInterface
+    };
+
 
 /**
  * term frequency ratio (or AKA document likelihood in LM)
@@ -21,7 +26,7 @@ class TermFrequency extends WeightedModel implements WeightedModelInterface, TFI
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {     
         return $tf / $docLength;
     }

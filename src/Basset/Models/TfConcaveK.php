@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\TFInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Models\Contracts\{
+        TFInterface,
+        WeightedModelInterface
+    };
+
 
 /**
  * @author Jericko Tejido <jtbibliomania@gmail.com>
@@ -28,7 +33,7 @@ class TfConcaveK extends WeightedModel implements WeightedModelInterface, TFInte
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         $num = $tf * ($this->k1 + 1);
         $denom = $tf + $this->k1;

@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\TFInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Models\Contracts\{
+        TFInterface,
+        WeightedModelInterface
+    };
 
 /**
  * PivotedConcaveTFIDF (renamed original name of (TF)l◦δ◦p due to its eccentricity for a class name) is 
@@ -41,7 +45,7 @@ class PivotedConcaveTF extends WeightedModel implements WeightedModelInterface, 
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
         $num = $tf;

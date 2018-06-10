@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models\Normalization;
 
 /**
@@ -19,7 +21,8 @@ class NormalizationP extends Normalization implements NormalizationInterface
         $this->c = $c;
     }
 
-    public function normalise($tf, $docLength) {
+    public function normalise(int $tf, int $docLength): float
+    {
         return $tf * pow($this->getAverageDocumentLength()/$docLength, $this->c);
     }
 

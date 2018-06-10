@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermCount;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermCount
+    };
 
 /**
  * JelinekMercerSPUD is a class for ranking documents that captures the tendency of a term to repeat itself within
@@ -37,7 +43,7 @@ class JelinekMercerSPUD extends WeightedModel implements WeightedModelInterface,
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         $lambda = $docUniqueLength/$docLength;
         $mle = $tf/$docLength;

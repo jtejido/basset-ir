@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Statistics;
 
-use Basset\Documents\DocumentInterface;
-use Basset\FeatureExtraction\FeatureExtraction;
 
 
 /**

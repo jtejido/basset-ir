@@ -1,13 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Models\Contracts\LanguageModelInterface;
-use Basset\Models\Contracts\KLDivergenceLMInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermFrequency;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface,
+        LanguageModelInterface,
+        KLDivergenceLMInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermFrequency
+    };
 
 /**
  * DirichletLM is a class for ranking documents against a query based on Bayesian smoothing with 
@@ -30,7 +36,7 @@ class DirichletLM extends WeightedModel implements WeightedModelInterface, KLDiv
 
     protected $mu;
 
-    public function __construct($mu = self::MU)
+    public function __construct(float $mu = self::MU)
     {
         parent::__construct();
         $this->mu = $mu;
@@ -39,12 +45,12 @@ class DirichletLM extends WeightedModel implements WeightedModelInterface, KLDiv
 
     }
 
-    private function getConstant() 
+    private function getConstant(): float
     {
         return $this->mu;
     }
 
-    public function getDocumentConstant($docLength, $docUniqueLength) 
+    public function getDocumentConstant(int $docLength, int $docUniqueLength): float
     {
         return $this->getConstant()/($this->getConstant() + $docLength);
     }
@@ -66,7 +72,7 @@ class DirichletLM extends WeightedModel implements WeightedModelInterface, KLDiv
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         
         $constant = $this->getConstant();

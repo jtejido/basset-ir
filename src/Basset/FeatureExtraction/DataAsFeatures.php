@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types=1);
+
 namespace Basset\FeatureExtraction;
 
 use Basset\Documents\DocumentInterface;
@@ -6,11 +9,11 @@ use Basset\Documents\DocumentInterface;
 class DataAsFeatures implements FeatureExtractionInterface
 {
     /**
-     * @param  string            $class The class for which we are calculating features
-     * @param  DocumentInterface $d     The document to calculate features for.
+     * @param  string $class
+     * @param  DocumentInterface $d
      * @return array
      */
-    public function getFeature(DocumentInterface $d)
+    public function getFeature(DocumentInterface $d): array
     {
         return $d->getDocument();
     }

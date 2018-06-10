@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Models\Contracts\KLDivergenceLMInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermFrequency;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface,
+        KLDivergenceLMInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermFrequency
+    };
 
 /**
  * JelinekMercerLM is a class for ranking documents against a query based on Linear interpolation of the maximum 
@@ -38,11 +45,13 @@ class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, K
 
     }
 
-    private function getConstant() {
+    private function getConstant(): float
+    {
         return $this->lambda;
     }
 
-    public function getDocumentConstant($docLength, $docUniqueLength) {
+    public function getDocumentConstant(int $docLength, int $docUniqueLength): float
+    {
         return $this->getConstant();
     }
  
@@ -63,7 +72,7 @@ class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, K
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         
         $constant = $this->getConstant();

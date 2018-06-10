@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermCount;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermCount
+    };
 
 /**
  * BM25L is a work of Lv and Zhai to rewrite BM25 due to Singhal et al's observation for having it penalized
@@ -49,7 +55,7 @@ class BM25L extends WeightedModel implements WeightedModelInterface, Probabilist
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
         $idf = log($this->getNumberOfDocuments() + 1/$this->getDocumentFrequency() + 0.5);

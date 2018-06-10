@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Basset\Index;
 
@@ -15,7 +16,7 @@ class IndexEntry
         $this->value = $value;
     }
 
-    public function getValue() 
+    public function getValue(): EntryStatistics
     {
         return $this->value;
     }

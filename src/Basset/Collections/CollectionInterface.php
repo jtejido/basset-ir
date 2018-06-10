@@ -12,15 +12,13 @@ interface CollectionInterface
 {
     /**
      * Return the document.
-     *
-     * @return mixed
      */
     public function addDocument(DocumentInterface $d, $class);
 
     /**
      * Apply the transformations to the document.
      *
-     * @param TransformationInterface $transform The transformation to be applied
+     * @param TransformationInterface
      */
     public function applyTransformation(TransformationInterface $transform);
 

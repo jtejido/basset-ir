@@ -6,6 +6,6 @@ namespace Basset\Models\IBLambda;
 interface IBLambdaInterface
 {
 
-    public function getLambda();
+    public function getLambda(): float;
 
 }

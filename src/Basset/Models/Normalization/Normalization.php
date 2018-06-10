@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models\Normalization;
 
 use Basset\Models\WeightedModel;
@@ -11,6 +13,6 @@ abstract class Normalization extends WeightedModel
     	parent::__construct();
     }
     
-    abstract protected function normalise($tf, $docLength);
+    abstract protected function normalise(int $tf, int $docLength): float;
 
 }

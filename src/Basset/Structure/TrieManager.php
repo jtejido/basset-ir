@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Structure;
 
 use Basset\Statistics\CollectionStatistics;
@@ -29,7 +31,7 @@ class TrieManager implements TrieManagerInterface
         return $this->trie->getTrie();
     }
 
-    public function addEntry($key, $value = null): bool
+    public function addEntry(string $key, $value = null): bool
     {
         if ($key > '') {
             $trieNodeEntry = $this->getNodeByKey($key, true);
@@ -77,7 +79,7 @@ class TrieManager implements TrieManagerInterface
         return $trieNode;
     }
 
-    private function getChildren(TrieNode $trieNode, $prefix, $class = null)
+    private function getChildren(TrieNode $trieNode, $prefix)
     {
         $collection = new TrieCollection();
         if ($trieNode->value !== null) {
@@ -96,7 +98,7 @@ class TrieManager implements TrieManagerInterface
             foreach ($trieNode->children as $character => $trie) {
                 if($collection->getKeys() == $prefix){
                     $collection->merge(
-                        $this->getChildren($trie, $prefix . $character, $class)
+                        $this->getChildren($trie, $prefix . $character)
                     );
                 }
             }

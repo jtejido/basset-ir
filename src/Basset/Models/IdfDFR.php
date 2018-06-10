@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\IDFInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Models\Contracts\{
+        IDFInterface,
+        WeightedModelInterface
+    };
 use Basset\Metric\CosineSimilarity;
 
 /**
@@ -29,7 +33,7 @@ class IdfDFR extends BaseIdf implements WeightedModelInterface, IDFInterface
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         $df = $this->getDocumentFrequency();
         return $df > 0 ? log(1 + (($this->getNumberOfDocuments()+1)/($df+0.5)), $this->getBase()) : 0;

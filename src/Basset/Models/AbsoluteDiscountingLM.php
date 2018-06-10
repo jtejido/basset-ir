@@ -1,13 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Models\Contracts\LanguageModelInterface;
-use Basset\Models\Contracts\KLDivergenceLMInterface;
-use Basset\Models\TermFrequency;
-use Basset\Metric\VectorSimilarity;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface,
+        LanguageModelInterface,
+        KLDivergenceLMInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermFrequency
+    };
 
 /**
  * AbsoluteDiscountingLM is a class for ranking documents against a query by lowering down the probability of seen words by
@@ -39,12 +45,12 @@ class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterf
         $this->metric = new VectorSimilarity;
     }
 
-    private function getConstant() 
+    private function getConstant(): float
     {
         return $this->delta;
     }
 
-    public function getDocumentConstant($docLength, $docUniqueLength) 
+    public function getDocumentConstant(int $docLength, int $docUniqueLength): float
     {
         return ($this->getConstant() * $docUniqueLength) / $docLength;
     }
@@ -65,7 +71,7 @@ class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterf
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
         $constant = $this->getConstant();

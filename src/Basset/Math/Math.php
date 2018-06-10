@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Math;
 
 /**
@@ -19,7 +21,7 @@ class Math
      * @param  mixed $expression
      * @return mixed
      */
-    public function log2ofE()
+    public function log2ofE(): float
     {
         return 1 / log(2);
     }
@@ -31,7 +33,7 @@ class Math
     * @param mixed m The parameter of the Stirling formula.
     * @return mixed
     */
-    public function stirlingPower($a, $b)
+    public function stirlingPower(float $a,float $b): float
     {
         $diff = $a - $b;
         return ($b + 0.5) * log($a / $b) + $diff * log($a);
@@ -44,7 +46,8 @@ class Math
      * @param array $vector
      * @return mixed
      */
-    public function norm(array $vector) {
+    public function norm(array $vector): float
+    {
         return sqrt($this->dotProduct($vector, $vector));
     }
 
@@ -56,7 +59,8 @@ class Math
      * @param array $b
      * @return mixed
      */
-    public function dotProduct(array $a, array $b) {
+    public function dotProduct(array $a, array $b): float
+    {
         $dotProduct = 0;
         $keysA = array_keys(array_filter($a));
         $keysB = array_keys(array_filter($b));
@@ -74,7 +78,7 @@ class Math
      * @param array $arr
      * @return float
      */
-    public function mean(array $arr)
+    public function mean(array $arr): array
     {
         return ($arr) ? array_sum($arr)/count($arr) : 0;
     }
@@ -93,7 +97,7 @@ class Math
      * @param array $x
      * @return float
      */
-    public function digamma($x)
+    public function digamma(float $x): float
     {
         $large = 9.5;
         $d1 = -0.5772156649015328606065121;

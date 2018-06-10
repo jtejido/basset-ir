@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\FeatureExtraction;
 
 use Basset\Documents\DocumentInterface;
@@ -15,5 +17,5 @@ interface FeatureExtractionInterface
      * @param  DocumentInterface $d The document for which we are calculating features
      * @return array
      */
-    public function getFeature(DocumentInterface $doc);
+    public function getFeature(DocumentInterface $doc): array;
 }

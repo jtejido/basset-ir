@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models\DFRAfterEffect;
 
 use Basset\Models\WeightedModel;
@@ -12,6 +14,6 @@ abstract class AfterEffect extends WeightedModel
     	parent::__construct();
     }
       
-    abstract protected function gain($tf);
+    abstract protected function gain(int $tf): float;
 
 }

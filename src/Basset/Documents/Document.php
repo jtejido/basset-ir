@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Documents;
 
 use Basset\Utils\TransformationInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Statistics\PostingStatistics;
 
 
 class Document implements DocumentInterface
@@ -15,8 +15,8 @@ class Document implements DocumentInterface
     private $class;
 
     /**
-     * @param string            $class The actual label/class of the Document $d
-     * @param DocumentInterface $d     The document to be processed
+     * @param string $class
+     * @param DocumentInterface $d
      */
     public function __construct(DocumentInterface $d, $class = null)
     {

@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermCount;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermCount
+    };
 
 /**
  * BM25 is a class for ranking documents against a query.
@@ -47,7 +53,7 @@ class BM25 extends WeightedModel implements WeightedModelInterface, Probabilisti
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
         $idf = log(1 + (($this->getNumberOfDocuments()-$this->getDocumentFrequency()+0.5)/($this->getDocumentFrequency() + 0.5)));

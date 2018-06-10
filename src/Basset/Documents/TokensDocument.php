@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Documents;
 
 use Basset\Utils\TransformationInterface;
@@ -19,7 +21,8 @@ class TokensDocument implements DocumentInterface
 
     /**
      * Simply return the tokens received in the constructor
-     * @return array The tokens array
+     *
+     * @return array
      */
     public function getDocument(): array
     {
@@ -29,11 +32,10 @@ class TokensDocument implements DocumentInterface
     /**
      * Apply the transform to each token. Filter out the null tokens.
      *
-     * @param TransformationInterface $transform The transformation to be applied
+     * @param TransformationInterface
      */
     public function applyTransformation(TransformationInterface $transform)
     {
-        // array_values for re-indexing
         $this->tokens = array_values(
             array_filter(
                 array_map(

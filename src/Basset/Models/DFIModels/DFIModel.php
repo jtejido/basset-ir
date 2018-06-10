@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models\DFIModels;
 
 use Basset\Models\WeightedModel;
@@ -12,7 +14,8 @@ class DFIModel extends WeightedModel
     	parent::__construct();
     }
     
-    public function getExpected($doclength){
+    public function getExpected(int $doclength): float
+    {
 
         return ($this->getTermFrequency() * $doclength) / $this->getNumberOfTokens();
 

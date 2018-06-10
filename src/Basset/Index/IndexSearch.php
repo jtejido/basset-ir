@@ -1,10 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Index;
 
-use Basset\Statistics\CollectionStatistics;
-use Basset\Statistics\EntryStatistics;
-use Basset\Structure\TrieManager;
+use Basset\Statistics\{
+        EntryStatistics, 
+        CollectionStatistics
+    };
+use Basset\Statistics\{
+        TrieManager, 
+        TrieCollection
+    };
+
 
 
 /**
@@ -50,14 +58,14 @@ class IndexSearch
          }
     }
 
-    public function searchPrefix(string $term)
+    public function searchPrefix(string $term): TrieCollection
     {
         $stats = $this->trieManager->search($term);
 
         return $stats;
     }
 
-    public function getDocuments()
+    public function getDocuments(): array
     {
         return $this->indexManager->getDocuments();
     }

@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Index;
 
-use Basset\Statistics\EntryStatistics;
-use Basset\Statistics\CollectionStatistics;
-use Basset\Statistics\PostingStatistics;
-use Basset\Utils\TransformationInterface;
+use Basset\Statistics\{
+        EntryStatistics, 
+        CollectionStatistics
+    };
+
 
 
 /**

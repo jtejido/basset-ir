@@ -18,6 +18,10 @@ use Basset\Utils\TransformationSet;
 use Basset\Index\IndexReader;
 use Basset\Index\IndexWriter;
 
+use Basset\Models\DFIModel;
+use Basset\Models\DFIModels\ChiSquared;
+use Basset\Models\Idf;
+
 
 
 class Similarity {
@@ -63,7 +67,6 @@ class Similarity {
         $index = new IndexWriter('../custom_index');
         $index->setFileName('mycustomindex');
         $files = glob($path . '*');
-        $count = 0;
         foreach($files as $file){
             $index->addDocument(new TokensDocument($tokenizer->tokenize(file_get_contents($file))), basename($file));
         }
@@ -82,7 +85,8 @@ class Similarity {
 
         /**
          *
-         * Start search..There has been changes in class name and operations since the v1 release (to accomodate for
+         * Start search.
+         * There has been changes in class name and operations since the v1 release (to accomodate for
          * structural changes and for those familiar with Lucene instantiations).
          * DocumentRanking became Search() which requires an IndexReader instance.
          * documentModel() became model where query model and a metric is already specified inside.
@@ -95,12 +99,12 @@ class Similarity {
 
         $search = new Search($indexReader);
         $search->query($query);
-        $search->model(new BM25);
+        $search->model(new TfIdf);
         print_r($search->search(15)); 
 
         /* 
-         * search() returns an array and can take a limit number as parameter to display some limited amount of stuff
-         * in descending order, as 1400 items will surely be dumped on your terminal (default is 10).
+         * search() returns an array in descending order, and can take a limit number as parameter to display some 
+         * limited amount of stuff, as 1400 items will surely be dumped on your terminal (default is 10).
          */
 
     }

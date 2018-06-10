@@ -1,15 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Statistics\EntryStatistics;
-use Basset\Statistics\CollectionStatistics;
-use Basset\Models\Contracts\IDFInterface;
-use Basset\Models\DFIModels\DFIInterface;
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermCount;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface,
+        IDFInterface
+    };
+use Basset\Models\Statistics\{
+        EntryStatistics,
+        CollectionStatistics
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermCount,
+        Models\DFIModels\DFIInterface
+    };
 
 class DFIModel extends WeightedModel implements WeightedModelInterface, ProbabilisticModelInterface
 {
@@ -58,7 +66,7 @@ class DFIModel extends WeightedModel implements WeightedModelInterface, Probabil
     }
 
 
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         $this->idf->setBase(2); // because the paper uses base 2 for all idf
         $dfi = $this->model->score($tf, $docLength, $docUniqueLength); 

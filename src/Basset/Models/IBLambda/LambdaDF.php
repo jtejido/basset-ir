@@ -1,7 +1,8 @@
 <?php
 
-namespace Basset\Models\IBLambda;
+declare(strict_types=1);
 
+namespace Basset\Models\IBLambda;
 
 
 class LambdaDF extends Lambda implements IBLambdaInterface
@@ -12,7 +13,8 @@ class LambdaDF extends Lambda implements IBLambdaInterface
     	parent::__construct();
     }
 
-    public function getLambda(){
+    public function getLambda(): float
+    {
 
         return ($this->getDocumentFrequency()+1) / ($this->getNumberOfDocuments()+1);
 

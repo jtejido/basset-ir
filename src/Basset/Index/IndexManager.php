@@ -1,17 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Index;
 
-use Basset\Structure\Trie;
 use Basset\Math\Math;
-use Basset\Structure\TrieManager;
-use Basset\Structure\TrieInterface;
 use Basset\Collections\CollectionSet;
-use Basset\Statistics\CollectionStatistics;
-use Basset\Statistics\EntryStatistics;
-use Basset\Statistics\PostingStatistics;
 use Basset\FeatureExtraction\FeatureExtraction;
 use Basset\Utils\TransformationInterface;
+use Basset\Statistics\{
+        EntryStatistics, 
+        CollectionStatistics,
+        PostingStatistics
+    };
+use Basset\Structure\{
+        TrieManager, 
+        TrieInterface,
+        Trie
+    };
 
 
 /**

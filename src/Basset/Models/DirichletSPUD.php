@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface
+    };
 
 /**
  * DirichletSPUD is a class for ranking documents that captures the tendency of a term to repeat itself within 
@@ -52,7 +56,7 @@ class DirichletSPUD extends WeightedModel implements WeightedModelInterface, Pro
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
         $totalterms = $this->getUniqueTotalByTermPresence();

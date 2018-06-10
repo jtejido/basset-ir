@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Index;
 
 use Basset\Utils\TransformationInterface;
@@ -35,7 +37,7 @@ class IndexWriter
 
     private $documents;
 
-    public function __construct($directory = self::DEFAULT_DIRECTORY, $overwrite = true)
+    public function __construct(string $directory = self::DEFAULT_DIRECTORY, bool $overwrite = true)
     {
         $this->open = true;
         $this->collectionset = new CollectionSet(true);
@@ -126,7 +128,7 @@ class IndexWriter
         return $manager->getData();
     }
 
-    private function writeFile(IndexInterface $index, string $filename): bool
+    private function writeFile(IndexInterface $index, string $filename): int
     {
 
         $this->ensureOpen();
@@ -135,7 +137,7 @@ class IndexWriter
         return file_put_contents($filename, serialize($index));
     }
 
-    private function is_dir_empty($dir) 
+    private function is_dir_empty($dir): bool
     {
         $this->ensureOpen();
 
@@ -146,7 +148,7 @@ class IndexWriter
         return (count(scandir($dir)) == 2);
     }
 
-    private function ensureOpen() 
+    private function ensureOpen(): void
     {
         if($this->open === false){
             throw new \Exception('Index files have been commited. Please start a new instance of IndexWriter.');

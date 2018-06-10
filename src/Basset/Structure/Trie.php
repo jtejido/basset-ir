@@ -1,7 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Structure;
-use Basset\Statistics\CollectionStatistics;
+
 
 class Trie implements TrieInterface
 {
@@ -13,7 +15,7 @@ class Trie implements TrieInterface
         $this->trie = new TrieNode();
     }
 
-    public function getTrie()
+    public function getTrie(): TrieNode
     {
         return $this->trie;
     }

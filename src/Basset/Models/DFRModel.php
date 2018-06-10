@@ -1,16 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
-use Basset\Statistics\EntryStatistics;
-use Basset\Statistics\CollectionStatistics;
-use Basset\Models\DFRModels\BasicModelInterface;
-use Basset\Models\DFRAfterEffect\AfterEffectInterface;
-use Basset\Models\Normalization\NormalizationInterface;
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Metric\VectorSimilarity;
-use Basset\Models\TermCount;
+use Basset\Models\Contracts\{
+        ProbabilisticModelInterface,
+        WeightedModelInterface
+    };
+use Basset\Models\Statistics\{
+        EntryStatistics,
+        CollectionStatistics
+    };
+use Basset\Models\{
+    DFRModels\BasicModelInterface,
+    DFRAfterEffect\AfterEffectInterface,
+    Normalization\NormalizationInterface
+    };
+use Basset\{
+        Metric\VectorSimilarity,
+        Models\TermCount
+    };
 
 
 class DFRModel extends WeightedModel implements WeightedModelInterface, ProbabilisticModelInterface
@@ -68,7 +78,7 @@ class DFRModel extends WeightedModel implements WeightedModelInterface, Probabil
         $this->model->setCollectionStatistics($this->cs);
     }
 
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
 
         $tf = $this->normalization->normalise($tf, $docLength); 

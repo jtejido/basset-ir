@@ -5,7 +5,6 @@ namespace Basset\Collections;
 use Basset\Documents\DocumentInterface;
 use Basset\Documents\Document;
 use Basset\Utils\TransformationInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
 
 /**
  * A collection of Document objects.
@@ -32,9 +31,8 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
     /**
      * Add a document to the set.
      *
-     * @param $class The document's actual class
-     * @param $d The Document
-     * @return void
+     * @param mixed $class
+     * @param DocumentInterface $d
      */
     public function addDocument(DocumentInterface $d, $class = null)
     {
@@ -48,10 +46,8 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
 
     /**
      * Apply the transformation to the data of this document.
-     * How the transformation is applied (per token, per token sequence, etc)
-     * is decided by the implementing classes.
      *
-     * @param TransformationInterface $transform The transformation to be applied
+     * @param TransformationInterface
      */
     public function applyTransformation(TransformationInterface $transform)
     {
@@ -60,24 +56,27 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
         }
     }
 
-    // ====== Implementation of \Iterator interface =========
     public function rewind()
     {
         reset($this->documents);
         $this->currentDocument = current($this->documents);
     }
+
     public function next()
     {
         $this->currentDocument = next($this->documents);
     }
+
     public function valid()
     {
         return $this->currentDocument!=false;
     }
+
     public function current()
     {
         return $this->currentDocument;
     }
+
     public function key()
     {
         switch ($this->keyed) {
@@ -89,28 +88,27 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
                 throw new \Exception('Undefined type as key');
         }
     }
-    // === Implementation of \Iterator interface finished ===
 
-    // ====== Implementation of \ArrayAccess interface =========
     public function offsetSet($key,$value)
     {
         throw new \Exception('Shouldn\'t add documents this way, add them through addDocument()');
     }
+
     public function offsetUnset($key)
     {
         throw new \Exception('Cannot unset any document');
     }
+
     public function offsetGet($key)
     {
         return $this->documents[$key];
     }
+
     public function offsetExists($key)
     {
         return isset($this->documents[$key]);
     }
-    // === Implementation of \ArrayAccess interface finished ===
 
-    // implementation of \Countable interface
     public function count()
     {
         return count($this->documents);

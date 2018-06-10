@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models\Normalization;
 
 /**
@@ -19,7 +21,8 @@ class NormalizationDP extends Normalization implements NormalizationInterface
         $this->c = $c;
     }
 
-    public function normalise($tf, $docLength) {
+    public function normalise(int $tf, int $docLength): float
+    {
         $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
     	return $this->c * ($tf + $this->c * $mle_c) / ($docLength + $this->c);
     }

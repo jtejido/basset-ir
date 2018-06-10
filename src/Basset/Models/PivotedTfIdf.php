@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models;
 
 use Basset\Models\Contracts\WeightedModelInterface;
@@ -36,7 +38,7 @@ class PivotedTfIdf extends WeightedModel implements WeightedModelInterface
      * @param  int $docUniqueLength
      * @return float
      */
-    public function score($tf, $docLength, $docUniqueLength)
+    public function score(int $tf, int $docLength, int $docUniqueLength): float
     {
         $df = $this->getDocumentFrequency();
         return $df > 0 ? (1+log(1+log($tf))) / ((1-$this->slope) + ($this->slope * ($docLength / $this->getAverageDocumentLength()))) * log(($this->getNumberOfDocuments()+1)/$df) : 0;

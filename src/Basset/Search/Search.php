@@ -1,17 +1,27 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Search;
 
-use Basset\Documents\DocumentInterface;
-use Basset\Index\IndexReader;
-use Basset\Index\IndexSearch;
-use Basset\Metric\SimilarityInterface;
-use Basset\Metric\DistanceInterface;
-use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Models\Contracts\ProbabilisticModelInterface;
-use Basset\Statistics\CollectionStatistics;
-use Basset\Metric\MetricInterface;
-use Basset\Metric\VSMInterface;
+use Basset\Index\{
+        IndexReader,
+        IndexSearch
+    };
+use Basset\Metric\{
+        SimilarityInterface,
+        DistanceInterface,
+        MetricInterface,
+        VSMInterface
+    };
+use Basset\Models\Contracts\{
+        WeightedModelInterface,
+        ProbabilisticModelInterface
+    };
+use Basset\{
+    Documents\DocumentInterface,
+    Statistics\CollectionStatistics
+    };
 
 
 /**
@@ -209,7 +219,6 @@ class Search
     {
         
         $score = array();
-
         foreach($this->getDocuments() as $class => $doc) {
             $score[$class] = $this->score($this->vectorize($this->getQuery(), $this->getQueryModel()), $this->vectorize($doc, $this->getModel()));
         }
@@ -236,9 +245,8 @@ class Search
         $tokenCount = count($doc);
 
         foreach ($doc as $term => &$value) {
-            $stats = $this->getIndexSearch()->search($term);
 
-            if($stats) {
+            if($stats = $this->getIndexSearch()->search((string) $term)) {
                 $model->setStats($stats);
                 $value = $model->getScore($value, $tokenSum, $tokenCount);
             } else {

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Basset\Models\DFRModels;
 
 use Basset\Models\WeightedModel;
@@ -12,6 +14,6 @@ abstract class BasicModel extends WeightedModel
     	parent::__construct();
     }
 
-    abstract protected function score($tf, $docLength, $docUniqueLength);
+    abstract protected function score(int $tf, int $docLength, int $docUniqueLength): float;
 
 }
