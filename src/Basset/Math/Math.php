@@ -78,7 +78,7 @@ class Math
      * @param array $arr
      * @return float
      */
-    public function mean(array $arr): array
+    public function mean(array $arr): int
     {
         return ($arr) ? array_sum($arr)/count($arr) : 0;
     }
