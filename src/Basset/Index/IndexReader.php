@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Basset\Index;
 
+use Basset\Utils\Serializer;
 use Basset\Structure\{
         TrieManager, 
         Trie
@@ -25,6 +26,8 @@ class IndexReader
     CONST DEFAULT_FILENAME = 'basset_index';
 
     CONST DEFAULT_DIRECTORY = '../index/';
+
+    CONST CONFIG_FILE = '../config/config.ini';
 
     CONST SEPARATOR = '/';
 
@@ -74,7 +77,26 @@ class IndexReader
 
     private function readFile(string $path = self::FILENAME): IndexInterface 
     {
-        return unserialize(file_get_contents($path));
+        $configDirectory = self::CONFIG_FILE;
+
+        if(!file_exists($configDirectory)) {
+            throw new \Exception("Config file not found.");
+        }
+
+        $ini = parse_ini_file($configDirectory);
+
+        $hash = new Serializer;
+        if(isset($ini['secret_key'])){
+            if($file = $hash->unserialize(file_get_contents($path), $ini['secret_key'])){
+                return $file;
+            } else {
+                throw new \Exception("Hash doesn't match. Incorrect Key or corrupted Index file.");
+            }
+            
+        } else {
+            throw new \Exception("Private key not set.");
+        }
+
     }
 
     private function readIndex(IndexInterface $index): bool 

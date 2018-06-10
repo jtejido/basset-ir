@@ -8,6 +8,7 @@ use Basset\Utils\TransformationInterface;
 use Basset\Collections\CollectionSet;
 use Basset\Documents\DocumentInterface;
 use Basset\Statistics\CollectionStatistics;
+use Basset\Utils\Serializer;
 
 /**
  * The IndexWriter creates an index file(.idx) on a given directory.
@@ -24,6 +25,8 @@ class IndexWriter
     CONST DEFAULT_FILENAME = 'basset_index';
 
     CONST DEFAULT_DIRECTORY = '../index/';
+
+    CONST CONFIG_FILE = '../config/config.ini';
 
     CONST SEPARATOR = '/';
 
@@ -55,6 +58,7 @@ class IndexWriter
                 throw new \Exception('Directory not empty. Please delete or move the current index somewhere else.');
             }
         }
+
     }
 
     public function applyTransformation(TransformationInterface $transformer) 
@@ -134,7 +138,23 @@ class IndexWriter
         $this->ensureOpen();
 
         $filename = $this->directory . '/' . $filename . '.' . self::EXTENSION;
-        return file_put_contents($filename, serialize($index));
+
+        $configDirectory = self::CONFIG_FILE;
+
+        if(!file_exists($configDirectory)) {
+            throw new \Exception("Config file not found.");
+        }
+
+        $ini = parse_ini_file($configDirectory);
+
+        $hash = new Serializer;
+        if(isset($ini['secret_key'])){
+            $file = $hash->serialize($index, $ini['secret_key']);
+            return file_put_contents($filename, $file);
+            
+        } else {
+            throw new \Exception("Private key not set.");
+        }
     }
 
     private function is_dir_empty($dir): bool
