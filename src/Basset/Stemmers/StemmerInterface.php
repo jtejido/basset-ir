@@ -3,9 +3,7 @@
 namespace Basset\Stemmers;
 
 
-interface Basset extends Stemmer
+interface StemmerInterface
 {
-
     public function stem($word);
-
 }
