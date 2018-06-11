@@ -18,7 +18,7 @@ use Basset\{
  *
  * The implementation is based on Ronan Cummins' paper:
  * A Standard Document Score for Information Retrieval.
- * http://dcs.gla.ac.uk/~ronanc/papers/cumminsICTIR13.pdf
+ * @see http://dcs.gla.ac.uk/~ronanc/papers/cumminsICTIR13.pdf
  *
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>

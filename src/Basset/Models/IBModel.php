@@ -33,7 +33,7 @@ class IBModel extends WeightedModel implements WeightedModelInterface, Probabili
  * conference on Research and development in information retrieval (SIGIR '10).
  * ACM, New York, NY, USA, 234-241.
  *
- * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.412.7409&rep=rep1&type=pdf
+ * @see http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.412.7409&rep=rep1&type=pdf
  * Information-based models are obtained by instantiating the three components of the framework: 
  * selecting a ProbabilisticDistribution, selecting the lambda parameter and applying the tf normalisation.
  *

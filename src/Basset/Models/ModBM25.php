@@ -18,7 +18,7 @@ use Basset\{
  * TF-LENGTH Constraints by using Robertson-Sparck Idf.
  *
  * The implementation is based on the paper by Fang Et al., 
- * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.59.1189&rep=rep1&type=pdf
+ * @see http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.59.1189&rep=rep1&type=pdf
  *
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>

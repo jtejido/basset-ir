@@ -14,7 +14,7 @@ use Basset\Models\Contracts\{
  * a document (i.e. word burstiness).
  *
  * From Ronan Cummins et al. 2015. A Polya Urn Document Language Model for Improved Information Retrieval.
- * https://arxiv.org/pdf/1502.00804.pdf
+ * @see https://arxiv.org/pdf/1502.00804.pdf
  * The optimal for μ appears to have a wide range (500-10000).
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>

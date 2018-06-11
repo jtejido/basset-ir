@@ -18,7 +18,7 @@ use Basset\{
  *
  * Towards an Efficient and Effective Search Engine (Trotman, Jia, Crane).
  * SIGIR 2012 Workshop on Open Source Information Retrieval.
- * http://opensearchlab.otago.ac.nz/paper_4.pdf
+ * @see http://opensearchlab.otago.ac.nz/paper_4.pdf
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */

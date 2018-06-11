@@ -23,7 +23,7 @@ use Basset\{
  * language model. (DirichletLM and JelinkedMercerLM)
  *
  * From Chengxiang Zhai and John Lafferty. 2002. Two-Stage Language Models for Information Retrieval.
- * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.7.3316&rep=rep1&type=pdf
+ * @see http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.7.3316&rep=rep1&type=pdf
  * 
  * In a nutshell, this is a generalization of JelinkedMercerLM and DirichletLM.
  * The default values used here are the same constants found from the two classes.

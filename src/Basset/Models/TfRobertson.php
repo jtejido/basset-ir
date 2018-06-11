@@ -12,7 +12,7 @@ use Basset\Models\Contracts\{
 
 /**
  * RobertsonTf implementation as found in BM25
- * https://trec.nist.gov/pubs/trec7/papers/okapi_proc.ps.gz
+ * @see https://trec.nist.gov/pubs/trec7/papers/okapi_proc.ps.gz
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */

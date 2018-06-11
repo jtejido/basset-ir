@@ -18,9 +18,7 @@ use Basset\{
  * XSqrAM is a class that computes the inner product of Pearson's X^2 with the information growth computed 
  * with the multinomial M.
  *
- * Frequentist and Bayesian approach to  Information Retrieval. G. Amati. In 
- * Proceedings of the 28th European Conference on IR Research (ECIR 2006). 
- * LNCS vol 3936, pages 13--24.
+ * @see Frequentist and Bayesian approach to  Information Retrieval. G. Amati. In Proceedings of the 28th European Conference on IR Research (ECIR 2006). LNCS vol 3936, pages 13--24.
  *
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>

@@ -17,7 +17,7 @@ use Basset\{
 /**
  * HiemstraLM is a class for ranking documents against a query based on Hiemstra's PHD thesis for language 
  * model.
- * https://pdfs.semanticscholar.org/67ba/b01706d3aada95e383f1296e5f019b869ae6.pdf
+ * @see https://pdfs.semanticscholar.org/67ba/b01706d3aada95e383f1296e5f019b869ae6.pdf
  *
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>

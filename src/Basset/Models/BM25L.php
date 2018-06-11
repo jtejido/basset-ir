@@ -18,7 +18,7 @@ use Basset\{
  * longer documents.
  *
  * When Documents Are Very Long, BM25 Fails! (Lv and Zhai).
- * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.600.16&rep=rep1&type=pdf
+ * @see http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.600.16&rep=rep1&type=pdf
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */

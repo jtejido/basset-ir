@@ -19,6 +19,11 @@ use Basset\{
         Metric\MetricInterface
     };
     
+/**
+ * All properties are set here. This acts as the base for all models of different kinds(VSM, Probabilistic, etc).
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
+ */
 
 abstract class WeightedModel
 {

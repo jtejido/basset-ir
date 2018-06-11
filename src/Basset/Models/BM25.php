@@ -18,10 +18,10 @@ use Basset\{
  *
  * The implementation is based on the paper by Stephen E. Robertson, Steve Walker, Susan Jones, 
  * Micheline Hancock-Beaulieu & Mike Gatford (November 1994).
- * that can be found at http://trec.nist.gov/pubs/trec3/t3_proceedings.html.
+ * @see http://trec.nist.gov/pubs/trec3/t3_proceedings.html.
  *
  * Some modifications have been made to allow for non-negative scoring as suggested here.
- * https://doc.rero.ch/record/16754/files/Dolamic_Ljiljana_-_When_Stopword_Lists_Make_the_Difference_20091218.pdf
+ * @see https://doc.rero.ch/record/16754/files/Dolamic_Ljiljana_-_When_Stopword_Lists_Make_the_Difference_20091218.pdf
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */

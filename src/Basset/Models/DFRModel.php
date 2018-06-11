@@ -33,7 +33,7 @@ class DFRModel extends WeightedModel implements WeightedModelInterface, Probabil
  * This class provides an alternative way of specifying an arbitrary DFR weighting model, by mixing the used components.
  *
  * The implementation is strictly based on G. Amati, C. Rijsbergen paper:
- * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.97.8274&rep=rep1&type=pdf
+ * @see http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.97.8274&rep=rep1&type=pdf
  *
  * DFR models are obtained by instantiating the three components of the framework: 
  * selecting a basic randomness model, applying the first normalisation and normalising the term frequencies.

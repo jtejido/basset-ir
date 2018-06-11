@@ -17,7 +17,7 @@ use Basset\{
  * An experimental IRRA system that aims to evaluate a new DFI-based term weighting model developed on the basis of
  * Shannon’s information theory (Shannon, 1949), along with the evaluation of a heuristic approach that
  * is expected to provide early precision when used together with DFI term weighting.
- * http://trec.nist.gov/pubs/trec21/papers/irra.web.nb.pdf
+ * @see http://trec.nist.gov/pubs/trec21/papers/irra.web.nb.pdf
  * 
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */

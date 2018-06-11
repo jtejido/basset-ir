@@ -14,7 +14,7 @@ use Basset\Models\Contracts\{
  * another variant of TF following Rousseau & Vazirgiannis' work by rewriting the log-concavity TF with
  * Pivoted TF.
  *
- * Composition of TF Normalizations: New Insights on Scoring Functions for Ad Hoc IR, SIGIR 2013, p. 917-920.
+ * @see Composition of TF Normalizations: New Insights on Scoring Functions for Ad Hoc IR, SIGIR 2013, p. 917-920.
  * Rousseau & Vazirgiannis
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>

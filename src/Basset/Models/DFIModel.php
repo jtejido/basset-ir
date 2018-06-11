@@ -25,7 +25,7 @@ class DFIModel extends WeightedModel implements WeightedModelInterface, Probabil
 /**
  * Provides a framework for nonparametric index term weighting model using the notion of independence, as described
  * in Kocabas et al's paper.
- * http://trec.nist.gov/pubs/trec18/papers/muglau.WEB.MQ.pdf
+ * @see http://trec.nist.gov/pubs/trec18/papers/muglau.WEB.MQ.pdf
  *
  * DFI models are obtained by instantiating the three components of the framework: 
  * selecting a divergence measure and selecting an idf method, take note that it uses log2 similar to DFR.
