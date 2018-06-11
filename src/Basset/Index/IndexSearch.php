@@ -45,17 +45,9 @@ class IndexSearch
         $this->trieManager = $this->indexReader->getTrieManager();
     }
 
-    public function search(string $term)
+    public function search(string $term):? EntryStatistics
     {
-        $stats = $this->trieManager->search($term);
-
-        foreach ($stats as $key => $stat) {
-              if($key == $term) {
-                 return $stat->getValue();
-              } else {
-                 return false;
-              }
-         }
+        return $this->indexManager->search($term);
     }
 
     public function searchPrefix(string $term): TrieCollection

@@ -26,7 +26,7 @@ class Serializer {
     {
         $algo = $this->algorithm;
         $str = serialize($data);
-        $hash = hash_hmac($algo, $str, $key);
+        $hash = hash_hmac($this->algorithm, $str, $key);
         return $hash !== false ? $hash.'|'.$str : false;
     }
     /**
@@ -41,7 +41,7 @@ class Serializer {
     {
         $algo = $this->algorithm;
         list($hash, $str) = explode('|', $str, 2);
-        $hash_confirm = hash_hmac($algo, $str, $key);
+        $hash_confirm = hash_hmac($this->algorithm, $str, $key);
         return hash_equals($hash, $hash_confirm) ? unserialize($str) : false;
     }
 

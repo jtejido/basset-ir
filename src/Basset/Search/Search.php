@@ -245,7 +245,6 @@ class Search
         $tokenCount = count($doc);
 
         foreach ($doc as $term => &$value) {
-
             if($stats = $this->getIndexSearch()->search((string) $term)) {
                 $model->setStats($stats);
                 $value = $model->getScore($value, $tokenSum, $tokenCount);

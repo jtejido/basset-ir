@@ -18,6 +18,8 @@ interface IndexInterface
 
     public function setCollectionStatistics(CollectionStatistics $cs);
 
+    public function search(string $key):? EntryStatistics;
+
     public function addEntry(string $key, EntryStatistics $value);
 
     public function getData(): array;

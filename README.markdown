@@ -26,10 +26,10 @@ You can read about it [here](https://basset-ir.blogspot.com/2018/02/basset-infor
 
 
 
-Using Existing Cranfield and Test file
+Using the Cranfield Collection and Test file
 =============
 
-[Cranfield Collection](http://ir.dcs.gla.ac.uk/resources/test_collections/) has been the pioneer collection in information retrieval to validate a system's effectiveness.
+The [Cranfield Collection](http://ir.dcs.gla.ac.uk/resources/test_collections/) has been the pioneer collection in information retrieval to validate a system's effectiveness.
 
 I've included the 1400 abstract Cranfield Collection as an XML file that you can parse into separate files.
 

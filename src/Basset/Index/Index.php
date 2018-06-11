@@ -42,6 +42,11 @@ class Index implements IndexInterface, \Iterator, \ArrayAccess, \Countable {
         $this->entries[$key] = new IndexEntry($value);
     }
 
+    public function search(string $key):? EntryStatistics
+    {
+        return isset($this->entries[$key]) ? $this->entries[$key]->getValue() : null;
+    }
+
     public function getDocuments(): array
     {
     	$arrayclass = array();

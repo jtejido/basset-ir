@@ -145,6 +145,15 @@ class IndexManager
 
     }
 
+    public function search(string $key):? EntryStatistics
+    {
+        if($this->index === null){
+            throw new \Exception('Index not set.');
+        }
+
+        return $this->index->search($key);
+    }
+
     public function getCollectionStatistics(): CollectionStatistics 
     {
         if($this->index === null){
