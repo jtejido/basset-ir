@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Basset\Metric;
 
+/**
+ * Vector Product for Probabilistic Models
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
+ */
 
 class VectorSimilarity extends Metric implements SimilarityInterface
 {

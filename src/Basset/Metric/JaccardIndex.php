@@ -6,7 +6,9 @@ namespace Basset\Metric;
 
 
 /**
- * http://en.wikipedia.org/wiki/Jaccard_index
+ * @see http://en.wikipedia.org/wiki/Jaccard_index
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class JaccardIndex extends Metric implements VSMInterface, SimilarityInterface
 {

@@ -6,7 +6,9 @@ namespace Basset\Metric;
 
 
 /**
- * http://www.icsd.aegean.gr/lecturers/stamatatos/papers/survey.pdf
+ * @see http://www.icsd.aegean.gr/lecturers/stamatatos/papers/survey.pdf
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class StamatatosDistance extends Metric implements VSMInterface, DistanceInterface
 {

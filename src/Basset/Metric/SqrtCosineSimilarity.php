@@ -12,13 +12,15 @@ namespace Basset\Metric;
  * DOI: 10.1109/ICCSE.2012.6295217 
  *
  * DOI 10.1186/s40537-017-0083-6
- * https://journalofbigdata.springeropen.com/track/pdf/10.1186/s40537-017-0083-6?site=journalofbigdata.springeropen.com
+ * @see https://journalofbigdata.springeropen.com/track/pdf/10.1186/s40537-017-0083-6?site=journalofbigdata.springeropen.com
  *
  * Hubness is the dimensionality curse mentioned by Radovanovic Et al.:
  * 'On the existence of obstinate results in vector space models.'
  * DOI: 10.1145/1835449.1835482
  * Due to the concentration of distance in high-dimensional spaces, the ratio of the 
  * distances of the nearest and farthest neighbors to a given target is almost one.
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class SqrtCosineSimilarity extends Metric implements VSMInterface, SimilarityInterface
 {

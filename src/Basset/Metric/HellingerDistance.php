@@ -6,7 +6,9 @@ namespace Basset\Metric;
 
 
 /**
- * https://en.wikipedia.org/wiki/Hellinger_distance
+ * @see https://en.wikipedia.org/wiki/Hellinger_distance
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class HellingerDistance extends Metric implements VSMInterface, DistanceInterface
 {

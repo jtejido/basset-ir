@@ -6,7 +6,9 @@ namespace Basset\Metric;
 
 
 /**
- * https://arxiv.org/pdf/0802.4376.pdf
+ * @see https://arxiv.org/pdf/0802.4376.pdf
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class LorentzianDistance extends Metric implements VSMInterface, DistanceInterface
 {

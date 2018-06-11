@@ -10,6 +10,10 @@ namespace Basset\Metric;
  * between the two vectors in a N-dimensional vector space.
  *
  * cos(theta) = A•B / |A||B|
+ *
+ * @see https://en.wikipedia.org/wiki/Cosine_similarity
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class CosineSimilarity extends Metric implements VSMInterface, SimilarityInterface
 {

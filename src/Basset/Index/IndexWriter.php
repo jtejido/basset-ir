@@ -15,6 +15,31 @@ use Basset\Utils\Serializer;
  * It allows addition of documents as long as the writer is open. Once close() is called, it will not allow any further
  * processing and you have to restart an instance of IndexWriter to rebuilt an index.
  * All commits are done when close() is called. e.g. all indexing, transforming and writing processes.
+ * 
+ * @see TrieManager
+ * @see TrieCollection
+ * @see EntryStatistics
+ * @see CollectionStatistics
+ * @see TokensDocument
+ *
+ * @var $indexReader
+ * @var $trieManager
+ * @var $indexManager
+ *
+ * @example 
+ * $index = new IndexWriter('../custom_index'); 
+ * $index->setFileName('mycustomindex'); // set filename and directory
+ * OR
+ * $index = new IndexWriter();
+ * $index->setFileName('mycustomindex'); // just set filename but leave at default directory
+ * OR
+ * $index = new IndexWriter();
+ * $index->addDocument(new TokensDocument(array('how', 'do', 'you', 'do?')), 'my doc'); // default to ../index/basset_index.idx
+ * $index->applyTransformation($transform);
+ * $index->close();
+ * $index->getLocation();
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
 class IndexWriter

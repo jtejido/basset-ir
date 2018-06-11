@@ -6,6 +6,11 @@ namespace Basset\Metric;
 
 use Basset\Metric\KLDivergence;
 
+/**
+ * @see https://en.wikipedia.org/wiki/R%C3%A9nyi_entropy
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
+ */
 class RenyiDivergence extends Metric implements VSMInterface, SimilarityInterface
 {
     

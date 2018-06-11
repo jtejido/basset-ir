@@ -8,7 +8,10 @@ namespace Basset\Metric;
 /**
  * Bray, J. R. and J. T. Curtis. 1957. An ordination of upland forest communities of southern Wisconsin. 
  * Ecological Monographs 27:325-349.
- * http://84.89.132.1/~michael/stanford/maeb5.pdf
+ *
+ * @see http://84.89.132.1/~michael/stanford/maeb5.pdf
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
 class BrayCurtisDistance extends Metric implements VSMInterface, DistanceInterface

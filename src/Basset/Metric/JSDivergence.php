@@ -7,7 +7,9 @@ namespace Basset\Metric;
 use Basset\Metric\KLDivergence;
 
 /**
- * https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence
+ * @see https://en.wikipedia.org/wiki/Jensen%E2%80%93Shannon_divergence
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class JSDivergence extends Metric implements VSMInterface, DistanceInterface
 {

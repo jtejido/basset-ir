@@ -6,8 +6,11 @@ namespace Basset\Metric;
 
 
 /**
- * https://en.wikipedia.org/wiki/Chebyshev_distance
  * AKA Maximum Metric
+ *
+ * @see https://en.wikipedia.org/wiki/Chebyshev_distance
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class ChebyshevDistance extends Metric implements VSMInterface, DistanceInterface
 {

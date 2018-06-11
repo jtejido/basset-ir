@@ -18,8 +18,7 @@ class Math
     /**
      * Returns the logarithm in base 2 of e, used to change the base of logarithms
      *
-     * @param  mixed $expression
-     * @return mixed
+     * @return float
      */
     public function log2ofE(): float
     {
@@ -29,9 +28,9 @@ class Math
     /**
     * Stirling formula for the power series.
     * 
-    * @param mixed n The parameter of the Stirling formula.
-    * @param mixed m The parameter of the Stirling formula.
-    * @return mixed
+    * @param float $a The parameter of the Stirling formula.
+    * @param float $b The parameter of the Stirling formula.
+    * @return float
     */
     public function stirlingPower(float $a,float $b): float
     {
@@ -44,7 +43,7 @@ class Math
      * ||x|| = sqrt(x・x) // ・ is a dot product
      *
      * @param array $vector
-     * @return mixed
+     * @return float
      */
     public function norm(array $vector): float
     {
@@ -57,7 +56,7 @@ class Math
      *
      * @param array $a
      * @param array $b
-     * @return mixed
+     * @return float
      */
     public function dotProduct(array $a, array $b): float
     {
@@ -76,9 +75,9 @@ class Math
      * Statistical mean/average of vector
      *
      * @param array $arr
-     * @return float
+     * @return mixed
      */
-    public function mean(array $arr): int
+    public function mean(array $arr)
     {
         return ($arr) ? array_sum($arr)/count($arr) : 0;
     }
@@ -94,7 +93,7 @@ class Math
      * Extended based on Radfort Neal
      * http://www.cs.toronto.edu/~radford/fbm.software.html
      *
-     * @param array $x
+     * @param float $x
      * @return float
      */
     public function digamma(float $x): float

@@ -6,8 +6,10 @@ namespace Basset\Metric;
 
 
 /**
- * K. Matusita, Decision rules, based on the distance, for problems of fit, two
+ * @see K. Matusita, Decision rules, based on the distance, for problems of fit, two
  * samples, and estimation, Ann. Math. Statist. 26 (1955) 631–640 
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class MatusitaDistance extends Metric implements VSMInterface, DistanceInterface
 {

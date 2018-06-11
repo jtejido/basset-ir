@@ -6,7 +6,9 @@ namespace Basset\Metric;
 
 
 /**
- * http://www.orgchm.bas.bg/~vmonev/SimSearch.pdf
+ * @see http://www.orgchm.bas.bg/~vmonev/SimSearch.pdf
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class SoergleDistance extends Metric implements VSMInterface, DistanceInterface
 {

@@ -10,11 +10,14 @@ namespace Basset\Metric;
  *
  * The similarity returned by this algorithm is a number between 0,1 The
  * algorithm described in
- * http://www.cogsci.ucsd.edu/~coulson/203/tversky-features.pdf, which
+ * @see http://www.cogsci.ucsd.edu/~coulson/203/tversky-features.pdf, which
  * generalizes both Dice similarity and Jaccard index, does not meet the
  * criteria for a similarity metric (due to its inherent assymetry), but has
  * been made symmetrical as applied here (by Jimenez, S., Becerra, C., Gelbukh,
- * A.): http://aclweb.org/anthology/S/S13/S13-1028.pdf
+ * A.): 
+ * @see http://aclweb.org/anthology/S/S13/S13-1028.pdf
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class TverskyIndex extends Metric implements VSMInterface, SimilarityInterface
 {

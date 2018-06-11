@@ -11,12 +11,14 @@ use Basset\Metric\{
 
 /**
  * This is based on Heidarian and Dinneen's Hybrid Geometric Approach for cosine similarity.
- * https://www.computer.org/csdl/proceedings/bigdataservice/2016/2251/00/2251a142.pdf
+ * @see https://www.computer.org/csdl/proceedings/bigdataservice/2016/2251/00/2251a142.pdf
  *
  * Given two vectors compute ts * ss
  * where ts is the triangle similarity = (|A|·|B| · sin(θ')) /2
  * θ' is acos(cosine_sim(A,B)) + 10
  * where ss is the sector similarity = π · (pow(euclid_distance(A,B) + magnitudeDifference(A,B), 2)) · (θ' / 360)
+  *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class TriangleSectorSimilarity extends Metric implements VSMInterface, SimilarityInterface
 {

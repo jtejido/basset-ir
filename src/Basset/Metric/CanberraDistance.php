@@ -6,7 +6,9 @@ namespace Basset\Metric;
 
 
 /**
- * https://en.wikipedia.org/wiki/Canberra_distance
+ * @see https://en.wikipedia.org/wiki/Canberra_distance
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class CanberraDistance extends Metric implements VSMInterface, DistanceInterface
 {

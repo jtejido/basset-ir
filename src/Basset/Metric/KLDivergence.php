@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Basset\Metric;
 
+/**
+ * @see https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
+ */
 
 class KLDivergence extends Metric implements VSMInterface, DistanceInterface
 {

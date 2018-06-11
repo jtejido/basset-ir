@@ -10,7 +10,6 @@ use Basset\Structure\{
         Trie
     };
 
-
 /**
  * The IndexReader simply extracts and reads an index(.idx) written by IndexWriter to a given or default path.
  * It also prepares the index to be built on a Trie structure for prefix traversal.

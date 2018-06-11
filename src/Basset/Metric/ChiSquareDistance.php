@@ -6,8 +6,11 @@ namespace Basset\Metric;
 
 
 /**
- * http://www.itl.nist.gov/div898/handbook/eda/section3/eda35f.htm
  * The formula appears assymetric so we'll just change it to be symmetric to both sets
+ *
+ * @see http://www.itl.nist.gov/div898/handbook/eda/section3/eda35f.htm
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class ChiSquareDistance extends Metric implements VSMInterface, DistanceInterface
 {

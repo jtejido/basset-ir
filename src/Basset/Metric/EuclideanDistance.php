@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Basset\Metric;
 
+/**
+ * @see https://en.wikipedia.org/wiki/Euclidean_distance
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
+ */
 
 class EuclideanDistance extends Metric implements VSMInterface, DistanceInterface
 {

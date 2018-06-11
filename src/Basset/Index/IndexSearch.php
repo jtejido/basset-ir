@@ -19,6 +19,24 @@ use Basset\Statistics\{
  * The IndexSearch takes in what is read and built by IndexReader for any searching operations in the index.
  * It can be used as stand-alone class to search for items added in the index provided you've pre-processed it in 
  * the IndexReader.
+ * 
+ * @see TrieManager
+ * @see TrieCollection
+ * @see EntryStatistics
+ * @see CollectionStatistics
+ *
+ * @var $indexReader
+ * @var $trieManager
+ * @var $indexManager
+ *
+ * @example 
+ * $indexSearch = new IndexSearch($indexReader);
+ * $indexSearch->search($term);
+ * $indexSearch->searchPrefix($term);
+ * $indexSearch->getDocuments();
+ * $indexSearch->getCollectionStatistics();
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
     
 class IndexSearch

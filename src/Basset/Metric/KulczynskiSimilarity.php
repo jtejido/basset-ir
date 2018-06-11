@@ -6,7 +6,9 @@ namespace Basset\Metric;
 
 
 /**
- * http://www.naun.org/main/NAUN/ijmmas/mmmas-49.pdf
+ * @see http://www.naun.org/main/NAUN/ijmmas/mmmas-49.pdf
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class KulczynskiSimilarity extends Metric implements VSMInterface, SimilarityInterface
 {

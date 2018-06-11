@@ -6,7 +6,9 @@ namespace Basset\Metric;
 
 
 /**
- * http://en.wikipedia.org/wiki/Sørensen–Dice_coefficient
+ * @see http://en.wikipedia.org/wiki/Sørensen–Dice_coefficient
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 class DiceSimilarity extends Metric implements VSMInterface, SimilarityInterface
 {
