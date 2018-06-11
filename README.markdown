@@ -26,7 +26,7 @@ You can read about it [here](https://basset-ir.blogspot.com/2018/02/basset-infor
 
 
 
-Using the Cranfield Collection and Test file
+Using the Cranfield Collection and the Test file
 =============
 
 The [Cranfield Collection](http://ir.dcs.gla.ac.uk/resources/test_collections/) has been the pioneer collection in information retrieval to validate a system's effectiveness.
