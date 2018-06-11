@@ -7,21 +7,21 @@ namespace Basset\Documents;
 use Basset\Utils\TransformationInterface;
 
 /**
- * The Document object representation.
+ * The Document contract/representation.
  */
 interface DocumentInterface
 {
     /**
-     * Return the document.
-     *
+     * Returns the Tokenized Document as received by TokensDocument
+     *  
      * @return array
      */
     public function getDocument(): array;
 
     /**
-     * Apply the transformation to the document.
+     * Apply the transform to the document
      *
-     * @param TransformationInterface
+     * @param TransformationInterface $transform
      */
     public function applyTransformation(TransformationInterface $transform);
 }

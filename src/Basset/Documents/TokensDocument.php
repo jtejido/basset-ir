@@ -7,9 +7,16 @@ namespace Basset\Documents;
 use Basset\Utils\TransformationInterface;
 
 /**
- * Represents a bag of words object.
+ * Represents a bag-of-words(BOW) object.
+ * TokensDocument represents the most basic form for all text documents being added in and processed.
+ *
+ * @var $tokens
+ *
+ * @example new TokensDocument(array('how', 'do', 'you', 'do?'));
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
-class TokensDocument implements DocumentInterface
+class TokensDocument
 {
     
     protected $tokens;
@@ -32,7 +39,7 @@ class TokensDocument implements DocumentInterface
     /**
      * Apply the transform to each token. Filter out the null tokens.
      *
-     * @param TransformationInterface
+     * @param TransformationInterface $transform
      */
     public function applyTransformation(TransformationInterface $transform)
     {

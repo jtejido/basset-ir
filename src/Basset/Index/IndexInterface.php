@@ -10,6 +10,9 @@ use Basset\Statistics\{
     };
 use Basset\Utils\TransformationInterface;
 
+/**
+ * An Index Representation.
+ */
 
 interface IndexInterface
 {
@@ -17,8 +20,6 @@ interface IndexInterface
 	public function getCollectionStatistics(): CollectionStatistics;
 
     public function setCollectionStatistics(CollectionStatistics $cs);
-
-    public function search(string $key):? EntryStatistics;
 
     public function addEntry(string $key, EntryStatistics $value);
 

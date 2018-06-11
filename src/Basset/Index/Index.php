@@ -9,15 +9,30 @@ use Basset\Statistics\{
         CollectionStatistics
     };
 
-
-
 /**
- * An Inverted Index object used throughout Basset. The search is O(1) since we only use simple array.
- * Though I'm always temted to simply use this fact when searching, I've still gone for a trie structure, as it gives
- * me power to search for term as a prefix for more terms. This may come in handy when I develop a more robust way of
- * ranking terms based on co-occurence as prefix. e.g. stripping 'relevan' from 'relevant' to give score to 
- * child words like 'relevancy' or 'relevance'.
+ * An Inverted Index object used throughout Basset. This holds statistical information as IndexEntry from a given term
+ * as key.
+ * The search is O(1) since we only use simple array object.
+ * This also holds a CollectionStatistics property that provides an overall counted statistics.
+ * 
+ * @see EntryStatistics
+ * @see CollectionStatistics
+ * @see IndexEntry
+ *
+ * @var $entries
+ * @var $collectionStats
+ * @var $currentEntry
+ *
+ * @example 
+ * $index = new Index;
+ * $index->setCollectionStatistics($collectionStats);
+ * $index->addEntry('word', $entryStatistics);
+ * $index->getCollectionStatistics();
+ * $index->getData();
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
+
 class Index implements IndexInterface, \Iterator, \ArrayAccess, \Countable {
 
 
@@ -27,43 +42,42 @@ class Index implements IndexInterface, \Iterator, \ArrayAccess, \Countable {
 
     private $collectionStats;
 
+    /**
+     * Initializes $entries.
+     */
     public function __construct()
     {
         $this->entries = array();
     }
 
+    /**
+     * @return array
+     */
     public function getData(): array
     {
         return $this->entries;
     }
 
+    /**
+     * @param string $key The term to be added as key.
+     * @param EntryStatistics $value The EntryStatistics for the given term wrapped in IndexEntry.
+     */
     public function addEntry(string $key, EntryStatistics $value)
     {
         $this->entries[$key] = new IndexEntry($value);
     }
 
-    public function search(string $key):? EntryStatistics
-    {
-        return isset($this->entries[$key]) ? $this->entries[$key]->getValue() : null;
-    }
-
-    public function getDocuments(): array
-    {
-    	$arrayclass = array();
-    	foreach($this->entries as $term => $sub) {
-    		$array = $sub->getValue()->getPostingList();
-        	foreach($array as $class => $value) {
-        			$document[$class][$term] = $value->getTf();
-        	}
-    	}
-    	return $document;
-    }
-
+    /**
+     * @param CollectionStatistics $collectionStats The collection statistics.
+     */
     public function setCollectionStatistics(CollectionStatistics $collectionStats)
     {
     	$this->collectionStats = $collectionStats;
     }
 
+    /**
+     * @return CollectionStatistics.
+     */
     public function getCollectionStatistics(): CollectionStatistics 
     {
     	return $this->collectionStats;

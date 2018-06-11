@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Basset\Search;
 
+use Basset\FeatureExtraction\FeatureExtraction;
 use Basset\Index\{
         IndexReader,
         IndexSearch
@@ -22,7 +23,6 @@ use Basset\{
     Documents\DocumentInterface,
     Statistics\CollectionStatistics
     };
-
 
 /**
  * Search class simplifies searching of a query against a the indexed collection.
@@ -196,7 +196,8 @@ class Search
      */
     public function query(DocumentInterface $query)
     {
-        $this->query = array_count_values($query->getDocument());
+        $fe = new FeatureExtraction;
+        $this->query = $fe->getFeature($query);
     }
 
     /**

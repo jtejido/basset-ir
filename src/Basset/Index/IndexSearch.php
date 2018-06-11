@@ -45,9 +45,14 @@ class IndexSearch
         $this->trieManager = $this->indexReader->getTrieManager();
     }
 
-    public function search(string $term):? EntryStatistics
+    public function search(string $term): ?EntryStatistics
     {
-        return $this->indexManager->search($term);
+        $entry = $this->indexManager->search($term);
+        if($entry) {
+            return $entry->getValue();
+        } else {
+            return null;
+        }
     }
 
     public function searchPrefix(string $term): TrieCollection
@@ -57,7 +62,7 @@ class IndexSearch
         return $stats;
     }
 
-    public function getDocuments(): array
+    public function getDocuments(): ?array
     {
         return $this->indexManager->getDocuments();
     }

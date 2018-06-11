@@ -12,10 +12,30 @@ use Basset\Structure\{
 
 
 /**
- * The IndexReader simply extracts and reads an index(.idx) from a given path.
- * It also prepares the index to be built on a Trie structure for faster traversal.
+ * The IndexReader simply extracts and reads an index(.idx) written by IndexWriter to a given or default path.
+ * It also prepares the index to be built on a Trie structure for prefix traversal.
  * At the moment we wouldn't allow deleting and/or appending anything from the index. Thus, all new docs you wish to
  * add means you have to rebuild the index thru IndexWriter Class.
+ * 
+ * @see TrieManager
+ * @see Trie
+ * @see Serializer
+ * @see IndexWriter
+ *
+ * @var $path
+ * @var $index
+ * @var $trieManager
+ * @var $indexManager
+ *
+ * @example 
+ * $indexReader = new IndexReader('../custom_index/mycustomindex.idx');
+ * OR
+ * $indexReader = new IndexReader(); //reading from the default path at '../index/basset_index.idx'
+ * $indexReader->getTrieManager();
+ * $indexReader->getIndexManager();
+ * $indexReader->getIndex();
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
     
 class IndexReader
@@ -58,24 +78,30 @@ class IndexReader
 
         $this->index = $this->readFile($this->path);
 
-        if(!$this->index instanceof IndexInterface){
+        if(!$this->index){
             throw new \Exception('Index File not valid. Should be an instance of Basset\Index\IndexInterface');
         }
 
-        $this->indexManager = new IndexManager($this->index);
+        $this->indexManager = new IndexManager($this->getIndex());
 
         $this->trieManager = new TrieManager(new Trie);
 
-        $this->readIndex($this->index);
+        $this->readIndex($this->getIndex());
 
     }
 
+    /**
+     * @return IndexInterface
+     */
     public function getIndex(): IndexInterface 
     {
         return $this->index;
     }
 
-    private function readFile(string $path = self::FILENAME): IndexInterface 
+    /**
+     * @param string $path OPTIONAL defaults to 'basset_index'.
+     */
+    private function readFile(string $path = self::DEFAULT_FILENAME): ?IndexInterface 
     {
         $configDirectory = self::CONFIG_FILE;
 
@@ -91,35 +117,50 @@ class IndexReader
                 return $file;
             } else {
                 throw new \Exception("Hash doesn't match. Incorrect Key or corrupted Index file.");
+                return null;
             }
             
         } else {
             throw new \Exception("Private key not set.");
+            return null;
         }
 
     }
 
-    private function readIndex(IndexInterface $index): bool 
+    /**
+     * @param IndexInterface $index
+     * @return bool|null
+     */
+    private function readIndex(IndexInterface $index): ?bool 
     {
 
         $data = $index->getData();
 
-        foreach($data as $term => $meta) {
-            $this->trieManager->addEntry((string) $term, $meta);
-        }
+        if($data){
+            foreach($data as $term => $meta) {
+                $this->trieManager->addEntry((string) $term, $meta);
+            }
 
-        return true;
+            return true;
+        } else {
+            return false;
+        }
+        
     }
 
+    /**
+     * @return TrieManager
+     */
     public function getTrieManager(): TrieManager 
     {
-
         return $this->trieManager;
     }
 
+    /**
+     * @return IndexManager
+     */
     public function getIndexManager(): IndexManager 
     {
-
         return $this->indexManager;
     }
 

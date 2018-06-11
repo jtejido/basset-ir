@@ -22,9 +22,40 @@ use Basset\Structure\{
 
 /**
  * The IndexManager manages all operations relating to an Index object.
+ * While keeping the Index lightweight, moving the operations here instead of putting it on index makes it safer
+ * by not exploiting the methods for code injection.
  * At the moment we wouldn't allow deleting and/or appending anything from the index. Thus, all new docs you wish to
  * add means you have to rebuild the index thru IndexWriter Class.
+ * 
+ * @see TrieManager
+ * @see TrieInterface
+ * @see Trie
+ * @see CollectionSet
+ * @see FeatureExtraction
+ * @see EntryStatistics
+ * @see CollectionStatistics
+ * @see PostingStatistics
+ * @see Math
+ * @see TransformationInterface
+ *
+ * @var $set
+ * @var $fe
+ * @var $index
+ * @var $transformer
+ *
+ * @example 
+ * $manager = new IndexManager();
+ * $manager->setCollection($collectionset);
+ * $manager->setTransformer($transformer);
+ * $manager->start();
+ * $manager->getData();
+ * $manager->search('hello');
+ * $manager->getDocuments();
+ * $manager->getCollectionStatistics();
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
+
 class IndexManager
 {
 
@@ -36,6 +67,12 @@ class IndexManager
 
     private $transformer;
 
+    /**
+     * Initializes properties.
+     * It takes an IndexInterface type for reading.
+     *
+     * @param IndexInterface $index The index.
+     */
     public function __construct(IndexInterface $index = null)
     {
         $this->fe = null;
@@ -43,21 +80,9 @@ class IndexManager
         $this->index = $index;
     }
 
-    public function setCollection(CollectionSet $set)
-    {
-        $this->set = $set;
-    }
-
-    public function setTransformer(TransformationInterface $transform)
-    {
-        $this->transformer = $transform;
-    }
-
-    public function setFeature(FeatureExtractionInterface $fe)
-    {
-        $this->fe = $fe;
-    }
-
+    /**
+     * This starts the counting operation, once all documents are added and collection is set as the $set property.
+     */
     public function start()
     {
         $this->index = new Index;
@@ -145,15 +170,62 @@ class IndexManager
 
     }
 
-    public function search(string $key):? EntryStatistics
+    /**
+     * @param CollectionSet $set The document set.
+     */
+    public function setCollection(CollectionSet $set)
+    {
+        $this->set = $set;
+    }
+
+    /**
+     * @param TransformationInterface $transform The transformation to be applied to all documents.
+     */
+    public function setTransformer(TransformationInterface $transform)
+    {
+        $this->transformer = $transform;
+    }
+
+    /**
+     * @param FeatureExtractionInterface $fe The feature extraction to be used for all terms.
+     */
+    public function setFeature(FeatureExtractionInterface $fe)
+    {
+        $this->fe = $fe;
+    }
+
+    /**
+     * @param string $key The key to search for in the index.
+     * @return string|null.
+     */
+    public function search(string $key): ?IndexEntry
     {
         if($this->index === null){
             throw new \Exception('Index not set.');
         }
 
-        return $this->index->search($key);
+        return $this->index->getData()[$key] ?? null;
     }
 
+    /**
+     * Returns an arranged array of labeled documents.
+     * @return array.
+     */
+    public function getDocuments(): array
+    {
+        $arrayclass = array();
+        foreach($this->index->getData() as $term => $sub) {
+            $array = $sub->getValue()->getPostingList();
+            foreach($array as $class => $value) {
+                    $document[$class][$term] = $value->getTf();
+            }
+        }
+        return $document;
+    }
+
+    /**
+     * @return CollectionStatistics.
+     */
     public function getCollectionStatistics(): CollectionStatistics 
     {
         if($this->index === null){
@@ -163,6 +235,9 @@ class IndexManager
         return $this->index->getCollectionStatistics();
     }
 
+    /**
+     * @return IndexInterface.
+     */
     public function getData(): IndexInterface 
     {
         if($this->index === null){
@@ -170,15 +245,6 @@ class IndexManager
         }
 
         return $this->index;
-    }
-
-    public function getDocuments(): array
-    {
-        if($this->index === null){
-            throw new \Exception('Index not set.');
-        }
-
-        return $this->index->getDocuments();
     }
 
 

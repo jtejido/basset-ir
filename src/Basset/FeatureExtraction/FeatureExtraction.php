@@ -6,28 +6,28 @@ namespace Basset\FeatureExtraction;
 
 use Basset\Documents\DocumentInterface;
 
+/**
+ * An object that simply precounts tokens.
+ * 
+ * @see DocumentInterface
+ *
+ * @example
+ * $fe = new FeatureExtraction();
+ * $fe->getFeature($doc);
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
+ */
+
 class FeatureExtraction implements FeatureExtractionInterface
 {
 
-    protected $preweighted;
-
-    public function __construct($preweighted = false)
-    {
-        $this->preweighted = $preweighted;
-    }
-
+    /**
+     * @param  DocumentInterface $doc
+     * @return array
+     */
     public function getFeature(DocumentInterface $doc): array
     {
-
-    	$tokens = array_count_values($doc->getDocument());
-
-    	if($this->preweighted){
-    		foreach($tokens as $key => &$value){
-    			$doc->getModel()->getEntryStatistics()->setTerm($key);
-    			$value = $doc->getModel()->score($doc->getPostingStats()->getTf($key), $doc->getPostingStats()->getDocumentLength(), $doc->getPostingStats()->getNumberOfUniqueTerms());
-    		}
-    	}
-        
+    	$tokens = array_count_values($doc->getDocument());    
         return $tokens;
     }
 

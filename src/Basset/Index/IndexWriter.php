@@ -6,7 +6,7 @@ namespace Basset\Index;
 
 use Basset\Utils\TransformationInterface;
 use Basset\Collections\CollectionSet;
-use Basset\Documents\DocumentInterface;
+use Basset\Documents\TokensDocument;
 use Basset\Statistics\CollectionStatistics;
 use Basset\Utils\Serializer;
 
@@ -61,30 +61,36 @@ class IndexWriter
 
     }
 
-    public function applyTransformation(TransformationInterface $transformer) 
+    public function applyTransformation(TransformationInterface $transformer): bool 
     {
 
         $this->ensureOpen();
         
         $this->transformer = $transformer;
 
+        return true;
+
     }
 
-    public function setFilename(string $filename) 
+    public function setFilename(string $filename): bool 
     {
 
         $this->ensureOpen();
         
         $this->filename = $filename;
 
+        return true;
+
     }
 
-    public function addDocument(DocumentInterface $d, $class = null) 
+    public function addDocument(TokensDocument $d, $class = null): bool 
     {
 
         $this->ensureOpen();
 
         $this->documents[] = array('class' => $class, 'document' => $d);
+
+        return true;
 
     }
 
@@ -132,7 +138,7 @@ class IndexWriter
         return $manager->getData();
     }
 
-    private function writeFile(IndexInterface $index, string $filename): int
+    private function writeFile(IndexInterface $index, string $filename): ?int
     {
 
         $this->ensureOpen();
@@ -153,11 +159,11 @@ class IndexWriter
             return file_put_contents($filename, $file);
             
         } else {
-            throw new \Exception("Private key not set.");
+            return null;
         }
     }
 
-    private function is_dir_empty($dir): bool
+    private function is_dir_empty($dir): ?bool
     {
         $this->ensureOpen();
 
@@ -168,10 +174,12 @@ class IndexWriter
         return (count(scandir($dir)) == 2);
     }
 
-    private function ensureOpen(): void
+    private function ensureOpen(): ?\Exception
     {
         if($this->open === false){
             throw new \Exception('Index files have been commited. Please start a new instance of IndexWriter.');
+        } else {
+            return null;
         }
     }
 

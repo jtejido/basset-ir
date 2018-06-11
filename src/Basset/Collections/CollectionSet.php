@@ -2,13 +2,28 @@
 
 namespace Basset\Collections;
 
-use Basset\Documents\DocumentInterface;
+use Basset\Documents\TokensDocument;
 use Basset\Documents\Document;
 use Basset\Utils\TransformationInterface;
 
 /**
- * A collection of Document objects.
+ * An array object that wraps a collection of a type TokensDocument.
+ * 
+ * @see TokensDocument
+ * @see TransformationInterface
+ *
+ * @var $documents
+ * @var $labeled
+ * @var $currentDocument
+ *
+ * @example 
+ * $collection = new CollectionSet();
+ * $collection->addDocument($document, 'label');
+ * $collection->applyTransformation($transformers);
+ *
+ * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
+
 class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Countable
 {
 
@@ -18,25 +33,33 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
 
     protected $documents;
 
-    protected $keyed;
+    protected $labeled;
 
     protected $currentDocument;
     
-    public function __construct($keyed = false)
+    /**
+     * While it is always helpful to know which document is which, I will not make it required, as this isn't helpful
+     * if you only have a single document collection you simply wanted to compare against your query.
+     * 
+     * @param bool $labeled OPTIONAL default is false
+     */
+    public function __construct(bool $labeled = false)
     {
         $this->documents = array();
-        $this->keyed = ($keyed == true) ? self::CLASS_AS_KEY : self::OFFSET_AS_KEY;
+        $this->labeled = ($labeled == true) ? self::CLASS_AS_KEY : self::OFFSET_AS_KEY;
     }
 
     /**
-     * Add a document to the set.
+     * Adds a document to the set. It does an internal check to see if it is labeled. If not, it will use its offset
+     * as key. if CollectionSet is instantiated as true, then it will throw an error.
      *
+     * @throws Exception
      * @param mixed $class
-     * @param DocumentInterface $d
+     * @param TokensDocument $d
      */
-    public function addDocument(DocumentInterface $d, $class = null)
+    public function addDocument(TokensDocument $d, $class = null)
     {
-        if((empty($class)) && $this->keyed == self::CLASS_AS_KEY) {
+        if((empty($class)) && $this->labeled == self::CLASS_AS_KEY) {
             throw new \Exception('Class or Label cannot be null.');
         }
         $class = $class === null ? count($this->documents) : $class;
@@ -45,9 +68,9 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
     }
 
     /**
-     * Apply the transformation to the data of this document.
+     * Apply the transformation to each documents.
      *
-     * @param TransformationInterface
+     * @param TransformationInterface $transform
      */
     public function applyTransformation(TransformationInterface $transform)
     {
@@ -79,7 +102,7 @@ class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Coun
 
     public function key()
     {
-        switch ($this->keyed) {
+        switch ($this->labeled) {
             case self::CLASS_AS_KEY:
                 return $this->currentDocument->getClass();
             case self::OFFSET_AS_KEY:
