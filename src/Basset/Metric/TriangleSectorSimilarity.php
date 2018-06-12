@@ -10,7 +10,7 @@ use Basset\Metric\{
     };
 
 /**
- * This is based on Heidarian and Dinneen's Hybrid Geometric Approach for cosine similarity.
+ * This is based on Heidarian and Dinneen's Hybrid Geometric Approach for a new geometric approach to similarity.
  * @see https://www.computer.org/csdl/proceedings/bigdataservice/2016/2251/00/2251a142.pdf
  *
  * Given two vectors compute ts * ss
@@ -50,7 +50,7 @@ class TriangleSectorSimilarity extends Metric implements VSMInterface, Similarit
         $sim = new CosineSimilarity;
         $cos = $sim->similarity($a, $b);
         $theta = 0;
-        if($cos != 0){
+        if($cos > 0){
             $theta += acos($cos) + 10;
         }
 

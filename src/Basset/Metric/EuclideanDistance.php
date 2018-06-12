@@ -31,7 +31,7 @@ class EuclideanDistance extends Metric implements VSMInterface, DistanceInterfac
             else
                 $r[$k] = $v;
         }
-
+        
         return sqrt(
             array_sum(
                 array_map(

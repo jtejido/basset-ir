@@ -32,6 +32,7 @@ class BrayCurtisDistance extends Metric implements VSMInterface, DistanceInterfa
 
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);
 
+
         $num = 0;
         $denom = 0;
 

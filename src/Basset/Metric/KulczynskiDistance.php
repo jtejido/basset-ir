@@ -10,7 +10,7 @@ namespace Basset\Metric;
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
-class KulczynskiSimilarity extends Metric implements VSMInterface, SimilarityInterface
+class KulczynskiDistance extends Metric implements VSMInterface, DistanceInterface
 {
     public function __construct()
     {
@@ -22,7 +22,7 @@ class KulczynskiSimilarity extends Metric implements VSMInterface, SimilarityInt
      * @param  array $b
      * @return float
      */
-    public function similarity(array $a, array $b): float
+    public function dist(array $a, array $b): float
     {
 
         $num = 0;

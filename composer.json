@@ -17,6 +17,11 @@
 			"Basset\\": "src/"
 		}
 	},
+	"autoload-dev": {
+	    "psr-4": { 
+	    	"Basset\\Tests\\": "tests/" 
+	    }
+	 },
 	"require-dev": {
 	  	"phpunit/phpunit": "5.*"
 	}

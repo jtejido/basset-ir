@@ -7,6 +7,7 @@ namespace Basset\Metric;
 
 /**
  * @see http://www.naun.org/main/NAUN/ijmmas/mmmas-49.pdf
+ * Note: Be aware that this gives 0.5 to show that 2 arrays are equal
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
@@ -33,7 +34,7 @@ class MotykaSimilarity extends Metric implements VSMInterface, SimilarityInterfa
         foreach ($uniqueKeys as $key) {
             if (!empty($a[$key]) && !empty($b[$key])){
                 $num += min($b[$key], $a[$key]);
-                $denom += ($a[$key] + $b[$key]);
+                $denom += ($b[$key] + $a[$key]);
             }
         }
 

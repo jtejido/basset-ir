@@ -1,0 +1,13 @@
+<phpunit bootstrap="bootstrap.php" colors="true">
+	<testsuites>
+		<testsuite name="Documents" >
+				<directory suffix="Test.php">Basset/Documents</directory>
+		</testsuite>
+		<testsuite name="Tokenizers" >
+				<directory suffix="Test.php">Basset/Tokenizers</directory>
+		</testsuite>
+		<testsuite name="Metric" >
+				<directory suffix="Test.php">Basset/Metric</directory>
+		</testsuite>
+	</testsuites>
+</phpunit>
