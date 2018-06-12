@@ -2,6 +2,11 @@
 ![Droopy](https://i.imgflip.com/1c38he.jpg)
 
 
+[![Latest Stable Version](https://poser.pugx.org/jtejido/basset/v/stable)](https://packagist.org/packages/jtejido/basset)
+[![Build Status](https://travis-ci.com/jtejido/basset-ir.svg?branch=master)](https://travis-ci.com/jtejido/basset-ir)
+[![License](https://poser.pugx.org/jtejido/basset/license)](https://packagist.org/packages/jtejido/basset)
+
+
 Basset
 =============
 
@@ -17,8 +22,6 @@ Basset provides different ways of searching through documents in a collection, b
 
 4. [ACM](https://www.acm.org/)
 
-
-[![Build Status](https://travis-ci.com/jtejido/basset-ir.svg?branch=master)](https://travis-ci.com/jtejido/basset-ir)
 
 
 Documentation
