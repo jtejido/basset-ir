@@ -18,6 +18,8 @@ Basset provides different ways of searching through documents in a collection, b
 4. [ACM](https://www.acm.org/)
 
 
+[![Build Status](https://travis-ci.com/jtejido/basset-ir.svg?branch=master)](https://travis-ci.com/jtejido/basset-ir)
+
 
 Documentation
 =============
