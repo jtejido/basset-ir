@@ -5,7 +5,7 @@ namespace Basset\Index;
 
 use Basset\Math\Math;
 use Basset\Collections\CollectionSet;
-use Basset\FeatureExtraction\FeatureExtraction;
+use Basset\FeatureExtraction\DataAsFeatures;
 use Basset\Utils\TransformationInterface;
 use Basset\Statistics\{
         EntryStatistics, 
@@ -30,14 +30,12 @@ use Basset\Structure\{
  * @see TrieInterface
  * @see Trie
  * @see CollectionSet
- * @see FeatureExtraction
  * @see EntryStatistics
  * @see CollectionStatistics
  * @see PostingStatistics
  * @see Math
  *
  * @var $set
- * @var $fe
  * @var $index
  *
  * @example 
@@ -69,7 +67,6 @@ class IndexManager
      */
     public function __construct(IndexInterface $index = null)
     {
-        $this->fe = null;
         $this->set = null;
         $this->index = $index;
     }
@@ -98,14 +95,10 @@ class IndexManager
 
         $postinglist = array();
 
-        if ($this->fe === null){
-            $this->fe = new FeatureExtraction();
-        }
-
         foreach ($this->set as $class=>$doc) {
             $flag = array();
             $numberofDocuments++;
-            $tokens = $this->fe->getFeature($doc);
+            $tokens = array_count_values($doc->getDocument());
             $tokensCount = count($tokens);
             $tokensSum = array_sum($tokens);
 
@@ -175,14 +168,6 @@ class IndexManager
     public function setCollection(CollectionSet $set)
     {
         $this->set = $set;
-    }
-
-    /**
-     * @param FeatureExtractionInterface $fe The feature extraction to be used for all terms.
-     */
-    public function setFeature(FeatureExtractionInterface $fe)
-    {
-        $this->fe = $fe;
     }
 
     /**

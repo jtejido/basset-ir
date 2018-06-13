@@ -35,6 +35,8 @@ class Search
 
     private $indexReader;
 
+    private $indexSearch;
+
     private $documentmodel;
 
     private $querymodel;
@@ -42,6 +44,8 @@ class Search
     private $simdist;
 
     private $query;
+
+    private $fe;
 
     /**
      * It takes an IndexReader instance for IndexSearch class.
@@ -61,7 +65,8 @@ class Search
         $this->query = null;
         $this->documentmodel = null;
         $this->querymodel = null;
-        $this->indexsearch = new IndexSearch($this->indexReader);
+        $this->indexSearch = new IndexSearch($this->indexReader);
+        $this->fe = new FeatureExtraction($this->indexReader);
     }
 
     /**
@@ -71,7 +76,7 @@ class Search
      */
     private function getIndexSearch(): IndexSearch
     {
-        return $this->indexsearch;
+        return $this->indexSearch;
     }
 
     /**
@@ -195,8 +200,7 @@ class Search
      */
     public function query(DocumentInterface $query)
     {
-        $fe = new FeatureExtraction;
-        $this->query = $fe->getFeature($query);
+        $this->query = array_count_values($query->getDocument());
     }
 
     /**
@@ -212,7 +216,7 @@ class Search
     /**
      * Returns result ordered by rank. Limited by $limit specified.
      *
-     * @param  array $limit
+     * @param  int $limit
      * @return array
      */
     public function search($limit = 10): array
@@ -220,39 +224,12 @@ class Search
         
         $score = array();
         foreach($this->getDocuments() as $class => $doc) {
-            $score[$class] = $this->score($this->vectorize($this->getQuery(), $this->getQueryModel()), $this->vectorize($doc, $this->getModel()));
+            $score[$class] = $this->score($this->fe->getFeature($doc, $this->getModel()), $this->fe->getFeature($this->getQuery(), $this->getQueryModel()));
         }
 
         arsort($score);
         return array_slice($score, 0, $limit, true);
 
-    }
-
-    /**
-     * Returns model-specified weighted vector of a document.
-     *
-     * @param  DocumentInterface $doc
-     * @param  WeightedModelInterface $model
-     * @return array
-     */
-    private function vectorize(array $doc, WeightedModelInterface $model): array
-    {
-        if($this->getModel() === null || $this->getQueryModel() === null) {
-            throw new \Exception('Please apply a weighted model to query and the documents.');
-        }
-
-        $tokenSum = array_sum($doc);
-        $tokenCount = count($doc);
-
-        foreach ($doc as $term => &$value) {
-            if($stats = $this->getIndexSearch()->search((string) $term)) {
-                $model->setStats($stats);
-                $value = $model->getScore($value, $tokenSum, $tokenCount);
-            } else {
-                $value = 0;
-            }
-        }
-        return $doc;
     }
 
     /**

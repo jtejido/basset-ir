@@ -4,6 +4,8 @@
 namespace Basset\FeatureExtraction;
 
 use Basset\Documents\DocumentInterface;
+use Basset\Models\Contracts\WeightedModelInterface;
+use Basset\Models\TermCount;
 
 /**
  * An object that simply returns tokens.
@@ -24,8 +26,8 @@ class DataAsFeatures implements FeatureExtractionInterface
      * @param  DocumentInterface $doc
      * @return array
      */
-    public function getFeature(DocumentInterface $doc): array
+    public function getFeature(array $doc, WeightedModelInterface $model = null): array
     {
-        return $doc->getDocument();
+        return $doc;
     }
 }
