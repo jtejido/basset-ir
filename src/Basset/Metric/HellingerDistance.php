@@ -25,6 +25,10 @@ class HellingerDistance extends Metric implements VSMInterface, DistanceInterfac
     public function dist(array $a, array $b): float
     {
 
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $meanV1 = $this->math->mean(array_count_values(array_keys($a)));
         $meanV2 = $this->math->mean(array_count_values(array_keys($b)));
 

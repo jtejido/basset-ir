@@ -16,7 +16,11 @@ class OverlapCoefficient implements VSMInterface, SimilarityInterface
     */
     public function similarity(array $A, array $B): float
     {
-        // Make the arrays into sets
+
+        if(empty($A) || empty($B)){
+            throw new \InvalidArgumentException('Vector $' . (empty($A) ? 'a' : 'b') . ' is not an array');
+        }
+
         $a = array_fill_keys($A,1);
         $b = array_fill_keys($B,1);
         // Count the cardinalities of the sets

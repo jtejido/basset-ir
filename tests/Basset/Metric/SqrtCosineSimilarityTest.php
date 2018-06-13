@@ -16,11 +16,17 @@ class SqrtCosineSimilarityTest extends \PHPUnit_Framework_TestCase
             "The similarity of a set with itself is 1"
         );
 
-        $this->assertEquals(
-            0,
-            $sim->similarity($A,$e),
-            "The similarity of any set with the empty set is 0"
-        );
+        try {
+            $sim->similarity(
+                $A,
+                $e
+            );
+        } catch (\InvalidArgumentException $er) {
+            $this->assertEquals(
+                'Vector $b is not an array',
+                $er->getMessage()
+            );
+        }
 
     }
 }

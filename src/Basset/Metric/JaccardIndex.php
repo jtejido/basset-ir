@@ -24,6 +24,11 @@ class JaccardIndex extends Metric implements VSMInterface, SimilarityInterface
      */
     public function similarity(array $a, array $b): float
     {
+
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $A = array_fill_keys($a,1);
         $B = array_fill_keys($b,1);
 

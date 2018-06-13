@@ -25,6 +25,10 @@ class SoergleDistance extends Metric implements VSMInterface, DistanceInterface
     public function dist(array $a, array $b): float
     {
 
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $num = 0;
         $denom = 0;
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);

@@ -26,14 +26,18 @@ class MotykaSimilarity extends Metric implements VSMInterface, SimilarityInterfa
     public function similarity(array $a, array $b): float
     {
 
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+
         $num = 0;
         $denom = 0;
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);
 
         foreach ($uniqueKeys as $key) {
             if (!empty($a[$key]) && !empty($b[$key])){
-                $num += min($b[$key], $a[$key]);
-                $denom += ($b[$key] + $a[$key]);
+                $num += min($a[$key], $b[$key]);
+                $denom += ($a[$key] + $b[$key]);
             }
         }
 

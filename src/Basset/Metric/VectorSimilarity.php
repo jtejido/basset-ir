@@ -24,6 +24,11 @@ class VectorSimilarity extends Metric implements SimilarityInterface
      */
     public function similarity(array $a, array $b): float
     {
+
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $dotProduct = 0;
 
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);

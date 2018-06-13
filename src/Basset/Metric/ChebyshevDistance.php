@@ -25,7 +25,10 @@ class ChebyshevDistance extends Metric implements VSMInterface, DistanceInterfac
      */
     public function dist(array $a, array $b): float
     {
-
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $max = 0;
         $aux = 0;
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);

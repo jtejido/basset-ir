@@ -32,7 +32,7 @@ class TverskyIndex extends Metric implements VSMInterface, SimilarityInterface
 
     /**
      * @param $alpha Set to 0.5 to get either Jaccard Index or Dice Similarity
-     * @param $beta  Set to 1 to get Jaccard Index and 2 for Dice Similarity
+     * @param $beta  Set to 1 to get Dice Similarity and 2 for Jaccard Index
      */
     public function __construct($alpha = self::ALPHA, $beta = self::BETA)
     {
@@ -49,6 +49,10 @@ class TverskyIndex extends Metric implements VSMInterface, SimilarityInterface
     public function similarity(array $a, array $b): float
     {
 
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $a = array_fill_keys($a,1);
         $b = array_fill_keys($b,1);
 

@@ -33,7 +33,9 @@ class CosineSimilarity extends Metric implements VSMInterface, SimilarityInterfa
      */
     public function similarity(array $a, array $b): float
     {
-
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
 
         $normA = $this->math->norm($a);
         $normB = $this->math->norm($b);

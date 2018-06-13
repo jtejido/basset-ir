@@ -28,9 +28,11 @@ class BrayCurtisDistance extends Metric implements VSMInterface, DistanceInterfa
      */
     public function dist(array $a, array $b): float
     {
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
 
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);
-
 
         $num = 0;
         $denom = 0;

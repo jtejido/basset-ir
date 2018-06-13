@@ -24,7 +24,10 @@ class KLDivergence extends Metric implements VSMInterface, DistanceInterface
      */
     public function dist(array $a, array $b): float
     {
-
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);
         $klDiv = 0;
         foreach ($uniqueKeys as $key) {

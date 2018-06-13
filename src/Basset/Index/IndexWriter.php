@@ -52,8 +52,6 @@ class IndexWriter
 
     CONST CONFIG_FILE = __DIR__.'/../../../config/config.ini';
 
-    CONST SEPARATOR = '/';
-
     private $open;
 
     private $directory;
@@ -69,7 +67,7 @@ class IndexWriter
         $this->open = true;
         $this->collectionset = new CollectionSet(true);
         $this->transformer = null;
-        $this->directory = rtrim($directory,self::SEPARATOR).self::SEPARATOR;
+        $this->directory = rtrim($directory,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         $this->filename = self::DEFAULT_FILENAME;
         if($this->directory === null) {
             throw new \Exception('Index Directory Path should be set.');

@@ -34,6 +34,10 @@ class TriangleSectorSimilarity extends Metric implements VSMInterface, Similarit
      */
     public function similarity(array $a, array $b): float
     {
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         return $this->triangleSimilarity($a, $b) * $this->sectorSimilarity($a, $b);
     }
 

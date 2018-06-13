@@ -25,6 +25,10 @@ class StamatatosDistance extends Metric implements VSMInterface, DistanceInterfa
     public function dist(array $a, array $b): float
     {
 
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $dist = 0;
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);
 

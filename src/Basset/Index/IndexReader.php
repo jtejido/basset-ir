@@ -47,8 +47,6 @@ class IndexReader
 
     CONST CONFIG_FILE = __DIR__.'/../../../config/config.ini';
 
-    CONST SEPARATOR = '/';
-
     private $path;
 
     private $index;

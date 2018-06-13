@@ -2,22 +2,22 @@
 
 namespace Basset\Metric;
 
-class KulczynskiDistanceTest extends \PHPUnit_Framework_TestCase
+class CzekanowskiSimilarityTest extends \PHPUnit_Framework_TestCase
 {
-    public function testKulczynskiDistance()
+    public function testCzekanowskiSimilarity()
     {
-        $sim = new KulczynskiDistance();
+        $sim = new CzekanowskiSimilarity();
         $A = array("my" => 1,"name" => 2,"is" => 3,"john" => 4);
         $e = array();
 
         $this->assertEquals(
-            0,
-            $sim->dist($A,$A),
+            1,
+            $sim->similarity($A,$A),
             "The distance of a set with itself is 0"
         );
 
         try {
-            $sim->dist(
+            $sim->similarity(
                 $A,
                 $e
             );

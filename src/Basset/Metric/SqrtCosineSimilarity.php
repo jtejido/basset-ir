@@ -38,6 +38,10 @@ class SqrtCosineSimilarity extends Metric implements VSMInterface, SimilarityInt
     public function similarity(array $a, array $b): float
     {
 
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);
         $prod = 0;
         $v1_norm = 0;

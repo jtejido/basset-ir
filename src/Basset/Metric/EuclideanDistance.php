@@ -20,6 +20,10 @@ class EuclideanDistance extends Metric implements VSMInterface, DistanceInterfac
     public function dist(array $a, array $b): float
     {
 
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
         $r = array();
         foreach ($a as $k=>$v) {
             $r[$k] = $v;

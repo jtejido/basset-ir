@@ -34,6 +34,11 @@ class RenyiDivergence extends Metric implements VSMInterface, SimilarityInterfac
      */
     public function similarity(array $a, array $b): float
     {
+
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+
         $sim = new KLDivergence;
         if($this->const == 1){
             //const = 1 is a special case where it should equal KL divergence

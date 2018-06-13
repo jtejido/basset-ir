@@ -26,8 +26,11 @@ class ChiSquareDistance extends Metric implements VSMInterface, DistanceInterfac
      */
     public function dist(array $a, array $b): float
     {
-
-        $sum = 0;
+        if(empty($a) || empty($b)){
+            throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
+        }
+        
+        $sum = 0;   
         $uniqueKeys = $this->getAllUniqueKeys($a, $b);
 
         foreach ($uniqueKeys as $key) {

@@ -40,22 +40,19 @@ class CosineSimilarityTest extends \PHPUnit_Framework_TestCase
     public function testZero()
     {
         $sim = new CosineSimilarity();
-        $a = array('a' => 1);
-        $zero = array();
+        $A = array('a' => 1);
+        $e = array();
 
-        $this->assertEquals(
-            0,
-            $sim->similarity($a,$zero)
-        );
-
-        $this->assertEquals(
-            0,
-            $sim->similarity($zero,$zero)
-        );
-        
-        $this->assertEquals(
-            0,
-            $sim->similarity($zero,$a)
-        );
+        try {
+            $sim->similarity(
+                $A,
+                $e
+            );
+        } catch (\InvalidArgumentException $er) {
+            $this->assertEquals(
+                'Vector $b is not an array',
+                $er->getMessage()
+            );
+        }
     }
 }
