@@ -1,6 +1,6 @@
 <?php
-include_once('../autoload.php');
-include_once('../Cranfield/cranfield_parser.php');
+include_once(__DIR__.'/../autoload.php');
+include_once(__DIR__.'/../Cranfield/cranfield_parser.php');
 
 use Basset\Documents\Document;
 use Basset\Documents\TokensDocument;
@@ -31,9 +31,9 @@ class Similarity {
         // Initialized required stuff.
 
         // Change directory in /Cranfield/cranfield_parser.php if needed. This is hard-coded there.
-        $path = './cranfield_parsed/'; 
+        $path = __DIR__.'/../Cranfield/cranfield_parsed/'; 
 
-        $stopwords = file_get_contents('../stopwords/stopwords.txt');
+        $stopwords = file_get_contents(__DIR__.'/../stopwords/stopwords.txt');
         $tokenizer = new WhitespaceAndPunctuationTokenizer;
 
         $pipeline = array(
@@ -64,8 +64,8 @@ class Similarity {
          *
          */
 
-        $index = new IndexWriter('../custom_index');
-        $index->setFileName('mycustomindex');
+        $index = new IndexWriter();
+
         $files = glob($path . '*');
         foreach($files as $file){
             $index->addDocument(new TokensDocument($tokenizer->tokenize(file_get_contents($file))), basename($file));
@@ -95,7 +95,7 @@ class Similarity {
          * 
          */
 
-        $indexReader = new IndexReader('../custom_index/mycustomindex.idx'); // read the custom index specified above
+        $indexReader = new IndexReader(); // read the custom index specified above
 
         $search = new Search($indexReader);
         $search->query($query);
@@ -112,7 +112,7 @@ class Similarity {
 }
 
 // parse Cranfield xml first before getting relevance
-$collection = new CranfieldParser('../Cranfield/cranfield-collection/cran.all.1400.xml-format.xml');
+$collection = new CranfieldParser(__DIR__.'/../Cranfield/cranfield-collection/cran.all.1400.xml-format.xml');
 $collection->parse();
 $sim = new Similarity;
 $sim->test();

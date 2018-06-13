@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 
 namespace Basset\Index;
 
@@ -49,9 +48,9 @@ class IndexWriter
 
     CONST DEFAULT_FILENAME = 'basset_index';
 
-    CONST DEFAULT_DIRECTORY = '../index/';
+    CONST DEFAULT_DIRECTORY = __DIR__.'/../../../index/';
 
-    CONST CONFIG_FILE = '../config/config.ini';
+    CONST CONFIG_FILE = __DIR__.'/../../../config/config.ini';
 
     CONST SEPARATOR = '/';
 
@@ -158,7 +157,6 @@ class IndexWriter
         $this->ensureOpen();
         $manager = new IndexManager();
         $manager->setCollection($collectionset);
-        $manager->setTransformer($this->transformer);
         $manager->start();
         return $manager->getData();
     }

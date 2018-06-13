@@ -8,7 +8,7 @@
 
 Class CranfieldParser {
 
-	CONST BASE = './cranfield_parsed/';
+	CONST BASE = __DIR__.'/cranfield_parsed/';
 
 	public function __construct($file)
     {

@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 
 namespace Basset\Index;
 
@@ -23,7 +22,7 @@ use Basset\Structure\{
 /**
  * The IndexManager manages all operations relating to an Index object.
  * While keeping the Index lightweight, moving the operations here instead of putting it on index makes it safer
- * by not exploiting the methods for code injection.
+ * by not exposing the methods.
  * At the moment we wouldn't allow deleting and/or appending anything from the index. Thus, all new docs you wish to
  * add means you have to rebuild the index thru IndexWriter Class.
  * 
@@ -36,17 +35,14 @@ use Basset\Structure\{
  * @see CollectionStatistics
  * @see PostingStatistics
  * @see Math
- * @see TransformationInterface
  *
  * @var $set
  * @var $fe
  * @var $index
- * @var $transformer
  *
  * @example 
  * $manager = new IndexManager();
  * $manager->setCollection($collectionset);
- * $manager->setTransformer($transformer);
  * $manager->start();
  * $manager->getData();
  * $manager->search('hello');
@@ -65,8 +61,6 @@ class IndexManager
 
     private $index;
 
-    private $transformer;
-
     /**
      * Initializes properties.
      * It takes an IndexInterface type for reading.
@@ -76,7 +70,7 @@ class IndexManager
     public function __construct(IndexInterface $index = null)
     {
         $this->fe = null;
-        $this->transformer = null;
+        $this->set = null;
         $this->index = $index;
     }
 
@@ -85,6 +79,11 @@ class IndexManager
      */
     public function start()
     {
+
+        if($this->set === null){
+            throw new \Exception('Collection not set.');
+        }
+
         $this->index = new Index;
 
         $numberofDocuments = 0;
@@ -176,14 +175,6 @@ class IndexManager
     public function setCollection(CollectionSet $set)
     {
         $this->set = $set;
-    }
-
-    /**
-     * @param TransformationInterface $transform The transformation to be applied to all documents.
-     */
-    public function setTransformer(TransformationInterface $transform)
-    {
-        $this->transformer = $transform;
     }
 
     /**

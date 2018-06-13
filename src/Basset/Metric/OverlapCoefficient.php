@@ -1,6 +1,5 @@
 <?php
 
-declare(strict_types=1);
 
 namespace Basset\Metric;
 
@@ -10,7 +9,7 @@ namespace Basset\Metric;
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
-class OverlapCoefficient implements SimilarityInterface
+class OverlapCoefficient implements VSMInterface, SimilarityInterface
 {
    /**
     * The similarity returned by this algorithm is a number between 0,1
