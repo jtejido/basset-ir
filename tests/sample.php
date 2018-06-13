@@ -64,14 +64,14 @@ class Similarity {
          *
          */
 
-        // $index = new IndexWriter(__DIR__.'/../custom_index');
-        // $index->setFileName('mycustomindex');
-        // $files = glob($path . '*');
-        // foreach($files as $file){
-        //     $index->addDocument(new TokensDocument($tokenizer->tokenize(file_get_contents($file))), basename($file));
-        // }
-        // $index->applyTransformation($transform);
-        // $index->close();
+        $index = new IndexWriter(__DIR__.'/../custom_index');
+        $index->setFileName('mycustomindex');
+        $files = glob($path . '*');
+        foreach($files as $file){
+            $index->addDocument(new TokensDocument($tokenizer->tokenize(file_get_contents($file))), basename($file));
+        }
+        $index->applyTransformation($transform);
+        $index->close();
 
         /** 
          * Dumping $index->getLocation() gives '../custom_index/mycustomindex.idx' which should be fed as parameter
