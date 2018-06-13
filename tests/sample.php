@@ -64,8 +64,8 @@ class Similarity {
          *
          */
 
-        $index = new IndexWriter();
-
+        $index = new IndexWriter(__DIR__.'/../custom_index');
+        $index->setFileName('mycustomindex');
         $files = glob($path . '*');
         foreach($files as $file){
             $index->addDocument(new TokensDocument($tokenizer->tokenize(file_get_contents($file))), basename($file));
@@ -95,7 +95,7 @@ class Similarity {
          * 
          */
 
-        $indexReader = new IndexReader(); // read the custom index specified above
+        $indexReader = new IndexReader(__DIR__.'/../custom_index/mycustomindex.idx'); // read the custom index specified above
 
         $search = new Search($indexReader);
         $search->query($query);
