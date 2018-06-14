@@ -8,7 +8,6 @@
 
 Class CranfieldParser {
 
-	CONST BASE = __DIR__.'/cranfield_parsed/';
 
 	public function __construct($file)
     {
@@ -17,31 +16,32 @@ Class CranfieldParser {
 
 	public function parse()
 	{
-		if(!file_exists(self::BASE) && !is_dir(self::BASE)) {
-            mkdir(self::BASE, 0777, true);
-        }
-
 		$doc = file_get_contents($this->file);
 		$string = str_replace(array("\r", "\n"), '', $doc);
 		$xml = new \SimpleXMLElement($string);
+		$documents = array();
 		foreach($xml as $key => $value){
 			$file = null;
 			$filename = null;
 			foreach($value as $node => $content){
 				if ($node === 'DOCNO'){
-					$filename = $content;
+					$filename = (string)$content[0];
 				}
 
 				if ($node === 'TEXT'){
-					$file = $content;
+					$file = (string)$content[0];
 				}
 
-				if($file && $filename && !file_exists(self::BASE . $filename)) {
-					file_put_contents(self::BASE . $filename, $file);
+				if($file && $filename) {
+					if(!isset($documents[$filename])) {
+						$documents[$filename] = $file;
+					}
 				}
 				
 			}
 		}
+
+		return $documents;
 	}
 }
 

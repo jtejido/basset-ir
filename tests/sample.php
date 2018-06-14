@@ -30,9 +30,11 @@ class Similarity {
 
         // Initialized required stuff.
 
-        // Change directory in /Cranfield/cranfield_parser.php if needed. This is hard-coded there.
-        $path = __DIR__.'/../Cranfield/cranfield_parsed/'; 
+        // THE DOCUMENTS
+        $cranfield = new CranfieldParser(__DIR__.'/../Cranfield/cranfield-collection/cran.all.1400.xml-format.xml');
+        $documents = $cranfield->parse(); 
 
+        // analyzers
         $stopwords = file_get_contents(__DIR__.'/../stopwords/stopwords.txt');
         $tokenizer = new WhitespaceAndPunctuationTokenizer;
 
@@ -67,9 +69,8 @@ class Similarity {
 
         $index = new IndexWriter(__DIR__.'/../custom_index');
         $index->setFileName('mycustomindex');
-        $files = glob($path . '*');
-        foreach($files as $file){
-            $index->addDocument(new TokensDocument($tokenizer->tokenize(file_get_contents($file))), basename($file));
+        foreach($documents as $title => $body){
+            $index->addDocument(new TokensDocument($tokenizer->tokenize($body), $title));
         }
         $index->applyTransformation($transform);
         $index->close();
@@ -113,8 +114,7 @@ class Similarity {
 }
 
 // parse Cranfield xml first before getting relevance
-$collection = new CranfieldParser(__DIR__.'/../Cranfield/cranfield-collection/cran.all.1400.xml-format.xml');
-$collection->parse();
+
 $sim = new Similarity;
 $sim->test();
 
