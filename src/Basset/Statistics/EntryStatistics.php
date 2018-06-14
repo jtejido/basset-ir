@@ -22,12 +22,15 @@ class EntryStatistics
 
     private $uniqueTotalByTermPresence;
 
+    private $postinglist;
+
     public function __construct()
     {
         $this->termFrequency = null;
         $this->documentFrequency = null;
         $this->totalTermByPresence = null;
         $this->uniqueTotalByTermPresence = null;
+        $this->postinglist = array();
     }
 
 

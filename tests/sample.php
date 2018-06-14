@@ -53,8 +53,8 @@ class Similarity {
          * Everything is commited to disk once close() is called, otherwise you can keep adding document/s.
          * The file created is Basset's inverted index file.
          *
-         * Once created, IndexReader() takes care of reading it, this creates an in-memory trie structure
-         * for fast traversal during the Search() phase.
+         * Once created, IndexReader() takes care of reading it, this also creates an in-memory trie structure
+         * for fast traversal when you want to search for terms as prefix. (see IndexSearch for all methods)
          *
          * If a custom directory path is created (and an optional custom file name thru setFileName()), you need 
          * to specify the path in IndexReader(), otherwise it'll just look for a default file (index/basset_index.idx).
@@ -90,8 +90,8 @@ class Similarity {
          * There has been changes in class name and operations since the v1 release (to accomodate for
          * structural changes and for those familiar with Lucene instantiations).
          * DocumentRanking became Search(a wrapper for IndexSearch) which requires an IndexReader instance.
-         * documentModel() became model where query model and a metric is already specified inside.
-         * You can still specify them thru queryModel() and similarity(), but a default is given from the docs at
+         * documentModel() became model() where query model and a metric is already specified inside.
+         * You can still change them thru queryModel() and similarity(), but a default is given from the docs at
          * https://myth-of-sissyphus.blogspot.com/2018/02/basset-information-retrieval-library-in.html
          * 
          */
