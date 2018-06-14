@@ -26,34 +26,42 @@ use Basset\Models\TermCount;
 class FeatureExtraction implements FeatureExtractionInterface
 {
 
-	public function __construct(IndexReader $indexReader)
+	/**
+     * @param  IndexReader $indexReader
+     * @param  WeightedModelInterface $model OPTIONAL defaults to null|TermCount
+     */
+	public function __construct(IndexReader $indexReader, WeightedModelInterface $model = null)
     {
         $this->indexReader = $indexReader;
         $this->indexSearch = new IndexSearch($this->indexReader);
+        $this->model = $model;
+
+        if($this->model === null) {
+    		$this->model = new TermCount;
+    	}
     }
 
     /**
-     * @param  DocumentInterface $doc
+     * @param  array $doc
      * @return array
      */
-    public function getFeature(array $doc, WeightedModelInterface $model = null): array
+    public function getFeature(array $doc): array
     {
-
-    	if($model === null) {
-    		$model = new TermCount;
-    	}
 
 		$tokenSum = array_sum($doc);
 
 		$tokenCount = count($doc);
 
-    	$function = function ($key, $feature) use ($tokenSum, $tokenCount, $model) {
+    	$function = function ($key, $feature) use($tokenSum, $tokenCount) {
 
 						if($stats = $this->indexSearch->search($key)) {
-			    			$model->setStats($stats);
+			    			$this->model->setStats($stats);
+			    			$feature = $this->model->getScore($feature, $tokenSum, $tokenCount);
+			    		} else {
+			    			$feature = 0;
 			    		}
 
-			        	return array($key => $model->getScore($feature, $tokenSum, $tokenCount));
+			    		return array($key => $feature);
 
 			         };
 
@@ -65,5 +73,6 @@ class FeatureExtraction implements FeatureExtractionInterface
     {
 	    return array_merge(...array_map($function, array_keys($doc), $doc));
 	}
+
 
 }

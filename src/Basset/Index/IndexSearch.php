@@ -15,7 +15,8 @@ use Basset\Statistics\{
 
 
 /**
- * The IndexSearch takes in what index is read and trie built by IndexReader for any searching operations in the index.
+ * The IndexSearch takes in what index is read and trie built by the IndexReader for any searching operations 
+ * in the index.
  * It can be used as stand-alone class to search for items added in the index provided you've pre-processed it in 
  * the IndexReader.
  * 

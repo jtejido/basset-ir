@@ -36,6 +36,7 @@ class Similarity {
         $stopwords = file_get_contents(__DIR__.'/../stopwords/stopwords.txt');
         $tokenizer = new WhitespaceAndPunctuationTokenizer;
 
+        // This is a set of NLP stuff used to analyze each tokens(terms) in a given Document.
         $pipeline = array(
                     new StopWords($tokenizer->tokenize($stopwords)),
                     new English,
@@ -88,7 +89,7 @@ class Similarity {
          * Start search.
          * There has been changes in class name and operations since the v1 release (to accomodate for
          * structural changes and for those familiar with Lucene instantiations).
-         * DocumentRanking became Search() which requires an IndexReader instance.
+         * DocumentRanking became Search(a wrapper for IndexSearch) which requires an IndexReader instance.
          * documentModel() became model where query model and a metric is already specified inside.
          * You can still specify them thru queryModel() and similarity(), but a default is given from the docs at
          * https://myth-of-sissyphus.blogspot.com/2018/02/basset-information-retrieval-library-in.html
@@ -103,8 +104,8 @@ class Similarity {
         print_r($search->search(15)); 
 
         /* 
-         * search() returns an array in descending order, and can take a limit number as parameter to display some 
-         * limited amount of stuff, as 1400 items will surely be dumped on your terminal (default is 10).
+         * search() returns an array in descending order, and can take a $limit number and boolean $descending as parameter
+         * to display stuff, as 1400 items is a lot of stuff (default is search(10, true)).
          */
 
     }

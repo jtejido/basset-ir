@@ -45,8 +45,6 @@ class Search
 
     private $query;
 
-    private $fe;
-
     /**
      * It takes an IndexReader instance for IndexSearch class.
      * IndexSearch incorporates usage of both TrieManager and IndexManager.
@@ -66,7 +64,6 @@ class Search
         $this->documentmodel = null;
         $this->querymodel = null;
         $this->indexSearch = new IndexSearch($this->indexReader);
-        $this->fe = new FeatureExtraction($this->indexReader);
     }
 
     /**
@@ -80,7 +77,7 @@ class Search
     }
 
     /**
-     * Returns an array of classified docs.
+     * Returns an array of pre-counted classified docs.
      *
      * @return array
      */
@@ -194,7 +191,7 @@ class Search
     }
 
     /**
-     * Set query. The query as document.
+     * Set query. The query as precounted vector.
      *
      * @param  DocumentInterface $q
      */
@@ -215,19 +212,27 @@ class Search
 
     /**
      * Returns result ordered by rank. Limited by $limit specified.
+     * This also assembles both the query and document's feature vector.
      *
      * @param  int $limit
      * @return array
      */
-    public function search($limit = 10): array
+    public function search($limit = 10, $descending = true): array
     {
         
         $score = array();
         foreach($this->getDocuments() as $class => $doc) {
-            $score[$class] = $this->score($this->fe->getFeature($doc, $this->getModel()), $this->fe->getFeature($this->getQuery(), $this->getQueryModel()));
+            $docFeature = new FeatureExtraction($this->indexReader, $this->getModel());
+            $queryFeature = new FeatureExtraction($this->indexReader, $this->getQueryModel());
+            $score[$class] = $this->score($docFeature->getFeature($doc), $queryFeature->getFeature($this->getQuery()));
         }
 
-        arsort($score);
+        if ($descending) {
+            arsort($score);
+        } else {
+            asort($score);
+        }
+        
         return array_slice($score, 0, $limit, true);
 
     }
