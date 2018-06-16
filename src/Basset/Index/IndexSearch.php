@@ -3,6 +3,7 @@
 
 namespace Basset\Index;
 
+use Basset\FeatureExtraction\FeatureVector;
 use Basset\Statistics\{
         EntryStatistics, 
         CollectionStatistics
@@ -80,9 +81,14 @@ class IndexSearch
         return $stats;
     }
 
-    public function getDocuments(): ?array
+    public function getDocumentVectors(): ?array
     {
-        return $this->indexManager->getDocuments();
+        return $this->indexManager->getDocumentVectors();
+    }
+
+    public function getDocumentVector(string $class): FeatureVector
+    {
+        return $this->indexManager->getDocumentVector($class);
     }
 
     public function getCollectionStatistics(): CollectionStatistics

@@ -5,7 +5,7 @@ namespace Basset\Index;
 
 use Basset\Math\Math;
 use Basset\Collections\CollectionSet;
-use Basset\FeatureExtraction\DataAsFeatures;
+use Basset\FeatureExtraction\FeatureVector;
 use Basset\Utils\TransformationInterface;
 use Basset\Statistics\{
         EntryStatistics, 
@@ -189,14 +189,41 @@ class IndexManager
      */
     public function getDocuments(): array
     {
-        $arrayclass = array();
+        $documents = array();
         foreach($this->index->getData() as $term => $sub) {
             $array = $sub->getValue()->getPostingList();
             foreach($array as $class => $value) {
-                    $document[$class][$term] = $value->getTf();
+                    $documents[$class][$term] = $value->getTf();
             }
         }
-        return $document;
+        return $documents;
+    }
+
+    /**
+     * Returns an array of document vectors.
+     * @return array.
+     */
+    public function getDocumentVectors(): array
+    {
+        $documents = $this->getDocuments();
+
+        $documentvector = array();
+        foreach($documents as $class => $document) {
+            $documentvector[$class] = new FeatureVector($document);
+        }
+
+        return $documentvector;
+    }
+
+    /**
+     * Returns document vector by class.
+     * @return array.
+     */
+    public function getDocumentVector(string $class): FeatureVector
+    {
+        $documents = $this->getDocumentVectors();
+
+        return $documents[$class];
     }
 
     /**

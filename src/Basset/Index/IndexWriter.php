@@ -105,7 +105,7 @@ class IndexWriter
 
     }
 
-    public function addDocument(TokensDocument $d, $class = null): bool 
+    public function addDocument(TokensDocument $d, string $class = null): bool 
     {
 
         $this->ensureOpen();
@@ -126,7 +126,7 @@ class IndexWriter
         $this->ensureOpen();
         
         foreach($this->documents as $docs) {
-            if($docs['class'] === null) {
+            if($docs['class'] == null) {
                 $this->collectionset = new CollectionSet();
                 break;
             }

@@ -35,16 +35,7 @@ class EuclideanDistance extends Metric implements VSMInterface, DistanceInterfac
                 $r[$k] = $v;
         }
         
-        return sqrt(
-            array_sum(
-                array_map(
-                    function ($x) {
-                        return $x*$x;
-                    },
-                    $r
-                )
-            )
-        );
+        return $this->math->euclideanNorm($r);
 
     }
 

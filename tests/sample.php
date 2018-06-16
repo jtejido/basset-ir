@@ -27,14 +27,13 @@ use Basset\Models\Idf;
 class Similarity {
 
     public function test() {
-
+        $start = microtime(true);
         // Initialized required stuff.
 
         // THE DOCUMENTS
         $cranfield = new CranfieldParser(__DIR__.'/../Cranfield/cranfield-collection/cran.all.1400.xml-format.xml');
         $documents = $cranfield->parse(); 
 
-        // analyzers
         $stopwords = file_get_contents(__DIR__.'/../stopwords/stopwords.txt');
         $tokenizer = new WhitespaceAndPunctuationTokenizer;
 
@@ -70,7 +69,7 @@ class Similarity {
         $index = new IndexWriter(__DIR__.'/../custom_index');
         $index->setFileName('mycustomindex');
         foreach($documents as $title => $body){
-            $index->addDocument(new TokensDocument($tokenizer->tokenize($body), $title));
+            $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), $title);
         }
         $index->applyTransformation($transform);
         $index->close();
@@ -81,7 +80,7 @@ class Similarity {
          */
 
         // prepare one query as Document instance from Cranfield/cranfield-collection/cran.qry.xml-format
-        $query = new Document(new TokensDocument($tokenizer->tokenize('what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft .')));
+        $query = new Document(new TokensDocument($tokenizer->tokenize('what are the structural and aeroelastic problems associated with flight of high speed aircraft.')));
         $query->applyTransformation($transform);
 
 
@@ -102,8 +101,10 @@ class Similarity {
         $search = new Search($indexReader);
         $search->query($query);
         $search->model(new BM25);
+        //$search->setQueryExpansion(true); This would make it slow but precision and recall is better.
         print_r($search->search(15)); 
-
+        print_r(microtime(true) - $start);
+        echo "\xA";
         /* 
          * search() returns an array in descending order, and can take a $limit number and boolean $descending as parameter
          * to display stuff, as 1400 items is a lot of stuff (default is search(10, true)).

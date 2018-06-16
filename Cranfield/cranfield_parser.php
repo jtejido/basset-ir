@@ -32,6 +32,7 @@ Class CranfieldParser {
 					$file = (string)$content[0];
 				}
 
+
 				if($file && $filename) {
 					if(!isset($documents[$filename])) {
 						$documents[$filename] = $file;
@@ -40,7 +41,6 @@ Class CranfieldParser {
 				
 			}
 		}
-
 		return $documents;
 	}
 }

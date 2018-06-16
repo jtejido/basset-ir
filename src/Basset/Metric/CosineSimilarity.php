@@ -37,8 +37,8 @@ class CosineSimilarity extends Metric implements VSMInterface, SimilarityInterfa
             throw new \InvalidArgumentException('Vector $' . (empty($a) ? 'a' : 'b') . ' is not an array');
         }
 
-        $normA = $this->math->norm($a);
-        $normB = $this->math->norm($b);
+        $normA = $this->math->euclideanNorm($a);
+        $normB = $this->math->euclideanNorm($b);
         return (($normA * $normB) > 0)
                ? $this->math->dotProduct($a, $b) / ($normA * $normB)
                : 0;

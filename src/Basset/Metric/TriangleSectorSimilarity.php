@@ -44,7 +44,7 @@ class TriangleSectorSimilarity extends Metric implements VSMInterface, Similarit
     private function triangleSimilarity(array $a, array $b) {
 
         $theta = deg2rad($this->theta($a, $b));
-        $triangle_sim = ($this->math->norm($a) * $this->math->norm($b) * sin($theta)) / 2;
+        $triangle_sim = ($this->math->euclideanNorm($a) * $this->math->euclideanNorm($b) * sin($theta)) / 2;
 
         return $triangle_sim;
     }
@@ -69,7 +69,7 @@ class TriangleSectorSimilarity extends Metric implements VSMInterface, Similarit
 
     private function magnitudeDifference(array $a, array $b) {
 
-        $mag_diff = abs($this->math->norm($a) - $this->math->norm($b));
+        $mag_diff = abs($this->math->euclideanNorm($a) - $this->math->euclideanNorm($b));
 
         return $mag_diff;
     }

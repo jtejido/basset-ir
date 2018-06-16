@@ -8,7 +8,7 @@ use Basset\Utils\TransformationInterface;
 /**
  * The CollectionSet representation.
  */
-interface CollectionInterface
+interface CollectionInterface extends \Iterator,\ArrayAccess,\Countable
 {
     /**
      * Adds a document to the set. It does an internal check to see if it is labeled. If not, it will use its offset

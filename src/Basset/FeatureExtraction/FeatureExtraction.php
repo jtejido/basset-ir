@@ -10,15 +10,15 @@ use Basset\Models\Contracts\WeightedModelInterface;
 use Basset\Models\TermCount;
 
 /**
- * A class that does feature extraction given an Index(for term stats), array of docs and a model to pull the 
- * features from.
+ * A class that does feature extraction given an IndexReader(for term stats), FeatureVector and a model to pull the 
+ * new features from.
  * @see https://en.wikipedia.org/wiki/Feature_(machine_learning)
  * 
  * @see DocumentInterface
  *
  * @example
- * $fe = new FeatureExtraction();
- * $fe->getFeature($doc);
+ * $fe = new FeatureExtraction($indexReader, $model, $doc);
+ * $fe->getFeature();
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
@@ -30,11 +30,12 @@ class FeatureExtraction implements FeatureExtractionInterface
      * @param  IndexReader $indexReader
      * @param  WeightedModelInterface $model OPTIONAL defaults to null|TermCount
      */
-	public function __construct(IndexReader $indexReader, WeightedModelInterface $model = null)
+	public function __construct(IndexReader $indexReader, WeightedModelInterface $model, FeatureVector $doc)
     {
         $this->indexReader = $indexReader;
         $this->indexSearch = new IndexSearch($this->indexReader);
         $this->model = $model;
+        $this->doc = $doc;
 
         if($this->model === null) {
     		$this->model = new TermCount;
@@ -42,15 +43,14 @@ class FeatureExtraction implements FeatureExtractionInterface
     }
 
     /**
-     * @param  array $doc
      * @return array
      */
-    public function getFeature(array $doc): array
+    public function getFeature(): array
     {
 
-		$tokenSum = array_sum($doc);
+		$tokenSum = array_sum($this->doc->getFeature());
 
-		$tokenCount = count($doc);
+		$tokenCount = count($this->doc->getFeature());
 
     	$function = function ($key, $feature) use($tokenSum, $tokenCount) {
 
@@ -65,13 +65,13 @@ class FeatureExtraction implements FeatureExtractionInterface
 
 			         };
 
-        return $this->array_map_assoc($function, $doc);
+        return $this->array_map_assoc($function);
     }
 
     // A solution for returning keys associated with the weighted values
-    private function array_map_assoc(callable $function, array $doc): array
+    private function array_map_assoc(callable $function): array
     {
-	    return array_merge(...array_map($function, array_keys($doc), $doc));
+	    return array_merge(...array_map($function, array_keys($this->doc->getFeature()), $this->doc->getFeature()));
 	}
 
 

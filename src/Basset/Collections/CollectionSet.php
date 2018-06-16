@@ -24,7 +24,7 @@ use Basset\Utils\TransformationInterface;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class CollectionSet implements CollectionInterface, \Iterator,\ArrayAccess,\Countable
+class CollectionSet implements CollectionInterface
 {
 
     const CLASS_AS_KEY = 1;

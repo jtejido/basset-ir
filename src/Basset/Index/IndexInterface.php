@@ -13,7 +13,7 @@ use Basset\Utils\TransformationInterface;
  * An Index Representation.
  */
 
-interface IndexInterface
+interface IndexInterface extends \Iterator, \ArrayAccess, \Countable
 {
 
 	public function getCollectionStatistics(): CollectionStatistics;

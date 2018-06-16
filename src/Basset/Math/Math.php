@@ -39,14 +39,34 @@ class Math
 
     /**
      * Euclidean norm
-     * ||x|| = sqrt(x・x) // ・ is a dot product
+     * ||x||2 = sqrt(x・x) // ・ is a dot product
      *
      * @param array $vector
      * @return float
      */
-    public function norm(array $vector): float
+    public function euclideanNorm(array $vector): float
     {
         return sqrt($this->dotProduct($vector, $vector));
+    }
+
+    /**
+     * Taxicab norm
+     * ||x||1 = ∑ |x|
+     *
+     * @param array $vector
+     * @return float
+     */
+    public function taxicabNorm(array $vector): float
+    {
+        return 
+            array_sum(
+                array_map(
+                    function ($x) {
+                        return abs($x);
+                    },
+                    $vector
+                )
+            );
     }
 
     /**

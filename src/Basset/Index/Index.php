@@ -32,7 +32,7 @@ use Basset\Statistics\{
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class Index implements IndexInterface, \Iterator, \ArrayAccess, \Countable {
+class Index implements IndexInterface {
 
 
     private $entries;
@@ -47,6 +47,7 @@ class Index implements IndexInterface, \Iterator, \ArrayAccess, \Countable {
     public function __construct()
     {
         $this->entries = array();
+        $this->collectionStats = null;
     }
 
     /**
