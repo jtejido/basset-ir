@@ -95,6 +95,15 @@ class Search
      */
     public function setQueryExpansion(bool $queryexpansion = false, int $fbdocs = self::TOP_REL_DOCS, int $fbterms = self::TOP_REL_TERMS)
     {
+
+        if($this->getSimilarity() === null) {
+            throw new \Exception('Please set Similarity for Ranking Documents first.');
+        }
+
+        if($this->getSimilarity() instanceof DistanceInterface) {
+            throw new \Exception('You cannot use Query Expansion for getting distance.');
+        }
+
         $this->queryexpansion = $queryexpansion;
 
         if ($this->queryexpansion) {
