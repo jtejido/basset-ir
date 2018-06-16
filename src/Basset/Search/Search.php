@@ -3,7 +3,7 @@
 
 namespace Basset\Search;
 
-use Basset\FeatureExtraction\{
+use Basset\Feature\{
         FeatureExtraction,
         FeatureVector
     };
@@ -278,10 +278,9 @@ class Search
         
         $scores = array();
 
-        $queryFeature = new FeatureExtraction($this->indexReader, $this->getQueryModel(), $this->getQuery());
-        $queryVector = $queryFeature->getFeature();
+        $queryVector = $this->transformVector($this->getQueryModel(), $this->getQuery());
 
-        $scores = $this->getHits($descending, $queryVector);
+        $scores = $this->getHits($descending, new FeatureVector($queryVector));
 
         if($this->queryexpansion) {
             $scores = $this->reScore($descending, array_slice($scores, 0, $this->feedbackdocs, true));
@@ -291,40 +290,78 @@ class Search
 
     }
 
+    /**
+     * Re-scores document based on feedback received.
+     *
+     * @param  bool $descending
+     * @param  array $scores
+     * @return array
+     */
     private function reScore(bool $descending = true, array $scores): array
     {
         
         $relevantDocs = $scores;
 
+        $relevantTerms = array();
+
         $relevantVector = new FeatureVector;
-        foreach($relevantDocs as $class => $score) {
-            $docVector = $this->getDocumentVector($class)->getFeature();
-            foreach($docVector as $term => $weight) {
-                $relevantVector->addTerm($term, $weight * self::BETA / $this->feedbackdocs);
+
+        foreach($this->getDocumentVectors() as $class => $doc) {
+            if(isset($relevantDocs[$class])){
+                $docVector = $this->transformVector($this->getModel(), $doc); 
+                array_walk_recursive($docVector, function (&$item, $key) 
+                    {
+                        $item *= self::BETA / $this->feedbackdocs;
+                    }
+                );
+                $relevantVector->addTerms($docVector);
             }
         }
-        $queryFeature = new FeatureExtraction($this->indexReader, $this->getModel(), $this->getQuery());
-        $queryVector = $queryFeature->getFeature();
 
-        foreach($queryVector as $term => $weight) {
-            $relevantVector->addTerm($term, $weight * self::ALPHA);
-        }
+        $queryVector = $this->transformVector($this->getModel(), $this->getQuery()); 
+        array_walk_recursive($queryVector, function (&$item, $key) 
+                {
+                    $item *= self::ALPHA;
+                }
+            );
+        $relevantVector->addTerms($queryVector);
 
-        $scores = $this->getHits($descending, $relevantVector->clip($this->feedbackterms));
+        $relevantVector->snip($this->feedbackterms);
+
+        $scores = $this->getHits($descending, $relevantVector);
 
         return $scores;
 
     }
 
-    private function getHits(bool $descending = true, array $queryVector): array
+    /**
+     * Transforms vector based on given model and FeatureVector.
+     *
+     * @param  WeightedModelInterface $model
+     * @param  FeatureVector $vector
+     * @return array
+     */
+    private function transformVector(WeightedModelInterface $model, FeatureVector $vector): array
+    {
+        $docFeature = new FeatureExtraction($this->indexReader, $model, $vector);
+        return $docFeature->getFeature(); 
+    }
+
+    /**
+     * Gets document hits based on given query
+     *
+     * @param  bool $descending
+     * @param  FeatureVector $queryVector
+     * @return float
+     */
+    private function getHits(bool $descending = true, FeatureVector $queryVector): array
     {
         
         $scores = array();
 
         foreach($this->getDocumentVectors() as $class => $doc) {
-            $docFeature = new FeatureExtraction($this->indexReader, $this->getModel(), $doc);
-            $docVector = $docFeature->getFeature(); 
-            $scores[$class] = $this->score($docVector, $queryVector);
+            $docVector = $this->transformVector($this->getModel(), $doc);
+            $scores[$class] = $this->score($queryVector->getFeature(), $docVector);
         }
 
         if ($descending) {

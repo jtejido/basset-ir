@@ -3,7 +3,7 @@
 
 namespace Basset\Index;
 
-use Basset\FeatureExtraction\FeatureVector;
+use Basset\Feature\FeatureVector;
 use Basset\Statistics\{
         EntryStatistics, 
         CollectionStatistics
@@ -79,6 +79,11 @@ class IndexSearch
         $stats = $this->trieManager->search($term);
 
         return $stats;
+    }
+
+    public function getDocuments(): ?array
+    {
+        return $this->indexManager->getDocuments();
     }
 
     public function getDocumentVectors(): ?array

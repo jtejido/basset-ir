@@ -5,7 +5,7 @@ namespace Basset\Index;
 
 use Basset\Math\Math;
 use Basset\Collections\CollectionSet;
-use Basset\FeatureExtraction\FeatureVector;
+use Basset\Feature\FeatureVector;
 use Basset\Utils\TransformationInterface;
 use Basset\Statistics\{
         EntryStatistics, 

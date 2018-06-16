@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Basset\FeatureExtraction;
+namespace Basset\Feature;
 
 use Basset\Documents\DocumentInterface;
 use Basset\Index\IndexReader;
@@ -23,7 +23,7 @@ use Basset\Models\TermCount;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class FeatureExtraction implements FeatureExtractionInterface
+class FeatureExtraction implements FeatureInterface
 {
 
 	/**
@@ -43,6 +43,8 @@ class FeatureExtraction implements FeatureExtractionInterface
     }
 
     /**
+     * Returns the feature with transformed weights.
+     *
      * @return array
      */
     public function getFeature(): array

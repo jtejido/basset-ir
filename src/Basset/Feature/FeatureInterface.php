@@ -1,12 +1,13 @@
 <?php
 
-namespace Basset\FeatureExtraction;
+namespace Basset\Feature;
 
 
-interface FeatureExtractionInterface
+interface FeatureInterface
 {
     /**
      * A Feature Extraction Representation.
+     *
      * @return array
      */
     public function getFeature(): array;
