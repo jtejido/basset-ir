@@ -66,13 +66,13 @@ class Similarity {
          *
          */
 
-        // $index = new IndexWriter(__DIR__.'/../custom_index');
-        // $index->setFileName('mycustomindex');
-        // foreach($documents as $title => $body){
-        //     $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), $title);
-        // }
-        // $index->applyTransformation($transform);
-        // $index->close();
+        $index = new IndexWriter(__DIR__.'/../custom_index');
+        $index->setFileName('mycustomindex');
+        foreach($documents as $title => $body){
+            $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), $title);
+        }
+        $index->applyTransformation($transform);
+        $index->close();
 
         /** 
          * Dumping $index->getLocation() gives '../custom_index/mycustomindex.idx' which should be fed as parameter
