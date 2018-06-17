@@ -319,11 +319,11 @@ class Search
             $relevantVector->addTerms($docVector);
         }
 
-        // combine the new terms with the original query
+        // combine the new terms with the original query. We just need the top N.
         $relevantVector->addTerms($queryVector);
+        $relevantVector->snip($this->feedbackterms);
 
-        // we just need the top N of new query
-        return new FeatureVector($relevantVector->clip($this->feedbackterms));
+        return $relevantVector;
 
     }
 
