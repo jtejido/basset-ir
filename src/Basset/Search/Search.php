@@ -283,7 +283,7 @@ class Search
         $scores = $this->getHits($descending, new FeatureVector($queryVector));
 
         if($this->queryexpansion) {
-            $scores = $this->reScore($descending, array_slice($scores, 0, $this->feedbackdocs, true));
+            $scores = $this->reScore($descending, $scores);
         }
 
         return array_slice($scores, 0, $limit, true);
@@ -300,7 +300,7 @@ class Search
     private function reScore(bool $descending = true, array $scores): array
     {
         
-        $relevantDocs = $scores;
+        $relevantDocs = array_slice($scores, 0, $this->feedbackdocs, true);
 
         $relevantTerms = array();
 

@@ -50,6 +50,18 @@ class FeatureVector implements FeatureInterface
     }
 
     /**
+     * Merges existing features with new array.
+     *
+     * @param array $terms
+     */
+    public function removeTerm(string $terms)
+    {
+        if (isset($this->features[$terms])){
+            unset($this->features[$terms]);
+        }
+    }
+
+    /**
      * Returns the array.
      *
      * @return array

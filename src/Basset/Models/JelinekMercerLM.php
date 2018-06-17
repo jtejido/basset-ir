@@ -28,7 +28,7 @@ use Basset\{
  */
 
 
-class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface, ProbabilisticModelInterface
+class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface
 {
 
     const LAMBDA = 0.7;
@@ -82,7 +82,7 @@ class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, K
         $mle_d = $tf / $docLength;
 
         // log(1 + ( (1 - $constant) * $mle_d + ($constant * $mle_c)) );
-        return log(1 + ( ((1 - $constant) * $mle_d) / ($constant * $mle_c)) );
+        return log(1 + ( ((1 - $constant) * $mle_d) / ($constant * $mle_c)) ) + log($document_constant);
 
     }
 

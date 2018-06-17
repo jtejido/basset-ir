@@ -4,9 +4,7 @@
 namespace Basset\Models;
 
 use Basset\Models\Contracts\{
-        ProbabilisticModelInterface,
         WeightedModelInterface,
-        LanguageModelInterface,
         KLDivergenceLMInterface
     };
 use Basset\{
@@ -29,7 +27,7 @@ use Basset\{
  */
 
 
-class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterface, ProbabilisticModelInterface, KLDivergenceLMInterface
+class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface
 {
 
     const DELTA = 0.7;
@@ -78,7 +76,7 @@ class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterf
         $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
         
         // log(1 + ((max($tf - $this->delta, 0) / $docLength) + ((($this->delta * $docUniqueLength) / $docLength) * $mle_c)))
-        return log(1 + ( ($tf-$constant) / ($constant * $docUniqueLength * $mle_c) ) );
+        return log(1 + ( ($tf-$constant) / ($constant * $docUniqueLength * $mle_c) ) ) + log($document_constant);
     }
 
 

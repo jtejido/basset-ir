@@ -4,9 +4,7 @@
 namespace Basset\Models;
 
 use Basset\Models\Contracts\{
-        ProbabilisticModelInterface,
         WeightedModelInterface,
-        LanguageModelInterface,
         KLDivergenceLMInterface
     };
 use Basset\{
@@ -33,7 +31,7 @@ use Basset\{
  */
 
 
-class TwoStageLM extends WeightedModel implements WeightedModelInterface, ProbabilisticModelInterface, LanguageModelInterface, KLDivergenceLMInterface
+class TwoStageLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface
 {
 
     const LAMBDA = 0.7;
@@ -95,7 +93,7 @@ class TwoStageLM extends WeightedModel implements WeightedModelInterface, Probab
             $mle_c = $this->getTermFrequency() / $this->getNumberOfTokens();
 
             // log(1 + (((1 - $this->lambda) * ($tf + ($this->mu * $mle_c)) / ($docLength + $this->mu)) + ($this->lambda * $mle_c)))
-            return log(1 + (($lambda * $tf) / (((1-$lambda) * $docLength + $mu) * $mle_c )));
+            return log(1 + (($lambda * $tf) / (((1-$lambda) * $docLength + $mu) * $mle_c ))) + log($document_constant);
 
 
     }

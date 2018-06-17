@@ -66,13 +66,13 @@ class Similarity {
          *
          */
 
-        // $index = new IndexWriter(__DIR__.'/../custom_index');
-        // $index->setFileName('mycustomindex');
-        // foreach($documents as $title => $body){
-        //     $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), $title);
-        // }
-        // $index->applyTransformation($transform);
-        // $index->close();
+        $index = new IndexWriter(__DIR__.'/../custom_index');
+        $index->setFileName('mycustomindex');
+        foreach($documents as $title => $body){
+            $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), $title);
+        }
+        $index->applyTransformation($transform);
+        $index->close();
 
         /** 
          * Dumping $index->getLocation() gives '../custom_index/mycustomindex.idx' which should be fed as parameter
@@ -101,10 +101,9 @@ class Similarity {
         $search = new Search($indexReader);
         $search->query($query);
         $search->model(new BM25);
-        //$search->setQueryExpansion(true); This would make it slow but precision and recall is better.
+        $search->setQueryExpansion(true);
         print_r($search->search(15)); 
-        print_r(microtime(true) - $start);
-        echo "\xA";
+        print_r(microtime(true) - $start . "\xA");
         /* 
          * search() returns an array in descending order, and can take a $limit number and boolean $descending as parameter
          * to display stuff, as 1400 items is a lot of stuff (default is search(10, true)).
