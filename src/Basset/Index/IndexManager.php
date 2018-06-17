@@ -206,8 +206,8 @@ class IndexManager
     public function getDocumentVectors(): array
     {
         $documents = $this->getDocuments();
+
         $documentvector = array();
-        
         foreach($documents as $class => $document) {
             $documentvector[$class] = new FeatureVector($document);
         }
@@ -216,23 +216,14 @@ class IndexManager
     }
 
     /**
-     * Returns document vector by array of class.
-     *
-     * @param array $classes array of document label/s.
+     * Returns document vector by class.
      * @return array.
      */
-    public function getDocumentVector(array $classes): array
+    public function getDocumentVector(string $class): FeatureVector
     {
         $documents = $this->getDocumentVectors();
-        $documentvector = array();
 
-        foreach($classes as $class) {
-            if(isset($documents[$class])){
-                $documentvector[$class] = $documents[$class];
-            }
-        }
-
-        return $documentvector;
+        return $documents[$class];
     }
 
     /**

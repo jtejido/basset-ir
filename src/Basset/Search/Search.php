@@ -136,7 +136,7 @@ class Search
      *
      * @return array
      */
-    private function getDocumentVector(array $class): array
+    private function getDocumentVector(string $class): FeatureVector
     {
         return $this->getIndexSearch()->getDocumentVector($class);
     }
@@ -306,23 +306,24 @@ class Search
         $queryVector = $this->transformVector($this->getModel(), $this->getQuery())->getFeature(); 
 
         /**
-         * Get document vectors by feedback Ids.
          * Rocchio's algorithm reduces the weight from the docs' terms.
          */
-        foreach($this->getDocumentVector($docIds) as $class => $doc) {
-            $docVector = $this->transformVector($this->getModel(), $doc)->getFeature(); 
-            array_walk_recursive($docVector, function (&$item, $key) 
-                {
-                    $item *= self::BETA / $this->feedbackdocs;
-                }
-            );
-            $relevantVector->addTerms($docVector);
+        foreach($docIds as $class) {
+            $doc = $this->getDocumentVector($class);
+                $docVector = $this->transformVector($this->getModel(), $doc)->getFeature(); 
+                array_walk_recursive($docVector, function (&$item, $key) 
+                    {
+                        $item *= self::BETA / $this->feedbackdocs;
+                    }
+                );
+                $relevantVector->addTerms($docVector);
         }
 
-        // combine the new terms with the original query. We just need the top N.
+        // combine the new terms with the original query
         $relevantVector->addTerms($queryVector);
         $relevantVector->snip($this->feedbackterms);
 
+        // we just need the top N of new query
         return $relevantVector;
 
     }
