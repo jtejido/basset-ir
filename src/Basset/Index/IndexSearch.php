@@ -91,9 +91,9 @@ class IndexSearch
         return $this->indexManager->getDocumentVectors();
     }
 
-    public function getDocumentVector(string $class): FeatureVector
+    public function getDocumentVector(array $classes): array
     {
-        return $this->indexManager->getDocumentVector($class);
+        return $this->indexManager->getDocumentVector($classes);
     }
 
     public function getCollectionStatistics(): CollectionStatistics

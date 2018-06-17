@@ -5,7 +5,8 @@ namespace Basset\Search;
 
 use Basset\Feature\{
         FeatureExtraction,
-        FeatureVector
+        FeatureVector,
+        FeatureInterface
     };
 use Basset\Index\{
         IndexReader,
@@ -36,13 +37,11 @@ use Basset\{
 class Search
 {
 
-    CONST ALPHA = 1;
+    CONST BETA = 0.75;
 
-    CONST BETA = 0.8;
+    CONST TOP_REL_DOCS = 3;
 
-    CONST TOP_REL_DOCS = 30;
-
-    CONST TOP_REL_TERMS = 20;
+    CONST TOP_REL_TERMS = 10;
 
     private $indexReader;
 
@@ -137,7 +136,7 @@ class Search
      *
      * @return array
      */
-    private function getDocumentVector(string $class): FeatureVector
+    private function getDocumentVector(array $class): array
     {
         return $this->getIndexSearch()->getDocumentVector($class);
     }
@@ -280,10 +279,12 @@ class Search
 
         $queryVector = $this->transformVector($this->getQueryModel(), $this->getQuery());
 
-        $scores = $this->getHits($descending, new FeatureVector($queryVector));
+        $scores = $this->getHits($descending, $queryVector);
 
         if($this->queryexpansion) {
-            $scores = $this->reScore($descending, $scores);
+            $docIds = array_keys(array_slice($scores, 0, $this->feedbackdocs, true));
+            $queryExpanded = $this->queryExpand($docIds);
+            $scores = $this->getHits($descending, $queryExpanded);
         }
 
         return array_slice($scores, 0, $limit, true);
@@ -291,46 +292,38 @@ class Search
     }
 
     /**
-     * Re-scores document based on feedback received.
+     * Expands original query based on array of relevant docs received.
      *
-     * @param  bool $descending
-     * @param  array $scores
+     * @param  array $docIds
      * @return array
      */
-    private function reScore(bool $descending = true, array $scores): array
+    private function queryExpand(array $docIds): FeatureInterface
     {
-        
-        $relevantDocs = array_slice($scores, 0, $this->feedbackdocs, true);
-
-        $relevantTerms = array();
 
         $relevantVector = new FeatureVector;
 
-        foreach($this->getDocumentVectors() as $class => $doc) {
-            if(isset($relevantDocs[$class])){
-                $docVector = $this->transformVector($this->getModel(), $doc); 
-                array_walk_recursive($docVector, function (&$item, $key) 
-                    {
-                        $item *= self::BETA / $this->feedbackdocs;
-                    }
-                );
-                $relevantVector->addTerms($docVector);
-            }
-        }
+        // re-weight the query to match that of relevant docs
+        $queryVector = $this->transformVector($this->getModel(), $this->getQuery())->getFeature(); 
 
-        $queryVector = $this->transformVector($this->getModel(), $this->getQuery()); 
-        array_walk_recursive($queryVector, function (&$item, $key) 
+        /**
+         * Get document vectors by feedback Ids.
+         * Rocchio's algorithm reduces the weight from the docs' terms.
+         */
+        foreach($this->getDocumentVector($docIds) as $class => $doc) {
+            $docVector = $this->transformVector($this->getModel(), $doc)->getFeature(); 
+            array_walk_recursive($docVector, function (&$item, $key) 
                 {
-                    $item *= self::ALPHA;
+                    $item *= self::BETA / $this->feedbackdocs;
                 }
             );
+            $relevantVector->addTerms($docVector);
+        }
+
+        // combine the new terms with the original query
         $relevantVector->addTerms($queryVector);
 
-        $relevantVector->snip($this->feedbackterms);
-
-        $scores = $this->getHits($descending, $relevantVector);
-
-        return $scores;
+        // we just need the top N of new query
+        return new FeatureVector($relevantVector->clip($this->feedbackterms));
 
     }
 
@@ -341,10 +334,10 @@ class Search
      * @param  FeatureVector $vector
      * @return array
      */
-    private function transformVector(WeightedModelInterface $model, FeatureVector $vector): array
+    private function transformVector(WeightedModelInterface $model, FeatureInterface $vector): FeatureInterface
     {
         $docFeature = new FeatureExtraction($this->indexReader, $model, $vector);
-        return $docFeature->getFeature(); 
+        return $docFeature; 
     }
 
     /**
@@ -354,14 +347,14 @@ class Search
      * @param  FeatureVector $queryVector
      * @return float
      */
-    private function getHits(bool $descending = true, FeatureVector $queryVector): array
+    private function getHits(bool $descending = true, FeatureInterface $queryVector): array
     {
         
         $scores = array();
 
         foreach($this->getDocumentVectors() as $class => $doc) {
             $docVector = $this->transformVector($this->getModel(), $doc);
-            $scores[$class] = $this->score($queryVector->getFeature(), $docVector);
+            $scores[$class] = $this->score($queryVector->getFeature(), $docVector->getFeature());
         }
 
         if ($descending) {
