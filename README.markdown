@@ -10,9 +10,9 @@
 Basset
 =============
 
-Basset is a PHP Information Retrieval library. This is a culmination of developments in the field and ported over for research purposes.
+Basset is a full-text PHP Information Retrieval library. This is a collection of developments in the field of IR and ported over to PHP for research purposes.
 
-Basset provides different ways of searching through documents in a collection, by applying advanced and experimental IR techniques gathered from different Research studies and Conferences, most notably:
+Basset provides different ways of searching through documents in a collection (ad-hoc retrieval), by applying advanced and experimental IR algorithms and/or techniques gathered from different Research studies and Conferences, most notably:
 
 1. [TREC](http://trec.nist.gov/) 
 
@@ -27,7 +27,7 @@ Basset provides different ways of searching through documents in a collection, b
 Documentation
 =============
 
-You can read about it [here](https://basset-ir.blogspot.com/2018/02/basset-information-retrieval-library-in.html)
+You can read about it [here](https://myth-of-sissyphus.blogspot.com/2018/02/basset-information-retrieval-library-in.html)
 
 
 
