@@ -50,9 +50,9 @@ class FeatureExtraction implements FeatureInterface
     public function getFeature(): array
     {
 
-		$tokenSum = array_sum($this->doc->getFeature());
+		$tokenSum = $this->doc->getLength();
 
-		$tokenCount = count($this->doc->getFeature());
+		$tokenCount = $this->doc->getCount();
 
     	$function = function ($key, $feature) use($tokenSum, $tokenCount) {
 

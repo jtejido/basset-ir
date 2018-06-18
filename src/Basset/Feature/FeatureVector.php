@@ -21,7 +21,7 @@ class FeatureVector implements FeatureInterface, \Iterator,\ArrayAccess,\Countab
     private $features;
 
     private $currentTerm;
-    
+
     /**
      * The array of term => weight features.
      *
@@ -63,6 +63,22 @@ class FeatureVector implements FeatureInterface, \Iterator,\ArrayAccess,\Countab
         if (isset($this->features[$terms])){
             unset($this->features[$terms]);
         }
+    }
+
+    /**
+     * Returns Vector Length AKA sum of weights.
+     */
+    public function getLength()
+    {
+        return array_sum($this->features);
+    }
+
+    /**
+     * Returns the number of terms.
+     */
+    public function getCount()
+    {
+        return count($this->features);
     }
 
     /**
