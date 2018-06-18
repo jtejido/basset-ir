@@ -80,7 +80,7 @@ class Similarity {
          */
 
         // prepare one query as Document instance from Cranfield/cranfield-collection/cran.qry.xml-format
-        $query = new Document(new TokensDocument($tokenizer->tokenize('what are the structural and aeroelastic problems associated with flight of high speed aircraft.')));
+        $query = new Document(new TokensDocument($tokenizer->tokenize('what problems of heat conduction in composite slabs have been solved so far .')));
         $query->applyTransformation($transform);
 
 

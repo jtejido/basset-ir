@@ -7,7 +7,7 @@ use Basset\Models\Contracts\{
         ProbabilisticModelInterface,
         WeightedModelInterface
     };
-use Basset\Models\Statistics\{
+use Basset\Statistics\{
         EntryStatistics,
         CollectionStatistics
     };

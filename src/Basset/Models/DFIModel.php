@@ -8,7 +8,7 @@ use Basset\Models\Contracts\{
         WeightedModelInterface,
         IDFInterface
     };
-use Basset\Models\Statistics\{
+use Basset\Statistics\{
         EntryStatistics,
         CollectionStatistics
     };
