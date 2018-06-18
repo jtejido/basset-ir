@@ -111,16 +111,16 @@ class Index implements IndexInterface {
 
     public function key()
     {
-        return key($this->documents);
+        return key($this->entries);
     }
 
     public function offsetSet($key,$value)
     {
-        throw new \Exception('Shouldn\'t add documents this way, add them through addDocument()');
+        throw new \Exception('Shouldn\'t add term this way, add them through addEntry()');
     }
     public function offsetUnset($key)
     {
-        throw new \Exception('Cannot unset any document');
+        throw new \Exception('Cannot unset any entry');
     }
     public function offsetGet($key)
     {

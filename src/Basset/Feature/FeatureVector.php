@@ -15,9 +15,13 @@ namespace Basset\Feature;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class FeatureVector implements FeatureInterface
+class FeatureVector implements FeatureInterface, \Iterator,\ArrayAccess,\Countable
 {
 
+    private $features;
+
+    private $currentTerm;
+    
     /**
      * The array of term => weight features.
      *
@@ -72,7 +76,7 @@ class FeatureVector implements FeatureInterface
     }
 
     /**
-     * Orders the array in ascending order, then clip the first N of array.
+     * Orders the array in ascending order, then get the first N of array.
      *
      * @return array
      */
@@ -83,7 +87,7 @@ class FeatureVector implements FeatureInterface
     }
 
     /**
-     * Orders the array in ascending order, then clip the first N of array.
+     * Orders the array in ascending order, then remove items after the first N of array.
      *
      * @return array
      */
@@ -91,6 +95,54 @@ class FeatureVector implements FeatureInterface
     {
         arsort($this->features);
         return array_splice($this->features, $length);
+    }
+
+    public function count() 
+    {
+        return count($this->features);
+    }
+
+     public function rewind()
+    {
+        reset($this->features);
+        $this->currentTerm = current($this->features);
+    }
+
+    public function next()
+    {
+        $this->currentTerm = next($this->features);
+    }
+
+    public function valid()
+    {
+        return $this->currentTerm != false;
+    }
+
+    public function current()
+    {
+        return $this->currentTerm;
+    }
+
+    public function key()
+    {
+        return key($this->features);
+    }
+
+    public function offsetSet($key,$value)
+    {
+        throw new \Exception('Shouldn\'t add feature this way, add them through addTerm() or addTerms()');
+    }
+    public function offsetUnset($key)
+    {
+        throw new \Exception('Cannot unset any feature');
+    }
+    public function offsetGet($key)
+    {
+        return $this->features[$key];
+    }
+    public function offsetExists($key)
+    {
+        return isset($this->features[$key]);
     }
 
 
