@@ -4,14 +4,12 @@
 namespace Basset\Models;
 
 use Basset\Models\Contracts\{
-        ProbabilisticModelInterface,
         WeightedModelInterface,
-        LanguageModelInterface,
-        KLDivergenceLMInterface
+        LanguageModelInterface
     };
 use Basset\{
         Metric\VectorSimilarity,
-        Models\TermFrequency
+        Models\TermCount
     };
 
 /**
@@ -28,7 +26,7 @@ use Basset\{
  */
 
 
-class DirichletLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface
+class DirichletLM extends WeightedModel implements WeightedModelInterface, LanguageModelInterface
 {
 
     const MU = 2500;

@@ -8,6 +8,7 @@ use Basset\Documents\TokensDocument;
 use Basset\Search\Search;
 use Basset\Models\TfIdf;
 use Basset\Models\BM25;
+use Basset\Models\JelinekMercerLM;
 use Basset\Metric\SqrtCosineSimilarity;
 
 use Basset\Normalizers\English;
@@ -21,6 +22,7 @@ use Basset\Index\IndexWriter;
 use Basset\Models\DFIModel;
 use Basset\Models\DFIModels\ChiSquared;
 use Basset\Models\Idf;
+use Basset\Expansion\RelevanceModel;
 
 
 
@@ -80,7 +82,7 @@ class Similarity {
          */
 
         // prepare one query as Document instance from Cranfield/cranfield-collection/cran.qry.xml-format
-        $query = new Document(new TokensDocument($tokenizer->tokenize('what problems of heat conduction in composite slabs have been solved so far .')));
+        $query = new Document(new TokensDocument($tokenizer->tokenize('what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft.')));
         $query->applyTransformation($transform);
 
 

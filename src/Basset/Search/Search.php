@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Basset\Search;
 
 use Basset\Feature\{
@@ -20,11 +19,16 @@ use Basset\Metric\{
     };
 use Basset\Models\Contracts\{
         WeightedModelInterface,
-        ProbabilisticModelInterface
+        ProbabilisticModelInterface,
+        LanguageModelInterface
     };
 use Basset\{
     Documents\DocumentInterface,
     Statistics\CollectionStatistics
+    };
+use Basset\Expansion\{
+        RelevanceModel,
+        Rocchio
     };
 
 /**
@@ -79,36 +83,20 @@ class Search
         $this->query = null;
         $this->documentmodel = null;
         $this->querymodel = null;
-        $this->queryexpansion = false;
-        $this->feedbackdocs = 0;
-        $this->feedbackterms = 0;
+        $this->queryexpansion = null;
         $this->indexSearch = new IndexSearch($this->indexReader);
     }
 
     /**
      * Set query Expansion model.
      *
-     * @param bool $queryexpansion
+     * @param PRFInterface $queryexpansion
      * @param int $fbdocs top docs to use. For Rocchio Algorithm.
      * @param int $fbterms top terms to use from top docs retrieved. For Rocchio Algorithm.
      */
-    public function setQueryExpansion(bool $queryexpansion = false, int $fbdocs = self::TOP_REL_DOCS, int $fbterms = self::TOP_REL_TERMS)
+    public function setQueryExpansion(bool $istrue)
     {
-
-        if($this->getSimilarity() === null) {
-            throw new \Exception('Please set Similarity for Ranking Documents first.');
-        }
-
-        if($this->getSimilarity() instanceof DistanceInterface) {
-            throw new \Exception('You cannot use Query Expansion for getting distance.');
-        }
-
-        $this->queryexpansion = $queryexpansion;
-
-        if ($this->queryexpansion) {
-            $this->feedbackdocs = $fbdocs;
-            $this->feedbackterms = $fbterms;
-        }
+        $this->queryexpansion = $istrue;
     }
 
     /**
@@ -276,15 +264,27 @@ class Search
     {
         
         $scores = array();
-
         $queryVector = $this->transformVector($this->getQueryModel(), $this->getQuery());
-
-        $scores = $this->getHits($descending, $queryVector);
-
+        // at this point, any changes in query model and metric should be set in the model.
         if($this->queryexpansion) {
-            $docIds = array_keys(array_slice($scores, 0, $this->feedbackdocs, true));
-            $queryExpanded = $this->queryExpand($docIds);
-            $scores = $this->getHits($descending, $queryExpanded);
+            if($this->getModel() instanceof LanguageModelInterface) {
+                $expansion = new RelevanceModel;
+            } else {
+                 $expansion = new Rocchio;
+            }
+
+            $expansion->setModel($this->getModel());
+            $expansion->setQuery($this->getQuery());
+            $expansion->setIndexReader($this->indexReader);
+            $scores = $expansion->getHits();
+        } else {
+            $scores = $this->getHits($queryVector);
+        }
+
+        if ($descending) {
+            arsort($scores);
+        } else {
+            asort($scores);
         }
 
         return array_slice($scores, 0, $limit, true);
@@ -348,7 +348,7 @@ class Search
      * @param  FeatureVector $queryVector
      * @return float
      */
-    private function getHits(bool $descending = true, FeatureInterface $queryVector): array
+    private function getHits(FeatureInterface $queryVector): array
     {
         
         $scores = array();
@@ -356,12 +356,6 @@ class Search
         foreach($this->getDocumentVectors() as $class => $doc) {
             $docVector = $this->transformVector($this->getModel(), $doc);
             $scores[$class] = $this->score($queryVector->getFeature(), $docVector->getFeature());
-        }
-
-        if ($descending) {
-            arsort($scores);
-        } else {
-            asort($scores);
         }
 
         return $scores;

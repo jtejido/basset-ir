@@ -4,9 +4,8 @@
 namespace Basset\Models;
 
 use Basset\Models\Contracts\{
-        ProbabilisticModelInterface,
         WeightedModelInterface,
-        KLDivergenceLMInterface
+        LanguageModelInterface
     };
 use Basset\{
         Metric\VectorSimilarity,
@@ -28,7 +27,7 @@ use Basset\{
  */
 
 
-class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface
+class JelinekMercerLM extends WeightedModel implements WeightedModelInterface, LanguageModelInterface
 {
 
     const LAMBDA = 0.7;
