@@ -8,7 +8,6 @@ use Basset\Documents\TokensDocument;
 use Basset\Search\Search;
 use Basset\Models\TfIdf;
 use Basset\Models\BM25;
-use Basset\Models\JelinekMercerLM;
 use Basset\Metric\SqrtCosineSimilarity;
 
 use Basset\Normalizers\English;
@@ -22,7 +21,6 @@ use Basset\Index\IndexWriter;
 use Basset\Models\DFIModel;
 use Basset\Models\DFIModels\ChiSquared;
 use Basset\Models\Idf;
-use Basset\Expansion\RelevanceModel;
 
 
 
