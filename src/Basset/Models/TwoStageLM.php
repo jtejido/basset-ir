@@ -5,7 +5,7 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\{
         WeightedModelInterface,
-        KLDivergenceLMInterface
+        LanguageModelInterface
     };
 use Basset\{
         Metric\VectorSimilarity,
@@ -31,7 +31,7 @@ use Basset\{
  */
 
 
-class TwoStageLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface
+class TwoStageLM extends WeightedModel implements WeightedModelInterface, LanguageModelInterface
 {
 
     const LAMBDA = 0.7;

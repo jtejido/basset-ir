@@ -5,7 +5,7 @@ namespace Basset\Models;
 
 use Basset\Models\Contracts\{
         WeightedModelInterface,
-        KLDivergenceLMInterface
+        LanguageModelInterface
     };
 use Basset\{
         Metric\VectorSimilarity,
@@ -27,7 +27,7 @@ use Basset\{
  */
 
 
-class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterface, KLDivergenceLMInterface
+class AbsoluteDiscountingLM extends WeightedModel implements WeightedModelInterface, LanguageModelInterface
 {
 
     const DELTA = 0.7;
