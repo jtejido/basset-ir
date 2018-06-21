@@ -7,7 +7,7 @@ use Basset\Documents\TokensDocument;
 
 use Basset\Search\Search;
 use Basset\Models\TfIdf;
-use Basset\Models\BM25;
+use Basset\Models\DirichletLM;
 use Basset\Metric\SqrtCosineSimilarity;
 
 use Basset\Normalizers\English;
@@ -100,8 +100,8 @@ class Similarity {
 
         $search = new Search($indexReader);
         $search->query($query);
-        $search->model(new BM25);
-        $search->setQueryExpansion(true);
+        $search->model(new DirichletLM);
+        $search->setQueryExpansion(true); //defaults to top 10 docs and 10 top terms to be used for expansion.
         print_r($search->search(15)); 
         print_r(microtime(true) - $start . "\xA");
         /* 

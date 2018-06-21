@@ -94,9 +94,11 @@ class Search
      * @param int $fbdocs top docs to use. For Rocchio Algorithm.
      * @param int $fbterms top terms to use from top docs retrieved. For Rocchio Algorithm.
      */
-    public function setQueryExpansion(bool $istrue, int $fbdocs, int $fbterms)
+    public function setQueryExpansion(bool $istrue, int $fbdocs = 10, int $fbterms = 10)
     {
         $this->queryexpansion = $istrue;
+        $this->feedbackdocs = $fbdocs;
+        $this->feedbackterms = $fbterms;
     }
 
     /**
@@ -268,9 +270,9 @@ class Search
         // at this point, any changes in query model and metric should be set in the model.
         if($this->queryexpansion) {
             if($this->getModel() instanceof LanguageModelInterface) {
-                $expansion = new RelevanceModel;
+                $expansion = new RelevanceModel($this->feedbackdocs, $this->feedbackterms);
             } else {
-                 $expansion = new Rocchio;
+                 $expansion = new Rocchio($this->feedbackdocs, $this->feedbackterms);
             }
 
             $expansion->setModel($this->getModel());

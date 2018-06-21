@@ -58,12 +58,6 @@ class RelevanceModel extends Feedback implements PRFInterface
 
         $fbDocVectors = array();
 
-        $rsvs = array();
-
-        foreach($docIds as $class => $score) {
-            $rsvs[$class] = exp($score);
-        }
-
         foreach($docIds as $class => $score) {
             $doc = $this->indexsearch->getDocumentVector($class);
             $docVector = $this->transformVector($this->getModel()->getQueryModel(), $doc)->getFeature();
@@ -83,7 +77,7 @@ class RelevanceModel extends Feedback implements PRFInterface
                     $totalCount += count($vector);
                     if(isset($vector[$term])) {    
                         $docProb = $vector[$term] / array_sum($vector);
-                        $docProb *= $rsvs[$class];
+                        $docProb *= exp($docIds[$class]);
                         $fbWeight += $docProb;
                     }
             }
