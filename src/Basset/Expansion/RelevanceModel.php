@@ -52,7 +52,7 @@ class RelevanceModel extends Feedback implements PRFInterface
 
         
 
-        $queryVector = $this->transformVector($this->getModel(), $this->getQuery())->getFeature();
+        $queryVector = $this->transformVector($this->getModel()->getQueryModel(), $this->getQuery())->getFeature();
 
         $vocab = array();
 

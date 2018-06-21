@@ -94,7 +94,7 @@ class Search
      * @param int $fbdocs top docs to use. For Rocchio Algorithm.
      * @param int $fbterms top terms to use from top docs retrieved. For Rocchio Algorithm.
      */
-    public function setQueryExpansion(bool $istrue)
+    public function setQueryExpansion(bool $istrue, int $fbdocs, int $fbterms)
     {
         $this->queryexpansion = $istrue;
     }
