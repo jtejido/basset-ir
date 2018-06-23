@@ -16,7 +16,7 @@ use Basset\Metric\CosineSimilarity;
  */
 
 
-class IdfSpackRobertson extends BaseIdf implements WeightedModelInterface, IDFInterface
+class IdfSparckRobertson extends BaseIdf implements WeightedModelInterface, IDFInterface
 {
 
     public function __construct($base = parent::E)

@@ -115,7 +115,7 @@ class Similarity {
 
         $display = array();
 
-        foreach($results->getResults() as $key => $result) {
+        foreach($results->getResults() as $result) {
             $title = $result->getMetaData()->getTag('title'); //getting the title tag from metadata added for the doc.
             $display[$title] = $result->getScore();
         }
