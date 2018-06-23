@@ -11,6 +11,7 @@ use Basset\{
         Metric\VectorSimilarity,
         Models\TermFrequency
     };
+use Basset\Expansion\RelevanceModel;
 
 
 /**
@@ -49,6 +50,7 @@ class TwoStageLM extends WeightedModel implements WeightedModelInterface, Langua
         $this->lambda = $lambda;
         $this->queryModel = new TermFrequency;
         $this->metric = new VectorSimilarity;
+        $this->expansion = new RelevanceModel;
     }
 
     private function getConstant(string $constant): float

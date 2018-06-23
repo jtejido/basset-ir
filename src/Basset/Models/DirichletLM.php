@@ -9,7 +9,7 @@ use Basset\Models\Contracts\{
     };
 use Basset\{
         Metric\VectorSimilarity,
-        Models\TermCount
+        Models\TermFrequency
     };
 
 /**

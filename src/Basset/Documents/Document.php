@@ -4,6 +4,7 @@
 namespace Basset\Documents;
 
 use Basset\Utils\TransformationInterface;
+use Basset\MetaData\MetaData;
 
 /**
  * An object that wraps the Tokenized Document. It accepts $class as optional mainly for labeling purposes, 
@@ -12,7 +13,6 @@ use Basset\Utils\TransformationInterface;
  * @see TokensDocument
  *
  * @var $d
- * @var $class
  *
  * @example new Document(new TokensDocument(array('how', 'do', 'you', 'do?')));
  *
@@ -24,16 +24,21 @@ class Document implements DocumentInterface
 
     private $d;
 
-    private $class;
+    private $metadata;
 
     /**
      * @param string $class
-     * @param TokensDocument $d
+     * @param MetaData $metadata
      */
-    public function __construct(TokensDocument $d, string $class = null)
+    public function __construct(TokensDocument $d, $metadata = null)
     {
         $this->d = $d;
-        $this->class = $class;       
+        $this->metadata = $metadata;
+        
+        if ($this->metadata === null) {
+            $this->metadata = new MetaData;
+        }
+        
     }
 
     /**
@@ -47,13 +52,13 @@ class Document implements DocumentInterface
     }
 
     /**
-     * Returns the assigned label for the given TokensDocument
+     * Returns the MetaData assigned for the document.
      *  
-     * @return string|null
+     * @return MetaData
      */
-    public function getClass(): ?string
+    public function getMetaData(): MetaData
     {
-        return $this->class;
+        return $this->metadata;
     }
 
     /**

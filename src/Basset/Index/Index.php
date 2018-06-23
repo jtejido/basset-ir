@@ -7,12 +7,13 @@ use Basset\Statistics\{
         EntryStatistics, 
         CollectionStatistics
     };
+use Basset\MetaData\MetaData;
 
 /**
- * An Inverted Index object used throughout Basset. This holds statistical information as IndexEntry from a given term
- * as key.
+ * An Inverted Index object used throughout Basset. This holds statistical information as IndexEntry from a given term (key).
  * The search is O(1) since we only use simple array object.
- * This also holds a CollectionStatistics property that provides an overall counted statistics.
+ * This also holds a CollectionStatistics property that provides an overall counted statistics and postings for metadata 
+ * for a given docId.
  * 
  * @see EntryStatistics
  * @see CollectionStatistics
@@ -37,16 +38,19 @@ class Index implements IndexInterface {
 
     private $entries;
 
+    private $postings;
+
     private $currentEntry;
 
     private $collectionStats;
 
     /**
-     * Initializes $entries.
+     * Initializes $entries and $postings.
      */
     public function __construct()
     {
         $this->entries = array();
+        $this->postings = array();
         $this->collectionStats = null;
     }
 
@@ -56,6 +60,31 @@ class Index implements IndexInterface {
     public function getData(): array
     {
         return $this->entries;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllMetadata(): array
+    {
+        return $this->postings;
+    }
+
+    /**
+     * @param int $id The Document ID.
+     * @param MetaData $value The corresponding MetaData for document.
+     */
+    public function addMetaData(int $id, MetaData $value)
+    {
+        $this->postings[$id] = $value;
+    }
+
+    /**
+     * @return MetaData
+     */
+    public function getMetaData(int $id): MetaData
+    {
+        return $this->postings[$id];
     }
 
     /**

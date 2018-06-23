@@ -4,7 +4,7 @@
 namespace Basset\Feature;
 
 use Basset\Documents\DocumentInterface;
-use Basset\Index\IndexReader;
+use Basset\Index\IndexManager;
 use Basset\Index\IndexSearch;
 use Basset\Models\Contracts\WeightedModelInterface;
 use Basset\Models\TermCount;
@@ -27,13 +27,12 @@ class FeatureExtraction implements FeatureInterface
 {
 
 	/**
-     * @param  IndexReader $indexReader
+     * @param  IndexManager $indexManager
      * @param  WeightedModelInterface $model OPTIONAL defaults to null|TermCount
      */
-	public function __construct(IndexReader $indexReader, WeightedModelInterface $model, FeatureVector $doc)
+	public function __construct(IndexManager $indexManager, WeightedModelInterface $model, FeatureVector $doc)
     {
-        $this->indexReader = $indexReader;
-        $this->indexSearch = new IndexSearch($this->indexReader);
+        $this->indexManager = $indexManager;
         $this->model = $model;
         $this->doc = $doc;
 
@@ -56,7 +55,7 @@ class FeatureExtraction implements FeatureInterface
 
     	$function = function ($key, $feature) use($tokenSum, $tokenCount) {
 
-						if($stats = $this->indexSearch->search($key)) {
+						if($stats = $this->indexManager->search($key)) {
 			    			$this->model->setStats($stats);
 			    			$feature = $this->model->getScore($feature, $tokenSum, $tokenCount);
 			    		} else {

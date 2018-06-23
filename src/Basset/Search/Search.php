@@ -9,7 +9,7 @@ use Basset\Feature\{
     };
 use Basset\Index\{
         IndexReader,
-        IndexSearch
+        IndexManager
     };
 use Basset\Metric\{
         SimilarityInterface,
@@ -27,12 +27,17 @@ use Basset\{
     Statistics\CollectionStatistics
     };
 use Basset\Expansion\{
+        PRFInterface,
         RelevanceModel,
         Rocchio
     };
+use Basset\Results\{
+        ResultEntry,
+        ResultSet
+    };
 
 /**
- * Search class simplifies searching of a query against a the indexed collection.
+ * Search class manages searching of a query against the indexed collection.
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
@@ -49,21 +54,13 @@ class Search
 
     private $indexReader;
 
-    private $indexSearch;
+    private $indexManager;
 
     private $documentmodel;
-
-    private $querymodel;
-
-    private $simdist;
 
     private $query;
 
     private $queryexpansion;
-
-    private $feedbackdocs;
-
-    private $feedbackterms;
 
     /**
      * It takes an IndexReader instance for IndexSearch class.
@@ -79,26 +76,36 @@ class Search
         if($this->indexReader === null) {
             throw new \Exception("Please set an IndexReader first.");
         }
-        $this->simdist = null;
         $this->query = null;
         $this->documentmodel = null;
-        $this->querymodel = null;
         $this->queryexpansion = null;
-        $this->indexSearch = new IndexSearch($this->indexReader);
+        $this->indexManager = $this->indexReader->getIndexManager();
     }
 
     /**
      * Set query Expansion model.
      *
-     * @param PRFInterface $queryexpansion
+     * @param bool $istrue
      * @param int $fbdocs top docs to use. For Rocchio Algorithm.
-     * @param int $fbterms top terms to use from top docs retrieved. For Rocchio Algorithm.
+     * @param int $fbterms top terms to use from top docs retrieved (querylength + this).
      */
     public function setQueryExpansion(bool $istrue, int $fbdocs = 10, int $fbterms = 10)
     {
-        $this->queryexpansion = $istrue;
-        $this->feedbackdocs = $fbdocs;
-        $this->feedbackterms = $fbterms;
+        if($istrue) {
+         if($this->getModel() instanceof LanguageModelInterface) {
+                $this->queryexpansion = new RelevanceModel($fbdocs, $fbterms);
+            } else {
+                $this->queryexpansion = new Rocchio($fbdocs, $fbterms);
+            }   
+        }
+    }
+
+    /**
+     * @return PRFInterface
+     */
+    public function getQueryExpansion(): PRFInterface
+    {
+        return $this->queryexpansion;
     }
 
     /**
@@ -106,9 +113,9 @@ class Search
      *
      * @return IndexSearch
      */
-    private function getIndexSearch(): IndexSearch
+    private function getIndexManager(): IndexManager
     {
-        return $this->indexSearch;
+        return $this->indexManager;
     }
 
     /**
@@ -118,7 +125,7 @@ class Search
      */
     private function getDocumentVectors(): array
     {
-        return $this->getIndexSearch()->getDocumentVectors();
+        return $this->getIndexManager()->getDocumentVectors();
     }
 
     /**
@@ -126,9 +133,9 @@ class Search
      *
      * @return array
      */
-    private function getDocumentVector(string $class): FeatureVector
+    private function getDocumentVector(int $id): FeatureVector
     {
-        return $this->getIndexSearch()->getDocumentVector($class);
+        return $this->getIndexManager()->getDocumentVector($id);
     }
 
     /**
@@ -138,7 +145,7 @@ class Search
      */
     private function getCollectionStatistics(): CollectionStatistics
     {
-        return $this->getIndexSearch()->getCollectionStatistics();
+        return $this->getIndexManager()->getCollectionStatistics();
     }
 
     /**
@@ -262,71 +269,33 @@ class Search
      * @param  int $limit
      * @return array
      */
-    public function search(int $limit = 10, bool $descending = true): array
+    public function search(int $limit = 10, bool $descending = true): ResultSet
     {
-        
-        $scores = array();
+
         $queryVector = $this->transformVector($this->getQueryModel(), $this->getQuery());
-        // at this point, any changes in query model and metric should be set in the model.
+
+        $results = $this->getResults($queryVector);
+        
+        // at this point, any changes in query model and metric should be set in the model already.
         if($this->queryexpansion) {
-            if($this->getModel() instanceof LanguageModelInterface) {
-                $expansion = new RelevanceModel($this->feedbackdocs, $this->feedbackterms);
-            } else {
-                 $expansion = new Rocchio($this->feedbackdocs, $this->feedbackterms);
+            if($this->getQueryExpansion() instanceof Rocchio) {
+                $queryVector = $this->transformVector($this->getModel(), $this->getQuery());
             }
 
-            $expansion->setModel($this->getModel());
-            $expansion->setQuery($this->getQuery());
-            $expansion->setIndexReader($this->indexReader);
-            $scores = $expansion->getHits();
-        } else {
-            $scores = $this->getHits($queryVector);
+            $this->getQueryExpansion()->setModel($this->getModel());
+            $this->getQueryExpansion()->setIndexManager($this->getIndexManager());
+            $this->getQueryExpansion()->setResults($results);
+            $queryVector = $this->getQueryExpansion()->expand($queryVector);
+            $results = $this->getResults($queryVector);
         }
 
-        if ($descending) {
-            arsort($scores);
-        } else {
-            asort($scores);
+        if (!$descending) {
+            $results->setOrder(1);
         }
 
-        return array_slice($scores, 0, $limit, true);
+        $results->setLimit($limit);
 
-    }
-
-    /**
-     * Expands original query based on array of relevant docs received.
-     *
-     * @param  array $docIds
-     * @return array
-     */
-    private function queryExpand(array $docIds): FeatureInterface
-    {
-
-        $relevantVector = new FeatureVector;
-
-        // re-weight the query to match that of relevant docs
-        $queryVector = $this->transformVector($this->getModel(), $this->getQuery())->getFeature(); 
-
-        /**
-         * Rocchio's algorithm reduces the weight from the docs' terms.
-         */
-        foreach($docIds as $class) {
-            $doc = $this->getDocumentVector($class);
-                $docVector = $this->transformVector($this->getModel(), $doc)->getFeature(); 
-                array_walk_recursive($docVector, function (&$item, $key) 
-                    {
-                        $item *= self::BETA / $this->feedbackdocs;
-                    }
-                );
-                $relevantVector->addTerms($docVector);
-        }
-
-        // combine the new terms with the original query
-        $relevantVector->addTerms($queryVector);
-        $relevantVector->snip($this->feedbackterms);
-
-        // we just need the top N of new query
-        return $relevantVector;
+        return $results;
 
     }
 
@@ -339,28 +308,28 @@ class Search
      */
     private function transformVector(WeightedModelInterface $model, FeatureInterface $vector): FeatureInterface
     {
-        $docFeature = new FeatureExtraction($this->indexReader, $model, $vector);
+        $docFeature = new FeatureExtraction($this->getIndexManager(), $model, $vector);
         return $docFeature; 
     }
 
     /**
      * Gets document hits based on given query
      *
-     * @param  bool $descending
-     * @param  FeatureVector $queryVector
-     * @return float
+     * @return ResultSet
      */
-    private function getHits(FeatureInterface $queryVector): array
+    private function getResults(FeatureInterface $queryVector): ResultSet
     {
         
-        $scores = array();
 
-        foreach($this->getDocumentVectors() as $class => $doc) {
+        $results = new ResultSet;
+
+        foreach($this->getDocumentVectors() as $id => $doc) {
             $docVector = $this->transformVector($this->getModel(), $doc);
-            $scores[$class] = $this->score($queryVector->getFeature(), $docVector->getFeature());
+            $score = $this->score($queryVector->getFeature(), $docVector->getFeature());
+            $results->addEntry(new ResultEntry($id, $score, $this->getIndexManager()->getMetaData($id)));
         }
 
-        return $scores;
+        return $results;
 
     }
 

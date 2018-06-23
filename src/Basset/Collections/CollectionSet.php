@@ -27,44 +27,24 @@ use Basset\Utils\TransformationInterface;
 class CollectionSet implements CollectionInterface
 {
 
-    const CLASS_AS_KEY = 1;
-
-    const OFFSET_AS_KEY = 2;
-
     protected $documents;
-
-    protected $labeled;
 
     protected $currentDocument;
     
-    /**
-     * While it is always helpful to know which document is which, I will not make it required, as this isn't helpful
-     * if you only have a single document collection you simply wanted to compare against your query.
-     * 
-     * @param bool $labeled OPTIONAL default is false
-     */
-    public function __construct(bool $labeled = false)
+    public function __construct()
     {
         $this->documents = array();
-        $this->labeled = ($labeled == true) ? self::CLASS_AS_KEY : self::OFFSET_AS_KEY;
     }
 
     /**
-     * Adds a document to the set. It does an internal check to see if it is labeled. If not, it will use its offset
-     * as key. if CollectionSet is instantiated as true, then it will throw an error.
+     * Adds a document with metadata to the set.
      *
-     * @throws Exception
-     * @param mixed $class
      * @param TokensDocument $d
+     * @param MetaData $metadata
      */
-    public function addDocument(TokensDocument $d, $class = null)
+    public function addDocument(TokensDocument $d, $metadata = null)
     {
-        if((empty($class)) && $this->labeled == self::CLASS_AS_KEY) {
-            throw new \Exception('Class or Label cannot be null.');
-        }
-        $class = $class === null ? count($this->documents) : $class;
-        $this->documents[] = new Document($d, $class);
-
+        $this->documents[] = new Document($d, $metadata);
     }
 
     /**
@@ -102,14 +82,7 @@ class CollectionSet implements CollectionInterface
 
     public function key()
     {
-        switch ($this->labeled) {
-            case self::CLASS_AS_KEY:
-                return $this->currentDocument->getClass();
-            case self::OFFSET_AS_KEY:
-                return key($this->documents);
-            default:
-                throw new \Exception('Undefined type as key');
-        }
+        return key($this->documents);
     }
 
     public function offsetSet($key,$value)

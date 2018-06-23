@@ -4,10 +4,6 @@
 namespace Basset\Index;
 
 use Basset\Utils\Serializer;
-use Basset\Structure\{
-        TrieManager, 
-        Trie
-    };
 
 /**
  * The IndexReader simply extracts and reads an index(.idx) written by IndexWriter to a given or default path.
@@ -15,21 +11,17 @@ use Basset\Structure\{
  * At the moment we wouldn't allow deleting and/or appending anything from the index. Thus, all new docs you wish to
  * add means you have to rebuild the index thru IndexWriter Class.
  * 
- * @see TrieManager
- * @see Trie
  * @see Serializer
  * @see IndexWriter
  *
  * @var $path
  * @var $index
- * @var $trieManager
  * @var $indexManager
  *
  * @example 
  * $indexReader = new IndexReader('../custom_index/mycustomindex.idx');
  * OR
  * $indexReader = new IndexReader(); //reading from the default path at '../index/basset_index.idx'
- * $indexReader->getTrieManager();
  * $indexReader->getIndexManager();
  * $indexReader->getIndex();
  *
@@ -50,8 +42,6 @@ class IndexReader
     private $path;
 
     private $index;
-
-    private $trieManager;
 
     private $indexManager;
 
@@ -79,10 +69,6 @@ class IndexReader
         }
 
         $this->indexManager = new IndexManager($this->getIndex());
-
-        $this->trieManager = new TrieManager(new Trie);
-
-        $this->readIndex($this->getIndex());
 
     }
 
@@ -121,35 +107,6 @@ class IndexReader
             return null;
         }
 
-    }
-
-    /**
-     * @param IndexInterface $index
-     * @return bool|null
-     */
-    private function readIndex(IndexInterface $index): ?bool 
-    {
-
-        $data = $index->getData();
-
-        if($data){
-            foreach($data as $term => $meta) {
-                $this->trieManager->addEntry((string) $term, $meta);
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-        
-    }
-
-    /**
-     * @return TrieManager
-     */
-    public function getTrieManager(): TrieManager 
-    {
-        return $this->trieManager;
     }
 
     /**

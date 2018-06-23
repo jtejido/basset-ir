@@ -12,7 +12,7 @@ use Basset\Feature\FeatureVector;
  * modeling framework. While the two methods given on their paper works, it fails to give more weights to the terms present in the actual query
  * itself, making it problematic.
  *
- * So UMass at TREC 2004 maintained the information in the original query model by linearly interpolating the relevance model with the query model.
+ * So UMass at TREC 2004 HARD track maintained the information in the original query model by linearly interpolating the relevance model with the query model.
  * Lambda has the same value as found in JelinekMercerLM.
  *
  * @see http://homepages.inf.ed.ac.uk/vlavrenk/doc/rm.pdf
@@ -33,6 +33,7 @@ class RelevanceModel extends Feedback implements PRFInterface
     /**
      * @param int $feedbackdocs
      * @param int $feedbackterms
+     * @param float $lambda
      */
 
     public function __construct(int $feedbackdocs = parent::TOP_REL_DOCS, int $feedbackterms = parent::TOP_REL_TERMS, float $lambda = self::LAMBDA)
@@ -40,29 +41,29 @@ class RelevanceModel extends Feedback implements PRFInterface
         parent::__construct($feedbackdocs, $feedbackterms);
     }
 
-
     /**
      * Expands original query based on array of relevant docs received.
      *
-     * @param  array $docIds
-     * @return array
+     * @param  FeatureInterface $queryVector The query to be expanded
+     * @return FeatureInterface
      */
-    protected function queryExpand(array $docIds): FeatureInterface
+    public function expand(FeatureInterface $queryVector): FeatureInterface
     {
-
-        
-
-        $queryVector = $this->transformVector($this->getModel()->getQueryModel(), $this->getQuery())->getFeature();
 
         $vocab = array();
 
         $fbDocVectors = array();
 
-        foreach($docIds as $class => $score) {
-            $doc = $this->indexsearch->getDocumentVector($class);
-            $docVector = $this->transformVector($this->getModel()->getQueryModel(), $doc)->getFeature();
+        $queryVector = $queryVector->getFeature();
+
+        $termCount = count($queryVector) + $this->feedbackterms;
+
+        foreach($this->getResults() as $value) {
+            $doc = $this->getIndexManager()->getDocumentVector($value->getId());
+            $docVector = $this->transformVector($this->getModel(), $doc)->getFeature();
             $vocab = array_merge($vocab, $docVector);
-            $fbDocVectors[$class] = $docVector;
+            $fbDocVectors[$value->getId()] = $docVector;
+            $rsvs[$value->getId()] = $value->getScore();
         }
 
         $relevantVector = new FeatureVector;
@@ -73,28 +74,23 @@ class RelevanceModel extends Feedback implements PRFInterface
 
             $totalCount = 0;
 
-            foreach($fbDocVectors as $class => $vector) {
+            foreach($fbDocVectors as $id => $vector) {
                     $totalCount += count($vector);
                     if(isset($vector[$term])) {    
                         $docProb = $vector[$term] / array_sum($vector);
-                        $docProb *= exp($docIds[$class]);
+                        $docProb *= exp($rsvs[$id]);
                         $fbWeight += $docProb;
                     }
             }
 
-                $fbWeight /= $totalCount;
-                $fbWeight = isset($queryVector[$term]) ? (1-$this->lambda) * $queryVector[$term] + ($this->lambda * $fbWeight) : $fbWeight;
-                $relevantVector->addTerm($term, $fbWeight);
+            $fbWeight /= $totalCount;
+            $fbWeight = isset($queryVector[$term]) ? (1-$this->lambda) * $queryVector[$term] + ($this->lambda * $fbWeight) : $fbWeight;
+            $relevantVector->addTerm($term, $fbWeight);
 
         }
 
-        
+        $relevantVector->snip($termCount);
 
-        
-
-        $relevantVector->snip($this->feedbackterms);
-
-        // we just need the top N of new query
         return $relevantVector;
 
     }

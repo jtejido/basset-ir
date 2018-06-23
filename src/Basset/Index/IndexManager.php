@@ -3,6 +3,7 @@
 
 namespace Basset\Index;
 
+use Basset\MetaData\MetaData;
 use Basset\Math\Math;
 use Basset\Collections\CollectionSet;
 use Basset\Feature\FeatureVector;
@@ -12,11 +13,6 @@ use Basset\Statistics\{
         CollectionStatistics,
         PostingStatistics
     };
-use Basset\Structure\{
-        TrieManager, 
-        TrieInterface,
-        Trie
-    };
 
 
 /**
@@ -24,11 +20,8 @@ use Basset\Structure\{
  * While keeping the Index lightweight, moving the operations here instead of putting it on index makes it safer
  * by not exposing the methods.
  * At the moment we wouldn't allow deleting and/or appending anything from the index. Thus, all new docs you wish to
- * add means you have to rebuild the index thru IndexWriter Class.
+ * add means you have to rebuild the index thru a new IndexWriter instance.
  * 
- * @see TrieManager
- * @see TrieInterface
- * @see Trie
  * @see CollectionSet
  * @see EntryStatistics
  * @see CollectionStatistics
@@ -95,7 +88,10 @@ class IndexManager
 
         $postinglist = array();
 
-        foreach ($this->set as $class=>$doc) {
+        foreach ($this->set as $id=>$doc) {
+            
+            $this->index->addMetaData($id, $doc->getMetaData());
+
             $flag = array();
             $numberofDocuments++;
             $tokens = array_count_values($doc->getDocument());
@@ -104,12 +100,12 @@ class IndexManager
 
             foreach ($tokens as $term => $value) {
 
-                if(!isset($postinglist[$term][$class])) {
-                    $postinglist[$term][$class] = $value;
+                if(!isset($postinglist[$term][$id])) {
+                    $postinglist[$term][$id] = $value;
                 }
 
-                if(!isset($postinglist[$class])) {
-                    $postinglist[$term][$class] = $value;
+                if(!isset($postinglist[$id])) {
+                    $postinglist[$term][$id] = $value;
                 }
 
                 $flag[$term] = isset($flag[$term]) && $flag[$term] === true ? true : false;
@@ -151,13 +147,13 @@ class IndexManager
             $entry->setDocumentFrequency($documentFrequency[$term]);
             $entry->setTotalByTermPresence($totalByTermPresence[$term]);
             $entry->setUniqueTotalByTermPresence($uniqueTotalByTermPresence[$term]);
-            foreach($postinglist[$term] as $class => $value) {
+            foreach($postinglist[$term] as $id => $value) {
                 $post = new PostingStatistics;
                 $post->setTf($value);
-                $entry->setPostingList($class, $post);
+                $entry->setPostingList($id, $post);
             }
 
-            $this->index->addEntry((string) $term, $entry);
+            $this->index->addEntry($term, $entry);
         }
 
     }
@@ -172,15 +168,15 @@ class IndexManager
 
     /**
      * @param string $key The key to search for in the index.
-     * @return string|null.
+     * @return EntryStatistics|null.
      */
-    public function search(string $key): ?IndexEntry
+    public function search(string $key): ?EntryStatistics
     {
         if($this->index === null){
             throw new \Exception('Index not set.');
         }
 
-        return $this->index->getData()[$key] ?? null;
+        return isset($this->index->getData()[$key]) ? $this->index->getData()[$key]->getValue() : null;
     }
 
     /**
@@ -192,8 +188,8 @@ class IndexManager
         $documents = array();
         foreach($this->index->getData() as $term => $sub) {
             $array = $sub->getValue()->getPostingList();
-            foreach($array as $class => $value) {
-                    $documents[$class][$term] = $value->getTf();
+            foreach($array as $id => $value) {
+                    $documents[$id][$term] = $value->getTf();
             }
         }
         return $documents;
@@ -208,22 +204,31 @@ class IndexManager
         $documents = $this->getDocuments();
 
         $documentvector = array();
-        foreach($documents as $class => $document) {
-            $documentvector[$class] = new FeatureVector($document);
+        foreach($documents as $id => $document) {
+            $documentvector[$id] = new FeatureVector($document);
         }
 
         return $documentvector;
     }
 
     /**
-     * Returns document vector by class.
+     * Returns metadata of a given docID.
+     * @return MetaData.
+     */
+    public function getMetaData(int $id): MetaData
+    {
+        return $this->index->getMetaData($id);
+    }
+
+    /**
+     * Returns document vector by id.
      * @return array.
      */
-    public function getDocumentVector(string $class): FeatureVector
+    public function getDocumentVector(int $id): FeatureVector
     {
         $documents = $this->getDocumentVectors();
 
-        return $documents[$class];
+        return $documents[$id];
     }
 
     /**

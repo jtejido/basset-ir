@@ -8,6 +8,7 @@ use Basset\Collections\CollectionSet;
 use Basset\Documents\TokensDocument;
 use Basset\Statistics\CollectionStatistics;
 use Basset\Utils\Serializer;
+use Basset\MetaData\MetaData;
 
 /**
  * The IndexWriter creates an index file(.idx) on a given directory.
@@ -60,8 +61,6 @@ class IndexWriter
 
     private $transformer;
 
-    private $documents;
-
     public function __construct(string $directory = self::DEFAULT_DIRECTORY, bool $overwrite = true)
     {
         $this->open = true;
@@ -105,14 +104,12 @@ class IndexWriter
 
     }
 
-    public function addDocument(TokensDocument $d, string $class = null): bool 
+    public function addDocument(TokensDocument $d, $metadata = null)
     {
 
         $this->ensureOpen();
 
-        $this->documents[] = array('class' => $class, 'document' => $d);
-
-        return true;
+        $this->collectionset->addDocument($d, $metadata);
 
     }
 
@@ -124,17 +121,6 @@ class IndexWriter
     public function close(): bool
     {
         $this->ensureOpen();
-        
-        foreach($this->documents as $docs) {
-            if($docs['class'] == null) {
-                $this->collectionset = new CollectionSet();
-                break;
-            }
-        }
-
-        foreach($this->documents as $docs) {
-            $this->collectionset->addDocument($docs['document'], $docs['class']);
-        }
 
         if($this->transformer !== null){
             $this->collectionset->applyTransformation($this->transformer);

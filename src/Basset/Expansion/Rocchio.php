@@ -8,10 +8,10 @@ use Basset\Feature\FeatureInterface;
 use Basset\Feature\FeatureVector;
 
 /**
- * This is Rocchio's Algorithm for expanding terms based on feedback documents received. As we will not want for non-relevant docs to actually be
- * computed, we'll omit it from the equation.
+ * This is Rocchio's Algorithm for expanding terms based on feedback documents received. As we will not want for non-relevant
+ * docs to actually be computed, we'll omit it from the equation.
  * 
- * @see TokensDocument
+ * @see https://nlp.stanford.edu/IR-book/pdf/09expand.pdf
  *
  * @var $beta
  *
@@ -28,6 +28,7 @@ class Rocchio extends Feedback implements PRFInterface
     /**
      * @param int $feedbackdocs
      * @param int $feedbackterms
+     * @param float $beta
      */
 
     public function __construct(int $feedbackdocs = parent::TOP_REL_DOCS, int $feedbackterms = parent::TOP_REL_TERMS, float $beta = self::BETA)
@@ -36,26 +37,26 @@ class Rocchio extends Feedback implements PRFInterface
         $this->beta = $beta;
     }
 
-
     /**
      * Expands original query based on array of relevant docs received.
      *
-     * @param  array $docIds
-     * @return array
+     * @param  FeatureInterface $queryVector The query to be expanded
+     * @return FeatureInterface
      */
-    protected function queryExpand(array $docIds): FeatureInterface
+    public function expand(FeatureInterface $queryVector): FeatureInterface
     {
 
         $relevantVector = new FeatureVector;
 
-        // re-weight the query to match that of relevant docs
-        $queryVector = $this->transformVector($this->getModel(), $this->getQuery())->getFeature(); 
+        $queryVector = $queryVector->getFeature();
+
+        $termCount = count($queryVector) + $this->feedbackterms;
 
         /**
          * Rocchio's algorithm reduces the weight from the docs' terms. default BETA is 0.75.
          */
-        foreach($docIds as $class => $score) {
-            $doc = $this->indexsearch->getDocumentVector($class);
+        foreach($this->getResults() as $value) {
+            $doc = $this->getIndexManager()->getDocumentVector($value->getId());
             $docVector = $this->transformVector($this->getModel(), $doc)->getFeature(); 
             array_walk_recursive($docVector, function (&$item, $key) 
                 {
@@ -67,7 +68,7 @@ class Rocchio extends Feedback implements PRFInterface
 
         // combine the new terms with the original query
         $relevantVector->addTerms($queryVector);
-        $relevantVector->snip($this->feedbackterms);
+        $relevantVector->snip($termCount);
 
         // we just need the top N of new query
         return $relevantVector;

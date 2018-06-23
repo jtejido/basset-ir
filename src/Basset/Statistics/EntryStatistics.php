@@ -104,9 +104,9 @@ class EntryStatistics
         $this->uniqueTotalByTermPresence = $value;
     }
 
-    public function setPostingList($class, PostingStatistics $value)
+    public function setPostingList(int $id, PostingStatistics $value)
     {
-        $this->postinglist[$class] = $value;
+        $this->postinglist[$id] = $value;
     }
 
 

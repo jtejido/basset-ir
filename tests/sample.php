@@ -7,7 +7,7 @@ use Basset\Documents\TokensDocument;
 
 use Basset\Search\Search;
 use Basset\Models\TfIdf;
-use Basset\Models\DirichletLM;
+use Basset\Models\ModBM25;
 use Basset\Metric\SqrtCosineSimilarity;
 
 use Basset\Normalizers\English;
@@ -22,6 +22,8 @@ use Basset\Models\DFIModel;
 use Basset\Models\DFIModels\ChiSquared;
 use Basset\Models\Idf;
 
+use Basset\MetaData\MetaData;
+
 
 
 class Similarity {
@@ -34,14 +36,14 @@ class Similarity {
         $cranfield = new CranfieldParser(__DIR__.'/../Cranfield/cranfield-collection/cran.all.1400.xml-format.xml');
         $documents = $cranfield->parse(); 
 
+        // This is a set of NLP stuff used to analyze each tokens(terms) in a given Document.
         $stopwords = file_get_contents(__DIR__.'/../stopwords/stopwords.txt');
         $tokenizer = new WhitespaceAndPunctuationTokenizer;
 
-        // This is a set of NLP stuff used to analyze each tokens(terms) in a given Document.
         $pipeline = array(
                     new StopWords($tokenizer->tokenize($stopwords)),
                     new English,
-                    // also stemmer if you have any, as I don't have any.
+                    // also stemmer if you have any, as I don't have any. Make sure it implements TransformationInterface
                     );
         $transform = new TransformationSet;
         $transform->register($pipeline);
@@ -54,8 +56,7 @@ class Similarity {
          * Everything is commited to disk once close() is called, otherwise you can keep adding document/s.
          * The file created is Basset's inverted index file.
          *
-         * Once created, IndexReader() takes care of reading it, this also creates an in-memory trie structure
-         * for fast traversal when you want to search for terms as prefix. (see IndexSearch for all methods)
+         * Once created, IndexReader() takes care of reading it.
          *
          * If a custom directory path is created (and an optional custom file name thru setFileName()), you need 
          * to specify the path in IndexReader(), otherwise it'll just look for a default file (index/basset_index.idx).
@@ -69,10 +70,12 @@ class Similarity {
         $index = new IndexWriter(__DIR__.'/../custom_index');
         $index->setFileName('mycustomindex');
         foreach($documents as $title => $body){
-            $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), $title);
+            $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), new MetaData(array('title' => $title)));
         }
         $index->applyTransformation($transform);
         $index->close();
+
+        // MetaData class is a wrapper for assigning any array of info for a given doc, be it a title, path or a url, etc.
 
         /** 
          * Dumping $index->getLocation() gives '../custom_index/mycustomindex.idx' which should be fed as parameter
@@ -87,11 +90,17 @@ class Similarity {
         /**
          *
          * Start search.
+         *
          * There has been changes in class name and operations since the v1 release (to accomodate for
-         * structural changes and for those familiar with Lucene instantiations).
-         * DocumentRanking became Search(a wrapper for IndexSearch) which requires an IndexReader instance.
-         * documentModel() became model() where query model and a metric is already specified inside.
-         * You can still change them thru queryModel() and similarity(), but a default is given from the docs at
+         * structural changes).
+         *
+         * DocumentRanking became Search(mostly working as a manager for everything) and requires an IndexReader 
+         * instance.
+         *
+         * Weighting Models are set thru model(), where the weighting model used for the query and the metric for 
+         * comparing the query against the documents are explicitly set.
+         * You can still change them thru queryModel() and similarity(), and the info regarding the defaults are 
+         * given from the docs at
          * https://myth-of-sissyphus.blogspot.com/2018/02/basset-information-retrieval-library-in.html
          * 
          */
@@ -100,13 +109,24 @@ class Similarity {
 
         $search = new Search($indexReader);
         $search->query($query);
-        $search->model(new DirichletLM);
-        $search->setQueryExpansion(true); //defaults to top 10 docs and 10 top terms to be used for expansion.
-        print_r($search->search(15)); 
+        $search->model(new ModBM25);
+        $search->setQueryExpansion(true); //defaults to top 10 docs and querylength + 10 top terms to be used for expansion.
+        $results = $search->search(15); // defaults to 10
+
+        $display = array();
+
+        foreach($results->getResults() as $key => $result) {
+            $title = $result->getMetaData()->getTag('title'); //getting the title tag from metadata added for the doc.
+            $display[$title] = $result->getScore();
+        }
+        
+        print_r($display); // top K docs
         print_r(microtime(true) - $start . "\xA");
-        /* 
-         * search() returns an array in descending order, and can take a $limit number and boolean $descending as parameter
-         * to display stuff, as 1400 items is a lot of stuff (default is search(10, true)).
+
+        /**
+         * search() returns an instance of ResultSet in descending order, and can take a $limit number and boolean $descending as 
+         * parameter to display stuff, as 1400 items is a lot of stuff (default is search(10, true)).
+         * ResultSet displays result as array thru getResults(), it has docID, score and the given MetaData for the document.
          */
 
     }

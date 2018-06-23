@@ -18,7 +18,7 @@ interface CollectionInterface extends \Iterator,\ArrayAccess,\Countable
      * @param mixed $class
      * @param TokensDocument $d
      */
-    public function addDocument(TokensDocument $d, $class);
+    public function addDocument(TokensDocument $d, $metadata = null);
 
     /**
      * Apply the transformations to each documents.

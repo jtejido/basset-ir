@@ -25,12 +25,12 @@ class Math
     }
 
     /**
-    * Stirling formula for the power series.
-    * 
-    * @param float $a The parameter of the Stirling formula.
-    * @param float $b The parameter of the Stirling formula.
-    * @return float
-    */
+     * Stirling formula for the power series.
+     * 
+     * @param float $a The parameter of the Stirling formula.
+     * @param float $b The parameter of the Stirling formula.
+     * @return float
+     */
     public function stirlingPower(float $a,float $b): float
     {
         $diff = $a - $b;
