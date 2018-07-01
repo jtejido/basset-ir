@@ -68,13 +68,13 @@ class Similarity {
          *
          */
 
-        // $index = new IndexWriter(__DIR__.'/../custom_index');
-        // $index->setFileName('mycustomindex');
-        // foreach($documents as $title => $body){
-        //     $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), new MetaData(array('title' => $title)));
-        // }
-        // $index->applyTransformation($transform);
-        // $index->close();
+        $index = new IndexWriter(__DIR__.'/../custom_index');
+        $index->setFileName('mycustomindex');
+        foreach($documents as $title => $body){
+            $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), new MetaData(array('title' => $title)));
+        }
+        $index->applyTransformation($transform);
+        $index->close();
 
         // MetaData class is a wrapper for assigning any array of info for a given doc, be it a title, path or a url, etc.
 
