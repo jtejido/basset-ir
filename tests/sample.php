@@ -110,7 +110,7 @@ class Similarity {
 
         $search = new Search($indexReader);
         $search->query($query);
-        $search->model(new TfIdf);
+        $search->model(new ModBM25);
         $search->setQueryExpansion(new IdeDecHi); //all feedback types default to top 10 relevant and non-relevant docs and querylength + 100 top terms to be used for expansion.
         $results = $search->search(15); // defaults to 10
 
