@@ -8,17 +8,15 @@ use Basset\Feature\FeatureInterface;
 use Basset\Feature\FeatureVector;
 
 /**
- * This is Rocchio's Algorithm for expanding terms based on feedback documents received. As we will not want for non-relevant
- * docs to actually be computed, we'll omit it from the equation.
+ * This is Ide's Dec Hi algorithm, where it re-weighs term based that includes the top-most non-relevant documents in the 
+ * computation.
  * 
- * @see https://nlp.stanford.edu/IR-book/pdf/09expand.pdf
- *
- * @var $beta
+ * @see http://sigir.org/files/museum/pub-09/VIII-1.pdf
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class Rocchio extends Feedback implements PRFVSMInterface
+class IdeDecHi extends Feedback implements PRFVSMInterface
 {
 
     CONST ALPHA = 1;
@@ -66,12 +64,18 @@ class Rocchio extends Feedback implements PRFVSMInterface
         $termCount = count($queryVector) + $this->feedbackterms;
 
         array_walk_recursive($queryVector, function (&$item, $key) 
-                {
-                    $item *= $this->alpha;
-                }
-            );
+            {
+                $item *= $this->alpha;
+            }
+        );
 
         $relevantVector->addTerms($queryVector);
+
+        $lastResult = $this->getTopNonRelevantDocuments();
+
+        $lastdoc = $this->getIndexManager()->getDocumentVector($lastResult->getId());
+
+        $lastDocVector = $this->transformVector($this->getModel(), $lastdoc)->getFeature(); 
 
         foreach($this->getRelevantDocuments() as $value) {
             $doc = $this->getIndexManager()->getDocumentVector($value->getId());
@@ -80,24 +84,20 @@ class Rocchio extends Feedback implements PRFVSMInterface
             array_splice($relevantDocVector, $termCount);
             array_walk_recursive($relevantDocVector, function (&$item, $key) 
                 {
-                    $item *= ($this->beta / $this->feedbackrelevantdocs);
+                    $item *= $this->beta;
                 }
             );
             $relevantVector->addTerms($relevantDocVector);
         }
 
-        foreach($this->getNonRelevantDocuments() as $value) {
-            $doc = $this->getIndexManager()->getDocumentVector($value->getId());
-            $nonRelevantDocVector = $this->transformVector($this->getModel(), $doc)->getFeature();
-            arsort($nonRelevantDocVector);
-            array_splice($nonRelevantDocVector, $termCount);
-            array_walk_recursive($nonRelevantDocVector, function (&$item, $key) 
+        array_walk_recursive($lastDocVector, function (&$item, $key)
                 {
-                    $item *= ($this->gamma / $this->feedbacknonrelevantdocs) * -1;
+                    $item *= $this->gamma * -1;
                 }
             );
-            $relevantVector->addTerms($nonRelevantDocVector);
-        }
+        arsort($lastDocVector);
+        array_splice($lastDocVector, $termCount);
+        $relevantVector->addTerms($lastDocVector);
 
         return $relevantVector;
 

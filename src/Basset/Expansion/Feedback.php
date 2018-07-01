@@ -8,13 +8,15 @@ use Basset\Feature\FeatureInterface;
 use Basset\Feature\FeatureExtraction;
 use Basset\Index\IndexManager;
 use Basset\Results\ResultSet;
+use Basset\Results\ResultEntry;
 
 /**
  * An object that is the base class for all feedback models. This should be the place where everything is set.
- * 
- * @see TokensDocument
+ * To avoid Over-fitting, we'll set this at the proven maximum recommended # of terms per documents (rel or non-rel).
+ * @see http://ilpubs.stanford.edu:8090/461/1/2000-40.pdf
  *
- * @var $feedbackdocs
+ * @var $feedbackrelevantdocs
+ * @var $feedbacknonrelevantdocs
  * @var $feedbackterms
  * @var $model
  * @var $query
@@ -29,9 +31,13 @@ class Feedback
 
     CONST TOP_REL_DOCS = 10;
 
-    CONST TOP_REL_TERMS = 10;
+    CONST TOP_NON_REL_DOCS = 10;
 
-    protected $feedbackdocs;
+    CONST TOP_REL_TERMS = 100;
+
+    protected $feedbackrelevantdocs;
+
+    protected $feedbacknonrelevantdocs;
 
     protected $feedbackterms;
 
@@ -43,11 +49,13 @@ class Feedback
 
     /**
      * @param int $feedbackdocs The top documents considered to be relevant
+     * @param int $feedbacknonreldocs The bottom documents considered to be non-relevant
      * @param int $feedbackterms The top terms we wish to incorporate for expansion
      */
-    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS)
+    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS)
     {
-        $this->feedbackdocs = $feedbackdocs;
+        $this->feedbackrelevantdocs = $feedbackdocs;
+        $this->feedbacknonrelevantdocs = $feedbacknonreldocs;
         $this->feedbackterms = $feedbackterms;    
         $this->model = null;  
         $this->indexmanager = null;
@@ -93,7 +101,6 @@ class Feedback
      */
     public function setResults(ResultSet $results)
     {
-        $results->setLimit($this->feedbackdocs);
         $this->results = $results;
     }
 
@@ -102,9 +109,34 @@ class Feedback
      *
      * @return array
      */
-    public function getResults(): array
+    public function getRelevantDocuments(): array
     {
-        return $this->results->getResults();
+        $results = $this->results;
+        $results->setLimit($this->feedbackrelevantdocs);
+        return $results->getResults();
+    }
+
+    /**
+     * Returns the bottom N results as array
+     *
+     * @return array
+     */
+    public function getNonRelevantDocuments(): array
+    {
+        $results = $this->results;
+        $results->setOrder(1);
+        $results->setLimit($this->feedbacknonrelevantdocs);
+        return $results->getResults();
+    }
+
+    /**
+     * Returns the last result as array
+     *
+     * @return array
+     */
+    public function getTopNonRelevantDocuments(): ResultEntry
+    {
+        return array_values(array_slice($this->results->getResults(), -1))[0];
     }
 
     /**

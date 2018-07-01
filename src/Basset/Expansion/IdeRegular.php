@@ -8,17 +8,14 @@ use Basset\Feature\FeatureInterface;
 use Basset\Feature\FeatureVector;
 
 /**
- * This is Rocchio's Algorithm for expanding terms based on feedback documents received. As we will not want for non-relevant
- * docs to actually be computed, we'll omit it from the equation.
+ * This is Ide's Regular algorithm.
  * 
- * @see https://nlp.stanford.edu/IR-book/pdf/09expand.pdf
- *
- * @var $beta
+ * @see http://sigir.org/files/museum/pub-09/VIII-1.pdf
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class Rocchio extends Feedback implements PRFVSMInterface
+class IdeRegular extends Feedback implements PRFVSMInterface
 {
 
     CONST ALPHA = 1;
@@ -80,7 +77,7 @@ class Rocchio extends Feedback implements PRFVSMInterface
             array_splice($relevantDocVector, $termCount);
             array_walk_recursive($relevantDocVector, function (&$item, $key) 
                 {
-                    $item *= ($this->beta / $this->feedbackrelevantdocs);
+                    $item *= $this->beta;
                 }
             );
             $relevantVector->addTerms($relevantDocVector);
@@ -93,7 +90,7 @@ class Rocchio extends Feedback implements PRFVSMInterface
             array_splice($nonRelevantDocVector, $termCount);
             array_walk_recursive($nonRelevantDocVector, function (&$item, $key) 
                 {
-                    $item *= ($this->gamma / $this->feedbacknonrelevantdocs) * -1;
+                    $item *= $this->gamma * -1;
                 }
             );
             $relevantVector->addTerms($nonRelevantDocVector);

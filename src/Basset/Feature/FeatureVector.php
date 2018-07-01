@@ -33,24 +33,34 @@ class FeatureVector implements FeatureInterface, \Iterator,\ArrayAccess,\Countab
     }
 
     /**
-     * Add/Update term's weighted value.
+     * Add/Update term's weighted value. If term exists, supplement the weight.
      *
      * @param string $term
      * @param float $weight
      */
     public function addTerm(string $term, float $weight)
     {
-        $this->features[$term] = $weight;
+        if(isset($this->features[$term])) {
+            $this->features[$term] += $weight;
+        } else {
+             $this->features[$term] = $weight;
+        }
     }
 
     /**
-     * Merges existing features with new array.
+     * Merges existing features with new array. If term exists, supplement the weight.
      *
      * @param array $terms
      */
     public function addTerms(array $terms)
     {
-		$this->features = array_merge($this->features, $terms);
+        foreach($terms as $term => $weight) {
+            if(isset($this->features[$term])) {
+                $this->features[$term] += $weight;
+            } else {
+                 $this->features[$term] = $weight;
+            }
+        }
     }
 
     /**

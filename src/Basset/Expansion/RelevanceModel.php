@@ -23,7 +23,7 @@ use Basset\Feature\FeatureVector;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class RelevanceModel extends Feedback implements PRFInterface
+class RelevanceModel extends Feedback implements PRFVSMInterface
 {
 
     CONST LAMBDA = 0.7;
@@ -32,13 +32,15 @@ class RelevanceModel extends Feedback implements PRFInterface
 
     /**
      * @param int $feedbackdocs
+     * @param int $feedbacknonreldocs
      * @param int $feedbackterms
      * @param float $lambda
      */
 
-    public function __construct(int $feedbackdocs = parent::TOP_REL_DOCS, int $feedbackterms = parent::TOP_REL_TERMS, float $lambda = self::LAMBDA)
+    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS, float $lambda = self::LAMBDA)
     {
-        parent::__construct($feedbackdocs, $feedbackterms);
+        parent::__construct($feedbackdocs, $feedbacknonreldocs, $feedbackterms);
+        $this->lambda = $lambda;
     }
 
     /**
@@ -58,9 +60,11 @@ class RelevanceModel extends Feedback implements PRFInterface
 
         $termCount = count($queryVector) + $this->feedbackterms;
 
-        foreach($this->getResults() as $value) {
+        foreach($this->getRelevantDocuments() as $value) {
             $doc = $this->getIndexManager()->getDocumentVector($value->getId());
             $docVector = $this->transformVector($this->getModel(), $doc)->getFeature();
+            arsort($docVector);
+            array_splice($docVector, $termCount);
             $vocab = array_merge($vocab, $docVector);
             $fbDocVectors[$value->getId()] = $docVector;
             $rsvs[$value->getId()] = $value->getScore();
@@ -75,21 +79,21 @@ class RelevanceModel extends Feedback implements PRFInterface
             $totalCount = 0;
 
             foreach($fbDocVectors as $id => $vector) {
-                    $totalCount += count($vector);
-                    if(isset($vector[$term])) {    
+                    if(isset($vector[$term])) {
+                        $totalCount += count($vector);
                         $docProb = $vector[$term] / array_sum($vector);
                         $docProb *= exp($rsvs[$id]);
                         $fbWeight += $docProb;
                     }
             }
 
-            $fbWeight /= $totalCount;
-            $fbWeight = isset($queryVector[$term]) ? (1-$this->lambda) * $queryVector[$term] + ($this->lambda * $fbWeight) : $fbWeight;
-            $relevantVector->addTerm($term, $fbWeight);
+            if($fbWeight > 0) {
+                $fbWeight /= $totalCount;
+                $fbWeight = isset($queryVector[$term]) ? (1-$this->lambda) * $queryVector[$term] + ($this->lambda * $fbWeight) : $fbWeight;
+                $relevantVector->addTerm($term, $fbWeight);
+            }
 
         }
-
-        $relevantVector->snip($termCount);
 
         return $relevantVector;
 

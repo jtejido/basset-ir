@@ -29,7 +29,7 @@ use Basset\{
 use Basset\Expansion\{
         PRFInterface,
         RelevanceModel,
-        Rocchio
+        PRFVSMInterface
     };
 use Basset\Results\{
         ResultEntry,
@@ -46,11 +46,11 @@ use Basset\Results\{
 class Search
 {
 
-    CONST BETA = 0.75;
+    CONST TOP_REL_DOCS = 15;
 
-    CONST TOP_REL_DOCS = 3;
+    CONST TOP_NON_REL_DOCS = 10;
 
-    CONST TOP_REL_TERMS = 10;
+    CONST TOP_REL_TERMS = 100;
 
     private $indexReader;
 
@@ -89,15 +89,17 @@ class Search
      * @param int $fbdocs top docs to use. For Rocchio Algorithm.
      * @param int $fbterms top terms to use from top docs retrieved (querylength + this).
      */
-    public function setQueryExpansion(bool $istrue, int $fbdocs = 10, int $fbterms = 10)
+    public function setQueryExpansion(PRFInterface $queryExpansion, int $fbdocs = self::TOP_REL_DOCS, int $fbnonreldocs = self::TOP_NON_REL_DOCS, int $fbterms = self::TOP_REL_TERMS)
     {
-        if($istrue) {
-         if($this->getModel() instanceof LanguageModelInterface) {
-                $this->queryexpansion = new RelevanceModel($fbdocs, $fbterms);
-            } else {
-                $this->queryexpansion = new Rocchio($fbdocs, $fbterms);
-            }   
+        if(($this->getModel() instanceof LanguageModelInterface && !$queryExpansion instanceof RelevanceModel) || (!$this->getModel() instanceof LanguageModelInterface && $queryExpansion instanceof RelevanceModel)) {
+            throw new \Exception("LanguageModelInterface only supports RelevanceModel.");
         }
+
+        if(!$this->getModel() instanceof LanguageModelInterface && !$queryExpansion instanceof PRFVSMInterface) {
+            throw new \Exception("Vector Space and Probabilistic models only supports PRFVSMInterface.");
+        }
+
+        $this->queryexpansion = $queryExpansion;
     }
 
     /**
@@ -276,8 +278,12 @@ class Search
 
         $results = $this->getResults($queryVector);
         
-        // at this point, any changes in query model and metric should be set in the model already.
-        if($this->queryexpansion) {
+        /*
+         * At this point, any changes in query model and metric should be set in the model already.
+         * We already have the initial results, and if relevance feedback is set to true, we'll do query expansion.
+         */
+
+        if($this->queryexpansion !== null) {
             if($this->getQueryExpansion() instanceof Rocchio) {
                 $queryVector = $this->transformVector($this->getModel(), $this->getQuery());
             }
