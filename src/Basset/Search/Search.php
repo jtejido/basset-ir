@@ -276,7 +276,7 @@ class Search
          */
 
         if($this->queryexpansion !== null) {
-            if($this->getQueryExpansion() instanceof Rocchio) {
+            if($this->getQueryExpansion() instanceof PRFVSMInterface) {
                 $queryVector = $this->transformVector($this->getModel(), $this->getQuery());
             }
 
