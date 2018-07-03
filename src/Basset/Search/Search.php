@@ -46,12 +46,6 @@ use Basset\Results\{
 class Search
 {
 
-    CONST TOP_REL_DOCS = 15;
-
-    CONST TOP_NON_REL_DOCS = 10;
-
-    CONST TOP_REL_TERMS = 100;
-
     private $indexReader;
 
     private $indexManager;
@@ -85,18 +79,16 @@ class Search
     /**
      * Set query Expansion model.
      *
-     * @param bool $istrue
-     * @param int $fbdocs top docs to use. For Rocchio Algorithm.
-     * @param int $fbterms top terms to use from top docs retrieved (querylength + this).
+     * @param PRFInterface $queryExpansion
      */
-    public function setQueryExpansion(PRFInterface $queryExpansion, int $fbdocs = self::TOP_REL_DOCS, int $fbnonreldocs = self::TOP_NON_REL_DOCS, int $fbterms = self::TOP_REL_TERMS)
+    public function setQueryExpansion(PRFInterface $queryExpansion)
     {
         if(($this->getModel() instanceof LanguageModelInterface && !$queryExpansion instanceof RelevanceModel) || (!$this->getModel() instanceof LanguageModelInterface && $queryExpansion instanceof RelevanceModel)) {
-            throw new \Exception("LanguageModelInterface only supports RelevanceModel.");
+            throw new \Exception("Only LanguageModelInterface supports RelevanceModel.");
         }
 
         if(!$this->getModel() instanceof LanguageModelInterface && !$queryExpansion instanceof PRFVSMInterface) {
-            throw new \Exception("Vector Space and Probabilistic models only supports PRFVSMInterface.");
+            throw new \Exception("Vector Space and Probabilistic models only support PRFVSMInterface.");
         }
 
         $this->queryexpansion = $queryExpansion;
