@@ -28,17 +28,14 @@ class FeatureExtraction implements FeatureInterface
 
 	/**
      * @param  IndexManager $indexManager
-     * @param  WeightedModelInterface $model OPTIONAL defaults to null|TermCount
+     * @param  WeightedModelInterface $model
+     * @param  FeatureVector $doc The Feature to transform
      */
 	public function __construct(IndexManager $indexManager, WeightedModelInterface $model, FeatureVector $doc)
     {
         $this->indexManager = $indexManager;
         $this->model = $model;
         $this->doc = $doc;
-
-        if($this->model === null) {
-    		$this->model = new TermCount;
-    	}
     }
 
     /**

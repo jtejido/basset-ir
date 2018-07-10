@@ -29,7 +29,7 @@ class Feedback
 {
 
 
-    CONST TOP_REL_DOCS = 10;
+    CONST TOP_REL_DOCS = 20;
 
     CONST TOP_NON_REL_DOCS = 10;
 
