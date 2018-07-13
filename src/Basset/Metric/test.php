@@ -76,7 +76,7 @@ class algorithm {
         }
     }
     // Select a pool of individuals for crossover
-    private static function poolSelection($pop) {
+    private static function poolSelection($pop, $queryVector) {
         // Create a pool population
         $pool = new population(algorithm::$poolSize, false);
   

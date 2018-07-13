@@ -23,7 +23,7 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
 
     CONST UNIFORM_RATE = 0.8;
     
-    CONST MUTATION_RATE = 0.7;
+    CONST MUTATION_RATE = 0.03;
 
     /**
      * @param int $feedbackdocs
@@ -31,9 +31,11 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
      * @param int $feedbackterms
      */
 
-    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS)
+    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS, $uniformRate = self::UNIFORM_RATE, $mutationRate = self::MUTATION_RATE)
     {
         parent::__construct($feedbackdocs, $feedbacknonreldocs, $feedbackterms);
+        $this->uniformRate = $uniformRate;
+        $this->mutationRate = $mutationRate;
     }
 
     /**
@@ -49,9 +51,7 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
 
         $queryVector = $queryVector->getFeature();
 
-        $termCount = count($queryVector) + $this->feedbackterms;
-
-        $relevantVector->addTerms($queryVector);
+        $termCount = $this->feedbackterms;
 
         $vocab = array();
 
@@ -64,39 +64,56 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
         }
         ksort($vocab);
 
+        $ctr = 0;
         foreach($docs as $id => $doc) {
 
             foreach($vocab as $key => $value) {
                 if(isset($doc[$key])) {
-                    $newDocs[$id][$key] = 1;
+                    $newDocs[$ctr][$key] = $doc[$key];
                 } else {
-                    $newDocs[$id][$key] = 0;
+                    $newDocs[$ctr][$key] = 0;
                 }
             }
 
+            $ctr++;
+
         }
 
-        for($i = 0; $i <= 100; $i++) {
-            foreach($newDocs as $id => &$doc) {
-                $indiv1 = $this->poolSelection($newDocs);
-                $indiv2 = $this->poolSelection($newDocs);
-                $newInd = $this->crossover($indiv1, $indiv2);
-                $doc = $this->mutate($newInd);
+        $most_fit=0;
+        $most_fit_last=1;
+        $generation_stagnant=0;
+
+        while($this->getFittest($newDocs, $queryVector)['score'] > 0) {
+            $most_fit = $this->getFittest($newDocs, $queryVector)['score'];
+
+            $newDocs = $this->getOffspring($newDocs, $queryVector);
+            if ($most_fit < $most_fit_last) {
+                $most_fit_last=$most_fit;
+                $generation_stagnant = 0;
+            } else {
+                $generation_stagnant++; //no improvement increment may want to end early
             }
+
+            if( $generation_stagnant > 100) {
+                break;
+            }
+
         }
 
-        foreach($newDocs as $id => $doc) {
+        foreach($newDocs as $doc) {
             $newDoc = array();
 
             foreach($doc as $term => $value) {
-                if(isset($vocab[$term]) && $value == 1) {
-                    $newDoc[$term] = $value;
+                $newDoc[$term] = 0;
+                if($value > 0) {
+                    $newDoc[$term] += 1;
                 }
             }
             arsort($newDoc);
             array_splice($newDoc, $termCount);
-
-            $relevantVector->addTerms($newDoc);
+            $newVector = new FeatureVector($newDoc);
+            $docVector = $this->transformVector($this->getModel(), $newVector)->getFeature();
+            $relevantVector->addTerms($docVector);
         }
 
         return $relevantVector;
@@ -107,12 +124,25 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
       return (float)rand()/(float)getrandmax();
     }
 
+    private function getOffspring($pop, $queryVector) {
+
+        $pop[0] = $pop[$this->getFittest($pop, $queryVector)['key']]; // elitism
+        for($i = 1; $i < count($pop); $i++) {
+            $indiv1 = $this->poolSelection($pop, $queryVector);
+            $indiv2 = $this->poolSelection($pop, $queryVector);
+            $newInd = $this->crossover($indiv1, $indiv2);
+            $pop[$i] = $this->mutate($newInd);
+        }
+
+        return $pop;
+    }
+
     private function crossover($indiv1, $indiv2) 
     {
        $newGene = array();
 
         foreach($indiv1 as $key => $value) {
-            if ($this->random() <= self::UNIFORM_RATE)
+            if ($this->random() <= $this->uniformRate)
             {
                 $newGene[$key] = $indiv1[$key];
             } else {
@@ -126,8 +156,10 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
     private function mutate($indiv) {
 
         foreach($indiv as $key => &$value) {
-            if ($this->random() <= self::MUTATION_RATE) {
-                $gene = rand(0,1);
+            if ($this->random() <= $this->mutationRate) {
+                $randKey = array_rand($indiv);
+                $test = array(0 => 0, $indiv[$randKey] => 1);
+                $gene = array_rand($test);
                 $value = $gene;
             }
         }
@@ -135,34 +167,35 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
         return $indiv;
     }
 
-    private function poolSelection($pop)
+    private function poolSelection($docs, $query)
     {
   
-        foreach($pop as $id => $doc) {
-            $randomId = array_rand($pop);
-            $tempPop[$id] = $pop[$randomId];
+        foreach($docs as $id => $doc) {
+            $randomId = array_rand($docs);
+            $tempPop[$id] = $docs[$randomId];
         }
 
-        $fittest = $this->getFittest($tempPop, $pop);
-        return $fittest;
+        $fittest = $this->getFittest($tempPop, $query)['key'];
+
+
+        return $docs[$fittest];
     }
 
-    private function getFittest($tempPop, $pop)
+    private function getFittest($tempPop, $query)
     {
         $score = array();
 
         foreach($tempPop as $id => $doc) {
-            $score[$id] = $this->score($doc, $pop[$id]);
+            $score[$id] = $this->fitnessFunction($doc, $query);
         }
 
-        asort($score);
+        arsort($score);
         reset($score);
-
-        return $tempPop[key($score)];
+        return array('key' => key($score), 'score' => $score[key($score)]);
     }
 
 
-    private function score(array $a, array $b)
+    private function fitnessFunction(array $a, array $b)
     {
         $cos = new CosineSimilarity;
         
