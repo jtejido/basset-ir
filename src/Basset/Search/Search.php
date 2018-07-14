@@ -84,11 +84,11 @@ class Search
     public function setQueryExpansion(PRFInterface $queryExpansion)
     {
         if(($this->getModel() instanceof LanguageModelInterface && !$queryExpansion instanceof RelevanceModel) || (!$this->getModel() instanceof LanguageModelInterface && $queryExpansion instanceof RelevanceModel)) {
-            throw new \Exception("Only LanguageModelInterface supports RelevanceModel.");
+            throw new \Exception("Only LanguageModelInterface supports RelevanceModel and vice versa.");
         }
 
         if(!$this->getModel() instanceof LanguageModelInterface && !$queryExpansion instanceof PRFVSMInterface) {
-            throw new \Exception("Vector Space and Probabilistic models only support PRFVSMInterface.");
+            throw new \Exception("Vector Space and Probabilistic models only support PRFVSMInterface and vice versa.");
         }
 
         $this->queryexpansion = $queryExpansion;
@@ -276,14 +276,10 @@ class Search
          */
 
         if($this->queryexpansion !== null) {
-            if($this->getQueryExpansion() instanceof PRFVSMInterface) {
-                $queryVector = $this->transformVector($this->getModel(), $this->getQuery());
-            }
-
             $this->getQueryExpansion()->setModel($this->getModel());
             $this->getQueryExpansion()->setIndexManager($this->getIndexManager());
             $this->getQueryExpansion()->setResults($results);
-            $queryVector = $this->getQueryExpansion()->expand($queryVector);
+            $queryVector = $this->getQueryExpansion()->expand($this->getQuery());
             $results = $this->getResults($queryVector);
         }
 

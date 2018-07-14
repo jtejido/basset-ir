@@ -4,7 +4,6 @@
 namespace Basset\Expansion;
 
 use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Feature\FeatureInterface;
 use Basset\Feature\FeatureVector;
 
 /**
@@ -50,15 +49,15 @@ class IdeRegular extends Feedback implements PRFVSMInterface
     /**
      * Expands original query based on array of relevant docs received.
      *
-     * @param  FeatureInterface $queryVector The query to be expanded
-     * @return FeatureInterface
+     * @param  FeatureVector $queryVector The query to be expanded
+     * @return FeatureVector
      */
-    public function expand(FeatureInterface $queryVector): FeatureInterface
+    public function expand(FeatureVector $queryVector): FeatureVector
     {
 
         $relevantVector = new FeatureVector;
 
-        $queryVector = $queryVector->getFeature();
+        $queryVector = $this->transformVector($this->getModel(), $queryVector)->getFeature();
 
         $termCount = count($queryVector) + $this->feedbackterms;
 

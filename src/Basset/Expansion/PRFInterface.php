@@ -3,7 +3,7 @@
 
 namespace Basset\Expansion;
 
-use Basset\Feature\FeatureInterface;
+use Basset\Feature\FeatureVector;
 
 
 /**
@@ -12,5 +12,5 @@ use Basset\Feature\FeatureInterface;
  */
 interface PRFInterface
 {
-	public function expand(FeatureInterface $queryVector): FeatureInterface;
+	public function expand(FeatureVector $queryVector): FeatureVector;
 }

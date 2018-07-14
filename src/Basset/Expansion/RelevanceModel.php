@@ -4,7 +4,6 @@
 namespace Basset\Expansion;
 
 use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Feature\FeatureInterface;
 use Basset\Feature\FeatureVector;
 
 /**
@@ -23,7 +22,7 @@ use Basset\Feature\FeatureVector;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class RelevanceModel extends Feedback implements PRFVSMInterface
+class RelevanceModel extends Feedback implements PRFInterface
 {
 
     CONST LAMBDA = 0.7;
@@ -46,17 +45,17 @@ class RelevanceModel extends Feedback implements PRFVSMInterface
     /**
      * Expands original query based on array of relevant docs received.
      *
-     * @param  FeatureInterface $queryVector The query to be expanded
-     * @return FeatureInterface
+     * @param  FeatureVector $queryVector The query to be expanded
+     * @return FeatureVector
      */
-    public function expand(FeatureInterface $queryVector): FeatureInterface
+    public function expand(FeatureVector $queryVector): FeatureVector
     {
 
         $vocab = array();
 
         $fbDocVectors = array();
 
-        $queryVector = $queryVector->getFeature();
+        $queryVector = $this->transformVector($this->getModel()->getQueryModel(), $queryVector)->getFeature();
 
         $termCount = count($queryVector) + $this->feedbackterms;
 

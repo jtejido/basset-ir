@@ -24,7 +24,7 @@ use Basset\Models\Idf;
 
 use Basset\MetaData\MetaData;
 use Basset\Expansion\GeneticAlgorithm;
-use Basset\Expansion\Rocchio;
+use Basset\Expansion\DifferentialEvolution;
 
 
 
@@ -85,7 +85,7 @@ class Similarity {
          */
 
         // prepare one query as Document instance from Cranfield/cranfield-collection/cran.qry.xml-format
-        $query = new Document(new TokensDocument($tokenizer->tokenize(' what are the structural and aeroelastic problems associated with flight of high speed aircraft.')));
+        $query = new Document(new TokensDocument($tokenizer->tokenize('what theoretical and experimental guides do we have as to turbulent couette flow behaviour .')));
         $query->applyTransformation($transform);
 
 
@@ -111,8 +111,8 @@ class Similarity {
 
         $search = new Search($indexReader);
         $search->query($query);
-        $search->model(new TfIdf);
-        $search->setQueryExpansion(new GeneticAlgorithm); //all feedback types default to top 10 relevant and non-relevant docs and querylength + 100 top terms to be used for expansion.
+        $search->model(new PivotedTfIdf);
+        $search->setQueryExpansion(new DifferentialEvolution); //all feedback types default to top 10 relevant and non-relevant docs and querylength + 100 top terms to be used for expansion.
         $results = $search->search(15); // defaults to 10
 
         $display = array();

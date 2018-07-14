@@ -4,15 +4,18 @@
 namespace Basset\Expansion;
 
 use Basset\Models\Contracts\WeightedModelInterface;
-use Basset\Feature\FeatureInterface;
 use Basset\Feature\FeatureVector;
 use Basset\Metric\CosineSimilarity;
 
 /**
- * This is Ide's Dec Hi algorithm, where it re-weighs term based that includes the top-most non-relevant documents in the 
- * computation.
+ * This is a Genetic Algorithm approach to Query Expansion. This is a personal experiment for an EA-based relevance feedback.
  * 
- * @see http://sigir.org/files/museum/pub-09/VIII-1.pdf
+ * Genetic algorithms are commonly used to generate high-quality solutions to optimization and search problems by relying 
+ * on bio-inspired operators such as mutation, crossover and selection.
+ *
+ * Experimental stage
+ *
+ * @link https://en.wikipedia.org/wiki/Genetic_algorithm
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
@@ -29,6 +32,8 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
      * @param int $feedbackdocs
      * @param int $feedbacknonreldocs
      * @param int $feedbackterms
+     * @param int $uniformRate
+     * @param int $mutationRate
      */
 
     public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS, $uniformRate = self::UNIFORM_RATE, $mutationRate = self::MUTATION_RATE)
@@ -41,15 +46,15 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
     /**
      * Expands original query based on array of relevant docs received.
      *
-     * @param  FeatureInterface $queryVector The query to be expanded
-     * @return FeatureInterface
+     * @param  FeatureVector $queryVector The query to be expanded
+     * @return FeatureVector
      */
-    public function expand(FeatureInterface $queryVector): FeatureInterface
+    public function expand(FeatureVector $queryVector): FeatureVector
     {
 
         $relevantVector = new FeatureVector;
 
-        $queryVector = $queryVector->getFeature();
+        $queryVector = $this->transformVector($this->getModel(), $queryVector)->getFeature();
 
         $termCount = $this->feedbackterms;
 
@@ -66,32 +71,25 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
 
         $ctr = 0;
         foreach($docs as $id => $doc) {
-
             foreach($vocab as $key => $value) {
-                if(isset($doc[$key])) {
-                    $newDocs[$ctr][$key] = $doc[$key];
-                } else {
-                    $newDocs[$ctr][$key] = 0;
-                }
+                $newDocs[$ctr][$key] = isset($doc[$key]) ? $doc[$key] : 0;
             }
-
             $ctr++;
-
         }
 
-        $most_fit=0;
-        $most_fit_last=1;
-        $generation_stagnant=0;
+        $most_fit = 0;
+        $most_fit_last = 1;
+        $generation_stagnant = 0;
 
         while($this->getFittest($newDocs, $queryVector)['score'] > 0) {
             $most_fit = $this->getFittest($newDocs, $queryVector)['score'];
 
-            $newDocs = $this->getOffspring($newDocs, $queryVector);
+            $newDocs = $this->evolve($newDocs, $queryVector);
             if ($most_fit < $most_fit_last) {
-                $most_fit_last=$most_fit;
+                $most_fit_last = $most_fit;
                 $generation_stagnant = 0;
             } else {
-                $generation_stagnant++; //no improvement increment may want to end early
+                $generation_stagnant++; // no improvement
             }
 
             if( $generation_stagnant > 100) {
@@ -104,16 +102,11 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
             $newDoc = array();
 
             foreach($doc as $term => $value) {
-                $newDoc[$term] = 0;
-                if($value > 0) {
-                    $newDoc[$term] += 1;
-                }
+                    $newDoc[$term] = $value;
             }
             arsort($newDoc);
             array_splice($newDoc, $termCount);
-            $newVector = new FeatureVector($newDoc);
-            $docVector = $this->transformVector($this->getModel(), $newVector)->getFeature();
-            $relevantVector->addTerms($docVector);
+            $relevantVector->addTerms($newDoc);
         }
 
         return $relevantVector;
@@ -121,20 +114,20 @@ class GeneticAlgorithm extends Feedback implements PRFVSMInterface
     }
 
     private function random() {
-      return (float)rand()/(float)getrandmax();
+      return rand()/getrandmax();
     }
 
-    private function getOffspring($pop, $queryVector) {
+    private function evolve($population, $queryVector) {
 
-        $pop[0] = $pop[$this->getFittest($pop, $queryVector)['key']]; // elitism
-        for($i = 1; $i < count($pop); $i++) {
-            $indiv1 = $this->poolSelection($pop, $queryVector);
-            $indiv2 = $this->poolSelection($pop, $queryVector);
-            $newInd = $this->crossover($indiv1, $indiv2);
-            $pop[$i] = $this->mutate($newInd);
+        $population[0] = $population[$this->getFittest($population, $queryVector)['key']]; // elitism
+        for($i = 1; $i < count($population); $i++) {
+            $indiv1 = $this->poolSelection($population, $queryVector);
+            $indiv2 = $this->poolSelection($population, $queryVector);
+            $newIndiv = $this->crossover($indiv1, $indiv2);
+            $population[$i] = $this->mutate($newIndiv);
         }
 
-        return $pop;
+        return $population;
     }
 
     private function crossover($indiv1, $indiv2) 
