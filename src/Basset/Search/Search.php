@@ -29,7 +29,8 @@ use Basset\{
 use Basset\Expansion\{
         PRFInterface,
         RelevanceModel,
-        PRFVSMInterface
+        PRFVSMInterface,
+        PRFEAVSMInterface
     };
 use Basset\Results\{
         ResultEntry,
@@ -84,11 +85,15 @@ class Search
     public function setQueryExpansion(PRFInterface $queryExpansion)
     {
         if(($this->getModel() instanceof LanguageModelInterface && !$queryExpansion instanceof RelevanceModel) || (!$this->getModel() instanceof LanguageModelInterface && $queryExpansion instanceof RelevanceModel)) {
-            throw new \Exception("Only LanguageModelInterface supports RelevanceModel and vice versa.");
+            throw new \Exception("LanguageModels can only be used with RelevanceModel and vice versa.");
         }
 
         if(!$this->getModel() instanceof LanguageModelInterface && !$queryExpansion instanceof PRFVSMInterface) {
             throw new \Exception("Vector Space and Probabilistic models only support PRFVSMInterface and vice versa.");
+        }
+
+        if(!$this->getSimilarity() instanceof VSMInterface && $queryExpansion instanceof PRFEAVSMInterface) {
+            throw new \Exception("Evolution Feedback Algorithms are Experimental and can only be used in VSM models.");
         }
 
         $this->queryexpansion = $queryExpansion;

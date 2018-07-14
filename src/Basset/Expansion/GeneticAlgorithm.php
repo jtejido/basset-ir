@@ -20,7 +20,7 @@ use Basset\Metric\CosineSimilarity;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class GeneticAlgorithm extends Feedback implements PRFVSMInterface
+class GeneticAlgorithm extends Feedback implements PRFEAVSMInterface
 {
 
 

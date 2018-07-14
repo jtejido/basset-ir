@@ -6,7 +6,7 @@ use Basset\Documents\Document;
 use Basset\Documents\TokensDocument;
 
 use Basset\Search\Search;
-use Basset\Models\TfIdf;
+use Basset\Models\BM25;
 use Basset\Models\PivotedTfIdf;
 use Basset\Metric\SqrtCosineSimilarity;
 
@@ -25,7 +25,7 @@ use Basset\Models\Idf;
 use Basset\MetaData\MetaData;
 use Basset\Expansion\GeneticAlgorithm;
 use Basset\Expansion\DifferentialEvolution;
-
+use Basset\Expansion\Rocchio;
 
 
 class Similarity {

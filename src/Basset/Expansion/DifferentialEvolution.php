@@ -22,7 +22,7 @@ use Basset\Metric\CosineSimilarity;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class DifferentialEvolution extends Feedback implements PRFVSMInterface
+class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
 {
 
 
@@ -91,55 +91,8 @@ class DifferentialEvolution extends Feedback implements PRFVSMInterface
         $bestDocs = array_merge($bestDocs, $newDocs); // keep the candidate solutions
 
         while($generation <= 100) {
-            for($i = 0; $i < count($newDocs); $i++) {
-                do {
-                    $a = array_rand($newDocs);
-                } while ($a == $i);
-
-                do {
-                    $b = array_rand($newDocs);
-                } while ($b == $i || $b == $a);
-
-                do {
-                    $c = array_rand($newDocs);
-                } while ($c == $i || $c == $a || $c == $b);
-
-                $trial = array();
-
-                $j = array_rand($newDocs[$i]);
-
-                for ($k = 0; $k < count($vocab); $k++) {
-
-                    if ($this->frand(0, 1) < self::CR || $k == (count($vocab) - 1)) {
-                        $trial[$j] = $newDocs[$c][$j] + self::F * ($newDocs[$a][$j] - $newDocs[$b][$j]);
-                    } else {
-                        $trial[$j] = $newDocs[$i][$j];
-                    }
-
-                    $j = array_rand($newDocs[$i]);
-                }
-
-                $trialFitness = $this->fitnessFunction($trial, $queryVector);
-                $origFitness = $this->fitnessFunction($newDocs[$i], $queryVector);
-
-                if ($trialFitness >= $origFitness) {
-                    foreach($vocab as $term => $value) {
-                        if(isset($trial[$term])) {
-                            $candidateDocs[$i][$term] = $trial[$term];
-                        } else {
-                            $candidateDocs[$i][$term] = $value;
-                        }
-                        
-                    }
-                } else {
-                    $candidateDocs[$i] = $newDocs[$i];
-                }
-            }
-            
-            $bestDocs[] = $candidateDocs[$this->getFittest($candidateDocs, $queryVector)['key']]; // add the best with the solutions
-
+            $bestDocs[] = $this->evolve($newDocs, $queryVector, $vocab); // add the best with the candidate solutions
             $generation++;
-
         }
 
         foreach($bestDocs as $doc) {
@@ -156,6 +109,56 @@ class DifferentialEvolution extends Feedback implements PRFVSMInterface
 
         return $relevantVector;
 
+    }
+
+    private function evolve($population, $queryVector, $vocab) {
+
+        for($i = 0; $i < count($population); $i++) {
+            do {
+                $a = array_rand($population);
+            } while ($a == $i);
+
+            do {
+                $b = array_rand($population);
+            } while ($b == $i || $b == $a);
+
+            do {
+                $c = array_rand($population);
+            } while ($c == $i || $c == $a || $c == $b);
+
+            $trial = array();
+
+            $j = array_rand($population[$i]);
+
+            for ($k = 0; $k < count($vocab); $k++) {
+
+                if ($this->frand(0, 1) < self::CR || $k == (count($vocab) - 1)) {
+                    $trial[$j] = $population[$c][$j] + self::F * ($population[$a][$j] - $population[$b][$j]);
+                } else {
+                    $trial[$j] = $population[$i][$j];
+                }
+
+                $j = array_rand($population[$i]);
+            }
+
+            $trialFitness = $this->fitnessFunction($trial, $queryVector);
+            $origFitness = $this->fitnessFunction($population[$i], $queryVector);
+
+            if ($trialFitness >= $origFitness) {
+                foreach($vocab as $term => $value) {
+                    if(isset($trial[$term])) {
+                        $candidateDocs[$i][$term] = $trial[$term];
+                    } else {
+                        $candidateDocs[$i][$term] = $value;
+                    }
+                    
+                }
+            } else {
+                $candidateDocs[$i] = $population[$i];
+            }
+        }
+
+        return $candidateDocs[$this->getFittest($candidateDocs, $queryVector)['key']];
     }
 
     private function frand($min, $max) {
