@@ -84,15 +84,27 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
 
         }
 
-        $generation = 1;
+        $most_fit = 0;
+        $most_fit_last = 1;
+        $generation = 0;
 
         $bestDocs = array();
 
         $bestDocs = array_merge($bestDocs, $newDocs); // keep the candidate solutions
 
-        while($generation <= 100) {
+        while($this->getFittest($newDocs, $queryVector)['score'] > 0) {
+            $most_fit = $this->getFittest($bestDocs, $queryVector)['score'];
             $bestDocs[] = $this->evolve($newDocs, $queryVector, $vocab); // add the best with the candidate solutions
-            $generation++;
+            if ($most_fit < $most_fit_last) {
+                $most_fit_last = $most_fit;
+                $generation = 0;
+            } else {
+                $generation++; // no improvement
+            }
+
+            if( $generation > 100) {
+                break;
+            }
         }
 
         foreach($bestDocs as $doc) {
@@ -149,7 +161,7 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
                     if(isset($trial[$term])) {
                         $candidateDocs[$i][$term] = $trial[$term];
                     } else {
-                        $candidateDocs[$i][$term] = $value;
+                        $candidateDocs[$i][$term] = $population[$i][$term];
                     }
                     
                 }

@@ -114,7 +114,7 @@ class GeneticAlgorithm extends Feedback implements PRFEAVSMInterface
     }
 
     private function random() {
-      return rand()/getrandmax();
+      return mt_rand()/mt_getrandmax();
     }
 
     private function evolve($population, $queryVector) {

@@ -25,7 +25,6 @@ use Basset\Models\Idf;
 use Basset\MetaData\MetaData;
 use Basset\Expansion\GeneticAlgorithm;
 use Basset\Expansion\DifferentialEvolution;
-use Basset\Expansion\Rocchio;
 
 
 class Similarity {
