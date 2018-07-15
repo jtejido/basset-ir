@@ -6,7 +6,7 @@ use Basset\Documents\Document;
 use Basset\Documents\TokensDocument;
 
 use Basset\Search\Search;
-use Basset\Models\BM25;
+use Basset\Models\ModBM25;
 use Basset\Models\PivotedTfIdf;
 use Basset\Metric\SqrtCosineSimilarity;
 
