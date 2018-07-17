@@ -56,7 +56,9 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
 
         $queryVector = $this->transformVector($this->getModel(), $queryVector)->getFeature();
 
-        $termCount = $this->feedbackterms;
+        $relevantVector->addTerms($queryVector);
+
+        $termCount = count($queryVector) + $this->feedbackterms;
 
         $vocab = array();
 
@@ -88,13 +90,9 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
         $most_fit_last = 1;
         $generation = 0;
 
-        $bestDocs = array();
-
-        $bestDocs = array_merge($bestDocs, $newDocs); // keep the candidate solutions
-
         while($this->getFittest($newDocs, $queryVector)['score'] > 0) {
-            $most_fit = $this->getFittest($bestDocs, $queryVector)['score'];
-            $bestDocs[] = $this->evolve($newDocs, $queryVector, $vocab); // add the best with the candidate solutions
+            $most_fit = $this->getFittest($newDocs, $queryVector)['score'];
+            $newDocs = $this->evolve($newDocs, $queryVector);
             if ($most_fit < $most_fit_last) {
                 $most_fit_last = $most_fit;
                 $generation = 0;
@@ -102,12 +100,12 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
                 $generation++; // no improvement
             }
 
-            if( $generation > 100) {
+            if( $generation > 200) {
                 break;
             }
         }
 
-        foreach($bestDocs as $doc) {
+        foreach($newDocs as $doc) {
 
             $newDoc = array();
 
@@ -123,9 +121,11 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
 
     }
 
-    private function evolve($population, $queryVector, $vocab) {
+    private function evolve($population, $queryVector) {
 
-        for($i = 0; $i < count($population); $i++) {
+        $candidateDocs[0] = $population[$this->getFittest($population, $queryVector)['key']]; // elitism
+
+        for($i = 1; $i < count($population); $i++) {
             do {
                 $a = array_rand($population);
             } while ($a == $i);
@@ -142,26 +142,33 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
 
             $j = array_rand($population[$i]);
 
-            for ($k = 0; $k < count($vocab); $k++) {
+            $count = count($population[$i]);
 
-                if ($this->frand(0, 1) < self::CR || $k == (count($vocab) - 1)) {
+            for ($k = 0; $k < $count; $k++) {
+
+                $j_temp = $j;
+
+
+                if ($this->frand(0, 1) < self::CR || $k == ($count - 1)) {
                     $trial[$j] = $population[$c][$j] + self::F * ($population[$a][$j] - $population[$b][$j]);
                 } else {
                     $trial[$j] = $population[$i][$j];
                 }
 
-                $j = array_rand($population[$i]);
+                do {
+                    $j = array_rand($population[$i]);
+                } while ($j === $j_temp);
             }
 
             $trialFitness = $this->fitnessFunction($trial, $queryVector);
             $origFitness = $this->fitnessFunction($population[$i], $queryVector);
 
             if ($trialFitness >= $origFitness) {
-                foreach($vocab as $term => $value) {
+                foreach($population[$i] as $term => $value) {
                     if(isset($trial[$term])) {
                         $candidateDocs[$i][$term] = $trial[$term];
                     } else {
-                        $candidateDocs[$i][$term] = $population[$i][$term];
+                        $candidateDocs[$i][$term] = $value;
                     }
                     
                 }
@@ -170,7 +177,7 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
             }
         }
 
-        return $candidateDocs[$this->getFittest($candidateDocs, $queryVector)['key']];
+        return $candidateDocs;
     }
 
     private function frand($min, $max) {

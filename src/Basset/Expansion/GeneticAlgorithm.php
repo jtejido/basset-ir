@@ -56,7 +56,9 @@ class GeneticAlgorithm extends Feedback implements PRFEAVSMInterface
 
         $queryVector = $this->transformVector($this->getModel(), $queryVector)->getFeature();
 
-        $termCount = $this->feedbackterms;
+        $relevantVector->addTerms($queryVector);
+
+        $termCount = count($queryVector) + $this->feedbackterms;
 
         $vocab = array();
 
