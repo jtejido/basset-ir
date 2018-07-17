@@ -38,9 +38,11 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
      * @param int $differentialWeight
      */
 
-    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS)
+    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS, $crossoverProb = self::CR, $differentialWeight = self::F)
     {
         parent::__construct($feedbackdocs, $feedbacknonreldocs, $feedbackterms);
+        $this->crossoverProb = $crossoverProb;
+        $this->differentialWeight = $differentialWeight;
     }
 
     /**
@@ -88,19 +90,19 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
 
         $most_fit = 0;
         $most_fit_last = 1;
-        $generation = 0;
+        $generation_stagnant = 0;
 
         while($this->getFittest($newDocs, $queryVector)['score'] > 0) {
             $most_fit = $this->getFittest($newDocs, $queryVector)['score'];
             $newDocs = $this->evolve($newDocs, $queryVector);
             if ($most_fit < $most_fit_last) {
                 $most_fit_last = $most_fit;
-                $generation = 0;
+                $generation_stagnant = 0;
             } else {
-                $generation++; // no improvement
+                $generation_stagnant++; // no improvement
             }
 
-            if( $generation > 200) {
+            if( $generation_stagnant > 100) {
                 break;
             }
         }
@@ -149,8 +151,8 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
                 $j_temp = $j;
 
 
-                if ($this->frand(0, 1) < self::CR || $k == ($count - 1)) {
-                    $trial[$j] = $population[$c][$j] + self::F * ($population[$a][$j] - $population[$b][$j]);
+                if ($this->frand(0, 1) < $this->crossoverProb || $k == ($count - 1)) {
+                    $trial[$j] = $population[$c][$j] + $this->differentialWeight * ($population[$a][$j] - $population[$b][$j]);
                 } else {
                     $trial[$j] = $population[$i][$j];
                 }
