@@ -88,36 +88,47 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
 
         }
 
-        $most_fit = 0;
-        $most_fit_last = 1;
-        $generation_stagnant = 0;
+        $mostFit = 0;
+        $mostFitLast = 1;
+        $generationStagnant = 0;
+        $mostFitCalc = $this->getFittest($newDocs, $queryVector);
 
-        while($this->getFittest($newDocs, $queryVector)['score'] > 0) {
-            $most_fit = $this->getFittest($newDocs, $queryVector)['score'];
+        while($mostFitCalc['score'] > 0) {
+            
+            $mostFit = $mostFitCalc['score'];
             $newDocs = $this->evolve($newDocs, $queryVector);
-            if ($most_fit < $most_fit_last) {
-                $most_fit_last = $most_fit;
-                $generation_stagnant = 0;
-            } else {
-                $generation_stagnant++; // no improvement
+
+            $fl = 0.1;
+            $fu = 0.9;
+            $t1 = $t2 = 0.1;
+            
+            if($this->math->random(0, 1) < $t1) {
+                $this->differentialWeight = $fl + $this->math->random(0, 1) * $fu;
             }
 
-            if( $generation_stagnant > 100) {
+            if($this->math->random(0, 1) < $t2) {
+                $this->crossoverProb = $this->math->random(0, 1);
+            }
+
+            $mostFitCalc = $this->getFittest($newDocs, $queryVector);
+            $fittestDoc = $newDocs[$mostFitCalc['key']];
+
+            if ($mostFit < $mostFitLast) {
+                $mostFitLast = $mostFit;
+                $generationStagnant = 0;
+            } else {
+                $generationStagnant++; // no improvement
+            }
+
+            if( $generationStagnant > 100 || $mostFit == 1) {
                 break;
             }
         }
 
-        foreach($newDocs as $doc) {
+        arsort($fittestDoc);
+        array_splice($fittestDoc, $termCount);
+        $relevantVector->addTerms($fittestDoc);
 
-            $newDoc = array();
-
-            foreach($doc as $term => $value) {
-                $newDoc[$term] = $value;
-            }
-            arsort($newDoc);
-            array_splice($newDoc, $termCount);
-            $relevantVector->addTerms($newDoc);
-        }
 
         return $relevantVector;
 
@@ -125,9 +136,8 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
 
     private function evolve($population, $queryVector) {
 
-        $candidateDocs[0] = $population[$this->getFittest($population, $queryVector)['key']]; // elitism
 
-        for($i = 1; $i < count($population); $i++) {
+        for($i = 0; $i < count($population); $i++) {
             do {
                 $a = array_rand($population);
             } while ($a == $i);
@@ -151,7 +161,7 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
                 $j_temp = $j;
 
 
-                if ($this->frand(0, 1) < $this->crossoverProb || $k == ($count - 1)) {
+                if ($this->math->random(0, 1) < $this->crossoverProb || $k == ($count - 1)) {
                     $trial[$j] = $population[$c][$j] + $this->differentialWeight * ($population[$a][$j] - $population[$b][$j]);
                 } else {
                     $trial[$j] = $population[$i][$j];
@@ -180,10 +190,6 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
         }
 
         return $candidateDocs;
-    }
-
-    private function frand($min, $max) {
-        return $min + lcg_value() * (abs($max - $min));
     }
 
     private function getFittest($tempPop, $query)

@@ -102,6 +102,18 @@ class Math
     }
 
     /**
+     * Random Gen between min and max
+     *
+     * @param int $min
+     * @param int $max
+     * @return mixed
+     */
+    public function random($min = 0, $max = 1)
+    {
+        return $min + lcg_value() * (abs($max - $min));
+    }
+
+    /**
      * Digamma (psi) function
      * J Bernardo,
      * Psi ( Digamma ) Function,

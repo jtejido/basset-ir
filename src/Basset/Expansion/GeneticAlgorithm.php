@@ -79,44 +79,36 @@ class GeneticAlgorithm extends Feedback implements PRFEAVSMInterface
             $ctr++;
         }
 
-        $most_fit = 0;
-        $most_fit_last = 1;
-        $generation_stagnant = 0;
+        $mostFit = 0;
+        $mostFitLast = 1;
+        $generationStagnant = 0;
+        $mostFitCalc = $this->getFittest($newDocs, $queryVector);
 
-        while($this->getFittest($newDocs, $queryVector)['score'] > 0) {
-            $most_fit = $this->getFittest($newDocs, $queryVector)['score'];
-
+        while($mostFitCalc['score'] > 0) {
+            $mostFit = $mostFitCalc['score'];
             $newDocs = $this->evolve($newDocs, $queryVector);
-            if ($most_fit < $most_fit_last) {
-                $most_fit_last = $most_fit;
-                $generation_stagnant = 0;
+            $mostFitCalc = $this->getFittest($newDocs, $queryVector);
+            $fittestDoc = $newDocs[$mostFitCalc['key']];
+
+            if ($mostFit < $mostFitLast) {
+                $mostFitLast = $mostFit;
+                $generationStagnant = 0;
             } else {
-                $generation_stagnant++; // no improvement
+                $generationStagnant++; // no improvement
             }
 
-            if( $generation_stagnant > 100) {
+            if( $generationStagnant > 100) {
                 break;
             }
 
         }
 
-        foreach($newDocs as $doc) {
-            $newDoc = array();
-
-            foreach($doc as $term => $value) {
-                    $newDoc[$term] = $value;
-            }
-            arsort($newDoc);
-            array_splice($newDoc, $termCount);
-            $relevantVector->addTerms($newDoc);
-        }
+        arsort($fittestDoc);
+        array_splice($fittestDoc, $termCount);
+        $relevantVector->addTerms($fittestDoc);
 
         return $relevantVector;
 
-    }
-
-    private function random() {
-      return mt_rand()/mt_getrandmax();
     }
 
     private function evolve($population, $queryVector) {
@@ -137,7 +129,7 @@ class GeneticAlgorithm extends Feedback implements PRFEAVSMInterface
        $newGene = array();
 
         foreach($indiv1 as $key => $value) {
-            if ($this->random() <= $this->uniformRate)
+            if ($this->math->random(0, 1) <= $this->uniformRate)
             {
                 $newGene[$key] = $indiv1[$key];
             } else {
@@ -151,7 +143,7 @@ class GeneticAlgorithm extends Feedback implements PRFEAVSMInterface
     private function mutate($indiv) {
 
         foreach($indiv as $key => &$value) {
-            if ($this->random() <= $this->mutationRate) {
+            if ($this->math->random(0, 1) <= $this->mutationRate) {
                 $randKey = array_rand($indiv);
                 $test = array(0 => 0, $indiv[$randKey] => 1);
                 $gene = array_rand($test);

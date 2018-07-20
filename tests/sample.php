@@ -25,6 +25,10 @@ use Basset\Models\Idf;
 use Basset\MetaData\MetaData;
 use Basset\Expansion\IdeDecHi;
 
+// These two are still experimental, use it for VSM models at this moment
+use Basset\Expansion\DifferentialEvolution;
+use Basset\Expansion\GeneticAlgorithm;
+
 
 class Similarity {
 
@@ -67,13 +71,13 @@ class Similarity {
          *
          */
 
-        // $index = new IndexWriter(__DIR__.'/../custom_index');
-        // $index->setFileName('mycustomindex');
-        // foreach($documents as $title => $body){
-        //     $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), new MetaData(array('title' => $title)));
-        // }
-        // $index->applyTransformation($transform);
-        // $index->close();
+        $index = new IndexWriter(__DIR__.'/../custom_index');
+        $index->setFileName('mycustomindex');
+        foreach($documents as $title => $body){
+            $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), new MetaData(array('title' => $title)));
+        }
+        $index->applyTransformation($transform);
+        $index->close();
 
         // MetaData class is a wrapper for assigning any array of info for a given doc, be it a title, path or a url, etc.
 
@@ -83,7 +87,7 @@ class Similarity {
          */
 
         // prepare one query as Document instance from Cranfield/cranfield-collection/cran.qry.xml-format
-        $query = new Document(new TokensDocument($tokenizer->tokenize('what theoretical and experimental guides do we have as to turbulent couette flow behaviour .')));
+        $query = new Document(new TokensDocument($tokenizer->tokenize(' what theoretical and experimental guides do we have as to turbulent couette flow behaviour . ')));
         $query->applyTransformation($transform);
 
 
