@@ -11,11 +11,13 @@ use Basset\Metric\CosineSimilarity;
  * This is the Differential Evolution approach to Query Expansion. This is a personal experiment for an EA-based relevance
  * feedback.
  *
+ * This is based on Choi et. al' An Adaptive Cauchy Differential Evolution Algorithm for Global Numerical Optimization.
+ * doi: 10.1155/2013/969734
+ *
  * This is DE/rand/1/bin framework.
  *
- * This is the original variation (DE1) based on Storn and Price.
- * Differential Evolution - A simple and efficient adaptive scheme for global optimization over continuous spaces.
- * @link http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.67.5398&rep=rep1&type=pdf
+ * It uses individual's control parameter adapted based on the average parameter value of successfully evolved individuals'
+ * parameter values by using the Cauchy distribution.
  *
  * Experimental stage
  *
@@ -24,13 +26,17 @@ use Basset\Metric\CosineSimilarity;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
+class CauchyDE extends Feedback implements PRFEAVSMInterface
 {
 
 
-    const F = 0.7;
+    const F = 0.5;
 
     const CR = 0.9;
+
+    const GAMMA_F = 0.1;
+
+    const GAMMA_CR = 0.1;
 
     /**
      * @param int $feedbackdocs
@@ -40,11 +46,13 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
      * @param int $differentialWeight
      */
 
-    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS, $crossoverProb = self::CR, $differentialWeight = self::F)
+    public function __construct(int $feedbackdocs = self::TOP_REL_DOCS, int $feedbacknonreldocs = self::TOP_NON_REL_DOCS, int $feedbackterms = self::TOP_REL_TERMS, $crossoverProb = self::CR, $differentialWeight = self::F, $gammaCR = self::GAMMA_F, $gammaF = self::GAMMA_CR)
     {
         parent::__construct($feedbackdocs, $feedbacknonreldocs, $feedbackterms);
         $this->crossoverProb = $crossoverProb;
         $this->differentialWeight = $differentialWeight;
+        $this->gammaCR = $gammaCR;
+        $this->gammaF = $gammaF;
     }
 
     /**
@@ -99,6 +107,7 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
             
             $mostFit = $mostFitCalc['score'];
             $newDocs = $this->evolve($newDocs, $queryVector);
+
             $mostFitCalc = $this->getFittest($newDocs, $queryVector);
             $fittestDoc = $newDocs[$mostFitCalc['key']];
 
@@ -163,7 +172,13 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
             $trialFitness = $this->fitnessFunction($trial, $queryVector);
             $origFitness = $this->fitnessFunction($population[$i], $queryVector);
 
+            $fMem = array();
+
+            $crMem = array();
+
             if ($trialFitness >= $origFitness) {
+                $fMem[] = $this->differentialWeight;
+                $crMem[] = $this->crossoverProb;
                 foreach($population[$i] as $term => $value) {
                     if(isset($trial[$term])) {
                         $candidateDocs[$i][$term] = $trial[$term];
@@ -176,6 +191,17 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
                 $candidateDocs[$i] = $population[$i];
             }
         }
+
+        if($fMem !== null and $crMem !== null) {
+            $fAvg = $this->math->mean($fMem);
+            $crAvg = $this->math->mean($crMem);
+
+            $this->differentialWeight = $this->math->cauchyGenerator(0, $this->gammaF) + $fAvg;
+
+            $this->crossoverProb = $this->math->cauchyGenerator(0, $this->gammaCR) + $crAvg;
+        }
+        
+        
 
         return $candidateDocs;
     }

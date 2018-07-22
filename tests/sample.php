@@ -24,10 +24,18 @@ use Basset\Models\Idf;
 
 use Basset\MetaData\MetaData;
 use Basset\Expansion\IdeDecHi;
+use Basset\Expansion\IdeRegular;
+use Basset\Expansion\RelevanceModel;
+use Basset\Expansion\Rocchio;
 
-// These two are still experimental, use it for VSM models at this moment
+/* 
+ * These are still experimental, use it for VSM models at this moment.
+ * It attempts to expand the query based on the fittest document generated thru different evolutionary algorithms.
+ */
 use Basset\Expansion\DifferentialEvolution;
 use Basset\Expansion\GeneticAlgorithm;
+use Basset\Expansion\SelfAdaptiveDE;
+use Basset\Expansion\CauchyDE;
 
 
 class Similarity {
@@ -113,8 +121,10 @@ class Similarity {
 
         $search = new Search($indexReader);
         $search->query($query);
+        //$search->model(new PivotedTfIdf); // EA test
+        //$search->setQueryExpansion(new CauchyDE); // EA test
         $search->model(new ModBM25);
-        $search->setQueryExpansion(new IdeDecHi); //all feedback types default to top 10 relevant and non-relevant docs and querylength + 100 top terms to be used for expansion.
+        $search->setQueryExpansion(new Rocchio); //all feedback types default to top 10 relevant and non-relevant docs and querylength + 100 top terms to be used for expansion.
         $results = $search->search(15); // defaults to 10
 
         $display = array();

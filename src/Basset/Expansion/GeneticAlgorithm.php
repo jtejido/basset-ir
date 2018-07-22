@@ -97,7 +97,7 @@ class GeneticAlgorithm extends Feedback implements PRFEAVSMInterface
                 $generationStagnant++; // no improvement
             }
 
-            if( $generationStagnant > 100) {
+            if( $generationStagnant > 100 || $mostFit == 1) {
                 break;
             }
 
