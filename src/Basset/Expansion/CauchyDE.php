@@ -195,10 +195,25 @@ class CauchyDE extends Feedback implements PRFEAVSMInterface
         if($fMem !== null and $crMem !== null) {
             $fAvg = $this->math->mean($fMem);
             $crAvg = $this->math->mean($crMem);
+            $df = $this->math->cauchyGenerator(0, $this->gammaF) + $fAvg;
+            $cr = $this->math->cauchyGenerator(0, $this->gammaCR) + $crAvg;
 
-            $this->differentialWeight = $this->math->cauchyGenerator(0, $this->gammaF) + $fAvg;
+            if($df < 0.1) {
+                $this->differentialWeight = 0;
+            } elseif ($df > 1) {
+                $this->differentialWeight = 1;
+            } else {
+                $this->differentialWeight = $df;
+            }
 
-            $this->crossoverProb = $this->math->cauchyGenerator(0, $this->gammaCR) + $crAvg;
+            if($cr < 0.1) {
+                $this->crossoverProb = 0;
+            } elseif ($cr > 1) {
+                $this->crossoverProb = 1;
+            } else {
+                $this->crossoverProb = $cr;
+            }
+
         }
         
         

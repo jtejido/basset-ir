@@ -122,7 +122,7 @@ class Math
      */
     public function cauchyGenerator(float $x, float $gamma): float
     {
-        return 1 / pi() * atan(($this->random(0, 1) - $x) / $gamma) + .5;
+        return (1 / pi()) * atan(($this->random(0, 1) - $x) / $gamma) + .5;
     }
 
     /**
