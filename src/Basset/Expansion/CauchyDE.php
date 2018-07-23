@@ -11,7 +11,8 @@ use Basset\Metric\CosineSimilarity;
  * This is the Differential Evolution approach to Query Expansion. This is a personal experiment for an EA-based relevance
  * feedback.
  *
- * This is based on Choi et. al' An Adaptive Cauchy Differential Evolution Algorithm for Global Numerical Optimization.
+ * This is based on Choi et. al.
+ * An Adaptive Cauchy Differential Evolution Algorithm for Global Numerical Optimization.
  * doi: 10.1155/2013/969734
  *
  * This is DE/rand/1/bin framework.

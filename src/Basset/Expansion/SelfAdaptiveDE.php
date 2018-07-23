@@ -11,9 +11,11 @@ use Basset\Metric\CosineSimilarity;
  * This is the Differential Evolution approach to Query Expansion. This is a personal experiment for an EA-based relevance
  * feedback.
  *
- * This is based on brest et. al's work. 
+ * This is based on brest et. al. 
  * Self-adapting control parameters in differential evolution: a comparative study on numerical benchmark problems.
  * doi: 10.1109/TEVC.2006.872133
+ *
+ * This is DE/rand/1/bin framework.
  *
  * Experimental stage
  *

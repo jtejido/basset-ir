@@ -29,7 +29,7 @@ use Basset\Expansion\RelevanceModel;
 use Basset\Expansion\Rocchio;
 
 /* 
- * These are still experimental, use it for VSM models at this moment.
+ * These are still experimental, use it for Vector Space Models at the moment.
  * It attempts to expand the query based on the fittest document generated thru different evolutionary algorithms.
  */
 use Basset\Expansion\DifferentialEvolution;
@@ -124,7 +124,7 @@ class Similarity {
         //$search->model(new PivotedTfIdf); // EA test
         //$search->setQueryExpansion(new CauchyDE); // EA test
         $search->model(new ModBM25);
-        $search->setQueryExpansion(new Rocchio); //all feedback types default to top 10 relevant and non-relevant docs and querylength + 100 top terms to be used for expansion.
+        $search->setQueryExpansion(new Rocchio); //all feedback types default to top 20 relevant and 10 non-relevant docs and querylength + 30 top terms to be used for expansion.
         $results = $search->search(15); // defaults to 10
 
         $display = array();

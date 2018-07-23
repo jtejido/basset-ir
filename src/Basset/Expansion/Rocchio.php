@@ -13,7 +13,9 @@ use Basset\Feature\FeatureVector;
  * 
  * @see https://nlp.stanford.edu/IR-book/pdf/09expand.pdf
  *
+ * @var $alpha
  * @var $beta
+ * @var $gamma
  *
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
