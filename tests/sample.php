@@ -6,7 +6,7 @@ use Basset\Documents\Document;
 use Basset\Documents\TokensDocument;
 
 use Basset\Search\Search;
-use Basset\Models\ModBM25;
+use Basset\Models\TfIdf;
 use Basset\Models\PivotedTfIdf;
 use Basset\Metric\SqrtCosineSimilarity;
 
@@ -24,6 +24,7 @@ use Basset\Models\Idf;
 
 use Basset\MetaData\MetaData;
 use Basset\Expansion\IdeDecHi;
+use Basset\Expansion\DifferentialEvolution;
 
 
 class Similarity {
@@ -67,13 +68,13 @@ class Similarity {
          *
          */
 
-        // $index = new IndexWriter(__DIR__.'/../custom_index');
-        // $index->setFileName('mycustomindex');
-        // foreach($documents as $title => $body){
-        //     $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), new MetaData(array('title' => $title)));
-        // }
-        // $index->applyTransformation($transform);
-        // $index->close();
+        $index = new IndexWriter(__DIR__.'/../custom_index');
+        $index->setFileName('mycustomindex');
+        foreach($documents as $title => $body){
+            $index->addDocument(new TokensDocument($tokenizer->tokenize($body)), new MetaData(array('title' => $title)));
+        }
+        $index->applyTransformation($transform);
+        $index->close();
 
         // MetaData class is a wrapper for assigning any array of info for a given doc, be it a title, path or a url, etc.
 
@@ -109,8 +110,8 @@ class Similarity {
 
         $search = new Search($indexReader);
         $search->query($query);
-        $search->model(new ModBM25);
-        $search->setQueryExpansion(new IdeDecHi); //all feedback types default to top 10 relevant and non-relevant docs and querylength + 100 top terms to be used for expansion.
+        $search->model(new TfIdf);
+        $search->setQueryExpansion(new DifferentialEvolution); //all feedback types default to top 10 relevant and non-relevant docs and querylength + 100 top terms to be used for expansion.
         $results = $search->search(15); // defaults to 10
 
         $display = array();

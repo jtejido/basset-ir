@@ -42,16 +42,11 @@ class TokensDocument
      */
     public function applyTransformation(TransformationInterface $transform)
     {
-        $this->tokens = array_values(
-            array_filter(
-                array_map(
-                    array($transform, 'transform'),
-                    $this->tokens
-                ),
-                function ($token) {
-                    return $token!==null;
-                }
-            )
-        );
+        foreach($this->tokens as $k => &$v) {
+            $w = $transform->transform($v);
+            if(!empty($w)) {
+                $v = $w;
+            }
+        }
     }
 }
