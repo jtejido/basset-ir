@@ -102,6 +102,30 @@ class Math
     }
 
     /**
+     * Random Gen between min and max
+     *
+     * @param int $min
+     * @param int $max
+     * @return mixed
+     */
+    public function random($min = 0, $max = 1)
+    {
+        return $min + lcg_value() * (abs($max - $min));
+    }
+
+    /**
+     * Cumulative distribution function of the Cauchy distribution
+     *
+     * @param float $x
+     * @param float $gamma
+     * @return float
+     */
+    public function cauchyGenerator(float $x, float $gamma): float
+    {
+        return (1 / pi()) * atan(($this->random(0, 1) - $x) / $gamma) + .5;
+    }
+
+    /**
      * Digamma (psi) function
      * J Bernardo,
      * Psi ( Digamma ) Function,

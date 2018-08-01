@@ -9,6 +9,7 @@ use Basset\Feature\FeatureExtraction;
 use Basset\Index\IndexManager;
 use Basset\Results\ResultSet;
 use Basset\Results\ResultEntry;
+use Basset\Math\Math;
 
 /**
  * An object that is the base class for all feedback models. This should be the place where everything is set.
@@ -59,7 +60,8 @@ class Feedback
         $this->feedbackterms = $feedbackterms;    
         $this->model = null;  
         $this->indexmanager = null;
-        $this->results = null;   
+        $this->results = null;
+        $this->math = new Math;   
     }
 
     /**

@@ -11,11 +11,11 @@ use Basset\Metric\CosineSimilarity;
  * This is the Differential Evolution approach to Query Expansion. This is a personal experiment for an EA-based relevance
  * feedback.
  *
- * This is DE/rand/1/bin framework.
+ * This is based on brest et. al. 
+ * Self-adapting control parameters in differential evolution: a comparative study on numerical benchmark problems.
+ * doi: 10.1109/TEVC.2006.872133
  *
- * This is the original variation (DE1) based on Storn and Price.
- * Differential Evolution - A simple and efficient adaptive scheme for global optimization over continuous spaces.
- * @link http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.67.5398&rep=rep1&type=pdf
+ * This is DE/rand/1/bin framework.
  *
  * Experimental stage
  *
@@ -24,7 +24,7 @@ use Basset\Metric\CosineSimilarity;
  * @author Jericko Tejido <jtbibliomania@gmail.com>
  */
 
-class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
+class SelfAdaptiveDE extends Feedback implements PRFEAVSMInterface
 {
 
 
@@ -99,6 +99,19 @@ class DifferentialEvolution extends Feedback implements PRFEAVSMInterface
             
             $mostFit = $mostFitCalc['score'];
             $newDocs = $this->evolve($newDocs, $queryVector);
+
+            $fl = 0.1;
+            $fu = 0.9;
+            $t1 = $t2 = 0.1;
+            
+            if($this->math->random(0, 1) < $t1) {
+                $this->differentialWeight = $fl + $this->math->random(0, 1) * $fu;
+            }
+
+            if($this->math->random(0, 1) < $t2) {
+                $this->crossoverProb = $this->math->random(0, 1);
+            }
+
             $mostFitCalc = $this->getFittest($newDocs, $queryVector);
             $fittestDoc = $newDocs[$mostFitCalc['key']];
 

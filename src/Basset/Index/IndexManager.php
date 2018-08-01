@@ -104,9 +104,6 @@ class IndexManager
                     $postinglist[$term][$id] = $value;
                 }
 
-                if(!isset($postinglist[$id])) {
-                    $postinglist[$term][$id] = $value;
-                }
 
                 $flag[$term] = isset($flag[$term]) && $flag[$term] === true ? true : false;
 
